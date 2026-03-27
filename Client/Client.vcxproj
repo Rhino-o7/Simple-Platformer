@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{bd566839-14db-4776-aaa7-ded23ed30f3b}</ProjectGuid>
+    <RootNamespace>Client</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)build\bin\$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)build\obj\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)build\bin\$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)build\obj\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Dev\GitRepos\Voxel-ECS\Client\flecs-4.1.5\include;C:\Dev\GitRepos\Voxel-ECS\Client\src;C:\Dev\GitRepos\Voxel-ECS\Client\freetype\freetype-2.14.3\include;C:\Dev\GitRepos\Voxel-ECS\Client\glm;C:\Dev\GitRepos\Voxel-ECS\Client\GLFW\include;C:\Dev\GitRepos\Voxel-ECS\Client\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Dev\GitRepos\Voxel-ECS\Client\GLEW\bin\Release\x64;C:\Dev\GitRepos\Voxel-ECS\Client\freetype;C:\Dev\GitRepos\Voxel-ECS\Client\GLEW\lib\Release\x64;C:\Dev\GitRepos\Voxel-ECS\Client\GLFW\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetyped.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Dev\GitRepos\Voxel-ECS\Client\flecs-4.1.5\include;C:\Dev\GitRepos\Voxel-ECS\Client\src;C:\Dev\GitRepos\Voxel-ECS\Client\freetype\freetype-2.14.3\include;C:\Dev\GitRepos\Voxel-ECS\Client\glm;C:\Dev\GitRepos\Voxel-ECS\Client\GLFW\include;C:\Dev\GitRepos\Voxel-ECS\Client\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Dev\GitRepos\Voxel-ECS\Client\GLEW\bin\Release\x64;C:\Dev\GitRepos\Voxel-ECS\Client\freetype;C:\Dev\GitRepos\Voxel-ECS\Client\GLEW\lib\Release\x64;C:\Dev\GitRepos\Voxel-ECS\Client\GLFW\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetyped.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\game\bullet.cpp" />
+    <ClCompile Include="src\game\firespread.cpp" />
+    <ClCompile Include="src\game\firetrap.cpp" />
+    <ClCompile Include="src\game\jumper.cpp" />
+    <ClCompile Include="src\game\load.cpp" />
+    <ClCompile Include="src\game\game_manager.cpp" />
+    <ClCompile Include="src\game\runtime\flecs_impl.cpp" />
+    <ClCompile Include="src\game\runtime\flecs_runtime.cpp" />
+    <ClCompile Include="src\game\runtime\scene_mirror.cpp" />
+    <ClCompile Include="src\game\runtime\scene_state.cpp" />
+    <ClCompile Include="src\game\map_controller.cpp" />
+    <ClCompile Include="src\game\platform.cpp" />
+    <ClCompile Include="src\game\player_controller.cpp" />
+    <ClCompile Include="src\game\player_instance.cpp" />
+    <ClCompile Include="src\game\scene_manifest.cpp" />
+    <ClCompile Include="src\game\smoke.cpp" />
+    <ClCompile Include="src\game\turret.cpp" />
+    <ClCompile Include="flecs-4.1.5\distr\flecs.c" />
+    <ClCompile Include="src\config.cpp" />
+    <ClCompile Include="src\data\asset.cpp" />
+    <ClCompile Include="src\data\handle.cpp" />
+    <ClCompile Include="src\data\manager.cpp" />
+    <ClCompile Include="src\data\model.cpp" />
+    <ClCompile Include="src\data\qb_parser.cpp" />
+    <ClCompile Include="src\data\data-shader.cpp" />
+    <ClCompile Include="src\data\text.cpp" />
+    <ClCompile Include="src\ecs\behaviour.cpp" />
+    <ClCompile Include="src\ecs\coordinator.cpp" />
+    <ClCompile Include="src\ecs\transform.cpp" />
+    <ClCompile Include="src\entry.cpp" />
+    <ClCompile Include="src\gl\camera.cpp" />
+    <ClCompile Include="src\gl\debug.cpp" />
+    <ClCompile Include="src\gl\image_ui.cpp" />
+    <ClCompile Include="src\gl\index_buffer.cpp" />
+    <ClCompile Include="src\gl\light.cpp" />
+    <ClCompile Include="src\gl\matrix.cpp" />
+    <ClCompile Include="src\gl\palette.cpp" />
+    <ClCompile Include="src\gl\renderable.cpp" />
+    <ClCompile Include="src\gl\renderer.cpp" />
+    <ClCompile Include="src\gl\shader.cpp" />
+    <ClCompile Include="src\gl\text_ui.cpp" />
+    <ClCompile Include="src\gl\vertex_array.cpp" />
+    <ClCompile Include="src\gl\vertex_buffer.cpp" />
+    <ClCompile Include="src\input\keyboard.cpp" />
+    <ClCompile Include="src\input\mouse.cpp" />
+    <ClCompile Include="src\input\window.cpp" />
+    <ClCompile Include="src\memory\pool.cpp" />
+    <ClCompile Include="src\memory\std_stream_buffer.cpp" />
+    <ClCompile Include="src\memory\stream.cpp" />
+    <ClCompile Include="src\memory\string_stream_buffer.cpp" />
+    <ClCompile Include="src\memory\text_stream.cpp" />
+    <ClCompile Include="src\physics\collider.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="flecs-4.1.5\include\flecs.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\alerts.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\app.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\component.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\c_types.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\delegate.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\entity.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\entity_component_tuple.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\entity_view.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\field.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\flecs.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\impl\field.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\impl\iter.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\impl\world.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\iter.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\lifecycle_traits.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\log.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\builder_i.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\app\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\app\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\component\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\id\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\id\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\cursor.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\opaque.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\module\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\builder_i.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\builder_i.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\builder_i.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\rest\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\rest\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\script\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\script\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\script\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\stats\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\stats\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\builder_i.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\builder_i.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\units\decl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\units\impl.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\pair.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\ref.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\table.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\type.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\array.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\enum.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\function_traits.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\iterable.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\node_builder.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\signature.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\string.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\stringstream.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\utils.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\world.hpp" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\deprecated.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\doc.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\flecs_c.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\flecs_cpp.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\http.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\json.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\log.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\meta.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\meta_c.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\metrics.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\module.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\os_api_impl.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\pipeline.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\rest.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\script.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\script_math.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\stats.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\system.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\timer.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\addons\units.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\bake_config.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\allocator.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\bitset.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\block_allocator.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\hashmap.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\map.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\sparse.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\stack_allocator.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\strbuf.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\vec.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\os_api.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\private\addons.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_defines.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_flags.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_internals.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_support.h" />
+    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_types.h" />
+    <ClInclude Include="glew\include\GL\eglew.h" />
+    <ClInclude Include="glew\include\GL\glew.h" />
+    <ClInclude Include="glew\include\GL\glxew.h" />
+    <ClInclude Include="glew\include\GL\wglew.h" />
+    <ClInclude Include="glfw\include\GLFW\glfw3.h" />
+    <ClInclude Include="src\game\bullet.hpp" />
+    <ClInclude Include="src\game\firespread.hpp" />
+    <ClInclude Include="src\game\firetrap.hpp" />
+    <ClInclude Include="src\game\jumper.hpp" />
+    <ClInclude Include="src\game\game_manager.hpp" />
+    <ClInclude Include="src\game\map_controller.hpp" />
+    <ClInclude Include="src\game\PerlinNoise.hpp" />
+    <ClInclude Include="src\game\platform.hpp" />
+    <ClInclude Include="src\game\player_controller.hpp" />
+    <ClInclude Include="src\game\player_instance.hpp" />
+    <ClInclude Include="src\game\runtime\flecs_runtime.hpp" />
+    <ClInclude Include="src\game\smoke.hpp" />
+    <ClInclude Include="src\game\turret.hpp" />
+    <ClInclude Include="src\config.hpp" />
+    <ClInclude Include="src\data\asset.hpp" />
+    <ClInclude Include="src\data\handle.hpp" />
+    <ClInclude Include="src\data\manager.hpp" />
+    <ClInclude Include="src\data\model.hpp" />
+    <ClInclude Include="src\data\qb_parser.hpp" />
+    <ClInclude Include="src\data\data-shader.hpp" />
+    <ClInclude Include="src\data\text.hpp" />
+    <ClInclude Include="src\ecs\behaviour.hpp" />
+    <ClInclude Include="src\ecs\coordinator.hpp" />
+    <ClInclude Include="src\ecs\entity_manager.hpp" />
+    <ClInclude Include="src\ecs\transform.hpp" />
+    <ClInclude Include="src\event.hpp" />
+    <ClInclude Include="src\gl\camera.hpp" />
+    <ClInclude Include="src\gl\debug.hpp" />
+    <ClInclude Include="src\gl\image_ui.hpp" />
+    <ClInclude Include="src\gl\index_buffer.hpp" />
+    <ClInclude Include="src\gl\light.hpp" />
+    <ClInclude Include="src\gl\matrix.hpp" />
+    <ClInclude Include="src\gl\palette.hpp" />
+    <ClInclude Include="src\gl\renderable.hpp" />
+    <ClInclude Include="src\gl\renderer.hpp" />
+    <ClInclude Include="src\gl\shader.hpp" />
+    <ClInclude Include="src\gl\stb_image.h" />
+    <ClInclude Include="src\gl\text_ui.hpp" />
+    <ClInclude Include="src\gl\usage.hpp" />
+    <ClInclude Include="src\gl\vertex_array.hpp" />
+    <ClInclude Include="src\gl\vertex_buffer.hpp" />
+    <ClInclude Include="src\input\keyboard.hpp" />
+    <ClInclude Include="src\input\mouse.hpp" />
+    <ClInclude Include="src\input\window.hpp" />
+    <ClInclude Include="src\memory\endianness.hpp" />
+    <ClInclude Include="src\memory\pool.hpp" />
+    <ClInclude Include="src\memory\std_stream_buffer.hpp" />
+    <ClInclude Include="src\memory\stream.hpp" />
+    <ClInclude Include="src\memory\stream_buffer.hpp" />
+    <ClInclude Include="src\memory\string_stream_buffer.hpp" />
+    <ClInclude Include="src\memory\text_stream.hpp" />
+    <ClInclude Include="src\physics\aabb.hpp" />
+    <ClInclude Include="src\physics\collider.hpp" />
+    <ClInclude Include="src\physics\manifold.hpp" />
+    <ClInclude Include="src\physics\sphere.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\scene\scenes.json" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\entity_view.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\app\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\component\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\entity_builder.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\entity_view.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\entity_view.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\entity_builder.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\entity_view.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\id\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity_builder.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity_view.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\iterable.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\query.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\world.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\component.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\entity_builder.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\untyped_component.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\world.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\untyped_component.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\module\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\script\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\mixin.inl" />
+    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\system_mixin.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

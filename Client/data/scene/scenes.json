@@ -1,0 +1,22 @@
+{
+  "entryScene": "main",
+  "scenes": {
+    "main": "scene.main",
+    "player": "scene.player",
+    "entry": "scene.entry",
+    "exit": "scene.exit",
+    "tutorial": "scene.tutorial",
+    "firetrap": "scene.firetrap",
+    "end_message": "scene.end_message",
+    "platform_8": "scene.platform.8",
+    "turret": "scene.turret",
+    "smoke": "scene.smoke",
+    "bullet": "scene.bullet",
+    "base_8_32": "scene.base.8.32",
+    "base_32": "scene.base.32",
+    "platform_8_32": "scene.platform.8.32",
+    "wall_8_32": "scene.wall.8.32",
+    "grass_1_16": "scene.grass.1.16",
+    "firespread": "scene.firespread"
+  }
+}

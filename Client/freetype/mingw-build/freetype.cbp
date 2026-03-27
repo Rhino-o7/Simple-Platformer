@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="freetype"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\builds\;CMake Files\builds\cmake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="freetype">
+				<Option output="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/libfreetype.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DFT2_BUILD_LIBRARY"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add option="-D_CRT_NONSTDC_NO_WARNINGS"/>
+					<Add directory="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/include"/>
+					<Add directory="C:/Users/r2osb/Downloads/freetype-2.14.3/include"/>
+					<Add directory="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/include/freetype/config"/>
+					<Add directory="C:/Program Files/CodeBlocks/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include"/>
+					<Add directory="C:/Program Files/CodeBlocks/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../include"/>
+					<Add directory="C:/Program Files/CodeBlocks/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed"/>
+					<Add directory="C:/Program Files/CodeBlocks/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 freetype"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="freetype/fast">
+				<Option output="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/libfreetype.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DFT2_BUILD_LIBRARY"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add option="-D_CRT_NONSTDC_NO_WARNINGS"/>
+					<Add directory="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/include"/>
+					<Add directory="C:/Users/r2osb/Downloads/freetype-2.14.3/include"/>
+					<Add directory="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/include/freetype/config"/>
+					<Add directory="C:/Program Files/CodeBlocks/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include"/>
+					<Add directory="C:/Program Files/CodeBlocks/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../include"/>
+					<Add directory="C:/Program Files/CodeBlocks/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed"/>
+					<Add directory="C:/Program Files/CodeBlocks/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 freetype/fast"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 package"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package_source">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 package_source"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/CODEBL~1/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/builds/windows/ftdebug.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/builds/windows/ftsystem.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/config/ftconfig.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/config/ftheader.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/config/ftmodule.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/config/ftoption.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/config/ftstdlib.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/config/integer-types.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/config/mac-support.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/config/public-macros.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/freetype.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftadvanc.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftbbox.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftbdf.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftbitmap.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftbzip2.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftcache.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftchapters.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftcid.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftcolor.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftdriver.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/fterrdef.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/fterrors.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftfntfmt.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftgasp.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftglyph.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftgxval.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftgzip.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftimage.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftincrem.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftlcdfil.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftlist.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftlogging.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftlzw.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftmac.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftmm.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftmodapi.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftmoderr.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftotval.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftoutln.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftparams.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftpfr.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftrender.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftsizes.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftsnames.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftstroke.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftsynth.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftsystem.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/fttrigon.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/fttypes.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ftwinfnt.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/autohint.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/cffotypes.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/cfftypes.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/compiler-macros.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftcalc.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftdebug.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftdrv.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftgloadr.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/fthash.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftmemory.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftmmtypes.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftobjs.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftpsprop.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftrfork.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftserv.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftstream.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/fttrace.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/ftvalid.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/psaux.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/pshints.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/sfnt.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/svginterface.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/t1types.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/tttypes.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/internal/wofftypes.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/otsvg.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/t1tables.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/ttnameid.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/tttables.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/freetype/tttags.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/include/ft2build.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/autofit/autofit.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftbase.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftbase.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftbbox.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftbdf.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftbitmap.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftcid.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftfstype.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftgasp.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftglyph.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftgxval.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftinit.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftmm.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftotval.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftpatent.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftpfr.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftstroke.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftsynth.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/fttype1.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftver.rc">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/base/ftwinfnt.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/bdf/bdf.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/bdf/bdf.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/bzip2/ftbzip2.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/cache/ftcache.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/cff/cff.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/cid/type1cid.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/gzip/ftgzip.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/lzw/ftlzw.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/pcf/pcf.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/pcf/pcf.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/pfr/pfr.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/psaux/psaux.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/pshinter/pshinter.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/psnames/psnames.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/raster/raster.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/sdf/sdf.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/sfnt/sfnt.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/smooth/smooth.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/svg/svg.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/truetype/truetype.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/type1/type1.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/type42/type42.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/winfonts/winfnt.c">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/src/winfonts/winfnt.h">
+			<Option target="freetype"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="C:/Users/r2osb/Downloads/freetype-2.14.3/builds/cmake/FindBrotliDec.cmake">
+			<Option virtualFolder="CMake Files\builds\cmake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

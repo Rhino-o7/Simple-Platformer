@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Dev\GitRepos\Voxel-ECS\Client\freetype\msvc-build\CMakeFiles\abd7e9f316e0c0e612a40679d039eff1\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{139F49D5-E245-3780-BB46-D6E69BE26DDC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

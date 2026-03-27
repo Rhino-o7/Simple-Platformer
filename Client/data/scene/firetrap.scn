@@ -1,0 +1,21 @@
+# Firetrap
+1
+
+$Root
+4
+"Transform"
+$Null			# Parent
+1.0 1.0 1.0 	# Position
+0.3 0.3 0.3 	# Scale
+0.0 -0.0 -0.0 0.0 # Rotation
+"Collider" "Static" "AABB"
+-4.0 -4.0 -4.0 # Min
++4.0 +4.0 +4.0 # Max
+"Renderable" "Model" "model.firetrap"
+"Behaviour" "Firetrap"
+"scene.smoke" "scene.firespread"
+5.0
+2.0
+1.0
+0.0 0.0 0.0
+0.0

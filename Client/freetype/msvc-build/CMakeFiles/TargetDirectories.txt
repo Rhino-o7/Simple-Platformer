@@ -1,0 +1,5 @@
+C:/Dev/GitRepos/Voxel-ECS/Client/freetype/msvc-build/CMakeFiles/freetype.dir
+C:/Dev/GitRepos/Voxel-ECS/Client/freetype/msvc-build/CMakeFiles/PACKAGE.dir
+C:/Dev/GitRepos/Voxel-ECS/Client/freetype/msvc-build/CMakeFiles/INSTALL.dir
+C:/Dev/GitRepos/Voxel-ECS/Client/freetype/msvc-build/CMakeFiles/ALL_BUILD.dir
+C:/Dev/GitRepos/Voxel-ECS/Client/freetype/msvc-build/CMakeFiles/ZERO_CHECK.dir

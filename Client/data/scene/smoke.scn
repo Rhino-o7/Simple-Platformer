@@ -1,0 +1,14 @@
+# Smoke
+1
+
+$Root
+3
+"Transform"
+$Null			# Parent
+0.0 0.0 0.0 	# Position
+0.1 0.1 0.1 	# Scale
+0.0 0.0 0.0 1.0 # Rotation
+"Renderable" "Model" "model.smoke"
+"Behaviour" "Smoke"
+0.0 0.0 0.0    # Center
+14.0           # Speed

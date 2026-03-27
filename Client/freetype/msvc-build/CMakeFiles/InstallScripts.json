@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Dev/GitRepos/Voxel-ECS/Client/freetype/msvc-build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
