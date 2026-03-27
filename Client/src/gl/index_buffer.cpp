@@ -99,3 +99,6 @@ void IndexBuffer::bind() const {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 }
 
+
+
+

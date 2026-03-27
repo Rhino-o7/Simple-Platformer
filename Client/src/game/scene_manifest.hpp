@@ -16,3 +16,6 @@ namespace game {
         static bool parse(const std::string& json, SceneManifest& out_manifest);
     };
 }
+
+
+

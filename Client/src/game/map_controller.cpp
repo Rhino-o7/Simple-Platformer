@@ -16,6 +16,14 @@
 #include <random>
 #include <iostream>
 
+namespace {
+    template<typename T>
+    T* get_behaviour(vpg::ecs::Entity e) {
+        auto b = vpg::ecs::get_component<vpg::ecs::Behaviour>(e);
+        return b != nullptr ? dynamic_cast<T*>(b->get()) : nullptr;
+    }
+}
+
 bool MapController::Info::serialize(memory::Stream& stream) const {
     stream.write_ref(this->player);
     stream.write_ref(this->kill_area);
@@ -76,40 +84,64 @@ MapController::MapController(vpg::ecs::Entity entity, const Info& info) {
     this->entry = Manager::instance(info.entry);
     this->exit = Manager::instance(info.exit);
 
-    auto collider = ecs::Coordinator::get_component<physics::Collider>(info.kill_area);
-    collider->on_collision.add_listener(std::bind(
-        &MapController::on_kill_area_collision,
-        this,
-        std::placeholders::_1
-    ));
+    auto collider = ecs::get_component<physics::Collider>(info.kill_area);
+    if (collider != nullptr) {
+        collider->on_collision.add_listener(std::bind(
+            &MapController::on_kill_area_collision,
+            this,
+            std::placeholders::_1
+        ));
+    }
 
-    collider = ecs::Coordinator::get_component<physics::Collider>(this->exit);
-    collider->on_collision.add_listener(std::bind(
-        &MapController::on_exit_area_collision,
-        this,
-        std::placeholders::_1
-    ));
+    collider = ecs::get_component<physics::Collider>(this->exit);
+    if (collider != nullptr) {
+        collider->on_collision.add_listener(std::bind(
+            &MapController::on_exit_area_collision,
+            this,
+            std::placeholders::_1
+        ));
+    }
 
-    this->player = (PlayerInstance*)ecs::Coordinator::get_component<ecs::Behaviour>(info.player)->get();
+    this->player = get_behaviour<PlayerInstance>(info.player);
 
     this->level_num = 0;
+    this->pending_respawn = false;
+    this->pending_next_level = false;
     this->gen_level();
 }
 
 MapController::~MapController() {
-    ecs::Coordinator::destroy_entity(this->entry);
+    ecs::destroy_entity(this->entry);
 }
 
 void MapController::on_kill_area_collision(const physics::Manifold& manifold) {
-    // Respawn
-    this->player->controller->respawn(this->player->spawn_position);
+    (void)manifold;
+    this->pending_respawn = true;
 }
 
 void MapController::on_exit_area_collision(const physics::Manifold& manifold) {
-    // Respawn
-    this->level_num += 1;
-    this->gen_level();
-    this->player->controller->respawn(this->player->spawn_position);
+    (void)manifold;
+    this->pending_next_level = true;
+}
+
+void MapController::update(float dt) {
+    (void)dt;
+
+    if (this->pending_next_level) {
+        this->pending_next_level = false;
+        this->level_num += 1;
+        this->gen_level();
+        this->pending_respawn = true;
+    }
+
+    if (!this->pending_respawn) {
+        return;
+    }
+
+    this->pending_respawn = false;
+    if (this->player != nullptr && this->player->controller != nullptr) {
+        this->player->controller->respawn(this->player->spawn_position);
+    }
 }
 
 void MapController::gen_level() {
@@ -125,26 +157,32 @@ void MapController::gen_level() {
     const siv::PerlinNoise::seed_type seed = distrib(gen);
     siv::PerlinNoise perlin{ seed };
     std::cout << "Starting to make the level \n";
+    if (this->player == nullptr || this->player->controller == nullptr) {
+        return;
+    }
     this->player->controller->seed = seed;
 
-    auto exit = ecs::Coordinator::get_component<ecs::Transform>(this->exit);
+    auto exit = ecs::get_component<ecs::Transform>(this->exit);
+    if (exit == nullptr) {
+        return;
+    }
 
     if (this->level_num == 0) {
         auto e = Manager::instance(this->tutorial);
-        auto tutorial = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto tutorial = ecs::get_component<ecs::Transform>(e);
         tutorial->set_position(glm::vec3(-60.0f, 25.0f, -50.0f));
         tutorial->set_rotation(glm::quat(1.0f, 0.0f, 1.0f, 0.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->grass_16);
-        auto grass_16 = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto grass_16 = ecs::get_component<ecs::Transform>(e);
         grass_16->set_rotation(glm::angleAxis(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f)));
         grass_16->set_position(glm::vec3(0.0f, 0.0f, -50.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->firetrap);
-        auto fit = (Firetrap*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-        auto fitT = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto fit = get_behaviour<Firetrap>(e);
+        auto fitT = ecs::get_component<ecs::Transform>(e);
         fitT->set_position(glm::vec3(0.0f, 0.0f, -85.0f));
         this->level.push_back(e);
 
@@ -156,7 +194,7 @@ void MapController::gen_level() {
     }
     else if (this->level_num == 1) {
         auto e = Manager::instance(this->platform_8);
-        auto platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        auto platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(25.0f, 0.0f, 0.0f);
         platform->to = glm::vec3(-150.0f, 0.0f, 0.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, -40.0f));
@@ -164,25 +202,25 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->grass_16);
-        auto grass_16 = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto grass_16 = ecs::get_component<ecs::Transform>(e);
         grass_16->set_position(glm::vec3(-150.0f, 0.0f, -80.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->firetrap);
-        auto fit = (Firetrap*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-        auto fitT = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto fit = get_behaviour<Firetrap>(e);
+        auto fitT = ecs::get_component<ecs::Transform>(e);
         fitT->set_position(glm::vec3(0.0f, 0.0f, -70.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(-95.0f, 0.0f, 0.0f);
         platform->to = glm::vec3(-150.0f, 0.0f, 0.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, -120.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->to = glm::vec3(0.0f, 0.0f, 0.0f);
         platform->from = glm::vec3(-55.0f, 0.0f, 0.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, -120.0f));
@@ -196,27 +234,27 @@ void MapController::gen_level() {
     }
     else if (this->level_num == 2) {
         auto e = Manager::instance(this->platform_8);
-        auto platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        auto platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(0.0f, 0.0f, -130.0f);
         platform->to = glm::vec3(0.0f, 0.0f, -30.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, 0.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->grass_16);
-        auto grass_16 = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto grass_16 = ecs::get_component<ecs::Transform>(e);
         grass_16->set_position(glm::vec3(0.0f, 0.0f, -160.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(0.0f, -20.0f, 0.0f);
         platform->to = glm::vec3(0.0f, 100.0f, 0.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, -190.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->turret);
-        auto turret = (Turret*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-        auto transform = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto turret = get_behaviour<Turret>(e);
+        auto transform = ecs::get_component<ecs::Transform>(e);
         turret->delay = 0.5f;
         turret->speed = 100.0f;
         transform->set_position(glm::vec3(-40.0f, 10.0f, -60.0f));
@@ -224,8 +262,8 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->turret);
-        turret = (Turret*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-        transform = ecs::Coordinator::get_component<ecs::Transform>(e);
+        turret = get_behaviour<Turret>(e);
+        transform = ecs::get_component<ecs::Transform>(e);
         turret->delay = 0.5f;
         turret->speed = 100.0f;
         transform->set_position(glm::vec3(40.0f, 10.0f, -100.0f));
@@ -240,21 +278,21 @@ void MapController::gen_level() {
     }
     else if (this->level_num == 3) {
         auto e = Manager::instance(this->platform_8_32);
-        auto platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        auto platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(0.0f, 0.0f, -120.0f);
         platform->to = glm::vec3(0.0f, 0.0f, -60.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, 0.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8_32);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(0.0f, 0.0f, -210.0f);
         platform->to = glm::vec3(0.0f, 0.0f, -270.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, 0.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->wall_8_32);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(-60.0f, 0.0f, 0.0f);
         platform->to = glm::vec3(60.0f, 0.0f, 0.0f);
         platform->speed *= 2.0f;
@@ -262,7 +300,7 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->wall_8_32);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(60.0f, 0.0f, 0.0f);
         platform->to = glm::vec3(-60.0f, 0.0f, 0.0f);
         platform->speed *= 2.0f;
@@ -270,12 +308,12 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->grass_16);
-        auto grass_16 = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto grass_16 = ecs::get_component<ecs::Transform>(e);
         grass_16->set_position(glm::vec3(0.0f, 0.0f, -330.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(0.0f, -5.0f, 0.0f);
         platform->to = glm::vec3(0.0f, 5.0f, 0.0f);
         platform->speed *= 5.0f;
@@ -283,21 +321,21 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->grass_16);
-        grass_16 = ecs::Coordinator::get_component<ecs::Transform>(e);
+        grass_16 = ecs::get_component<ecs::Transform>(e);
         grass_16->set_rotation(glm::angleAxis(glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f)));
         grass_16->set_position(glm::vec3(0.0f, 40.0f, -390.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8_32);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(0.0f, 40.0f, -450.0f);
         platform->to = glm::vec3(0.0f, 40.0f, -600.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, 0.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->turret);
-        auto turret = (Turret*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-        auto transform = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto turret = get_behaviour<Turret>(e);
+        auto transform = ecs::get_component<ecs::Transform>(e);
         turret->delay = 0.5f;
         turret->speed = 100.0f;
         transform->set_position(glm::vec3(-40.0f, 46.0f, -460.0f));
@@ -305,8 +343,8 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->turret);
-        turret = (Turret*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-        transform = ecs::Coordinator::get_component<ecs::Transform>(e);
+        turret = get_behaviour<Turret>(e);
+        transform = ecs::get_component<ecs::Transform>(e);
         turret->delay = 0.5f;
         turret->speed = 100.0f;
         transform->set_position(glm::vec3(40.0f, 46.0f, -525.0f));
@@ -314,8 +352,8 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->turret);
-        turret = (Turret*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-        transform = ecs::Coordinator::get_component<ecs::Transform>(e);
+        turret = get_behaviour<Turret>(e);
+        transform = ecs::get_component<ecs::Transform>(e);
         turret->delay = 0.5f;
         turret->speed = 100.0f;
         transform->set_position(glm::vec3(-40.0f, 46.0f, -590.0f));
@@ -330,7 +368,7 @@ void MapController::gen_level() {
     }
     else if (this->level_num == 4) {
         auto e = Manager::instance(this->platform_8);
-        auto platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        auto platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(0.0f, 60.0f, -90.0f);
         platform->to = glm::vec3(0.0f, 0.0f, -30.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -338,12 +376,12 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->grass_16);
-        auto grass_16 = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto grass_16 = ecs::get_component<ecs::Transform>(e);
         grass_16->set_position(glm::vec3(0.0f, 50.0f, -130.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(0.0f, 50.0f, -160.0f);
         platform->to = glm::vec3(0.0f, 110.0f, -220.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -351,14 +389,14 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->grass_16);
-        grass_16 = ecs::Coordinator::get_component<ecs::Transform>(e);
+        grass_16 = ecs::get_component<ecs::Transform>(e);
         grass_16->set_rotation(glm::angleAxis(glm::pi<float>() / 2.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
         grass_16->set_position(glm::vec3(0.0f, 100.0f, -260.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->turret);
-        auto turret = (Turret*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-        auto transform = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto turret = get_behaviour<Turret>(e);
+        auto transform = ecs::get_component<ecs::Transform>(e);
         turret->delay = 3.0f;
         turret->speed = 80.0f;
         transform->set_position(glm::vec3(40.0f, 110.0f, -260.0f));
@@ -366,19 +404,19 @@ void MapController::gen_level() {
         this->level.push_back(e);
 
         e = Manager::instance(this->base_32);
-        auto base_32 = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto base_32 = ecs::get_component<ecs::Transform>(e);
         base_32->set_position(glm::vec3(-300.0f, 50.0f, -260.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(-300.0f, 50.0f, -310.0f);
         platform->to = glm::vec3(-300.0f, 50.0f, -370.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, 0.0f));
         this->level.push_back(e);
 
         e = Manager::instance(this->platform_8);
-        platform = (Platform*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+        platform = get_behaviour<Platform>(e);
         platform->from = glm::vec3(-300.0f, 50.0f, -445.0f);
         platform->to = glm::vec3(-300.0f, 50.0f, -385.0f);
         platform->set_center(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -389,9 +427,9 @@ void MapController::gen_level() {
         player->controller->SetDistance(-480.0f);
         player->controller->level = 5;
     }
-    else if (level_num = 5) {
+    else if (level_num == 5) {
         auto e = Manager::instance(this->end_message);
-        auto end_msg = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto end_msg = ecs::get_component<ecs::Transform>(e);
         end_msg->set_position(glm::vec3(0.0f, 25.0f, -75.0f));
         end_msg->set_rotation(glm::quat(-20.0f, 0.0f, 1.0f, 0.0f));
         this->level.push_back(e);
@@ -405,6 +443,9 @@ void MapController::gen_level() {
     this->player->controller->respawn(this->player->spawn_position);
     std::cout << "\n End loading level \n";
 }
+
+
+
 
 
 

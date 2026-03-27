@@ -149,7 +149,6 @@
     <ClCompile Include="src\game\game_manager.cpp" />
     <ClCompile Include="src\game\runtime\flecs_impl.cpp" />
     <ClCompile Include="src\game\runtime\flecs_runtime.cpp" />
-    <ClCompile Include="src\game\runtime\scene_mirror.cpp" />
     <ClCompile Include="src\game\runtime\scene_state.cpp" />
     <ClCompile Include="src\game\map_controller.cpp" />
     <ClCompile Include="src\game\platform.cpp" />
@@ -168,7 +167,7 @@
     <ClCompile Include="src\data\data-shader.cpp" />
     <ClCompile Include="src\data\text.cpp" />
     <ClCompile Include="src\ecs\behaviour.cpp" />
-    <ClCompile Include="src\ecs\coordinator.cpp" />
+    <ClCompile Include="src\ecs\entity.cpp" />
     <ClCompile Include="src\ecs\transform.cpp" />
     <ClCompile Include="src\entry.cpp" />
     <ClCompile Include="src\gl\camera.cpp" />
@@ -347,8 +346,7 @@
     <ClInclude Include="src\data\data-shader.hpp" />
     <ClInclude Include="src\data\text.hpp" />
     <ClInclude Include="src\ecs\behaviour.hpp" />
-    <ClInclude Include="src\ecs\coordinator.hpp" />
-    <ClInclude Include="src\ecs\entity_manager.hpp" />
+    <ClInclude Include="src\ecs\entity.hpp" />
     <ClInclude Include="src\ecs\transform.hpp" />
     <ClInclude Include="src\event.hpp" />
     <ClInclude Include="src\gl\camera.hpp" />
@@ -417,6 +415,7 @@
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\mixin.inl" />
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\mixin.inl" />
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\system_mixin.inl" />
+    <None Include="vpg.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

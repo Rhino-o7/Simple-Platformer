@@ -408,3 +408,6 @@ char vpg::memory::TextStream::get_char() {
     return c;
 }
 
+
+
+

@@ -19,7 +19,7 @@ Bullet::Bullet(vpg::ecs::Entity entity, const Info& info) {
 }
 
 void Bullet::update(float dt) {
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
     switch (this->mode) {
     case Mode::Straight:
         this->velocity = transform->get_forward() * this->speed;
@@ -33,6 +33,9 @@ void Bullet::update(float dt) {
         break;
     }
 }
+
+
+
 
 
 

@@ -1,7 +1,7 @@
 #include <gl/renderer.hpp>
 #include <gl/debug.hpp>
 #include <config.hpp>
-#include <game/runtime/scene_mirror.hpp>
+#include <ecs/transform.hpp>
 #include "text_ui.hpp"
 #include "shader.hpp"
 #include "camera.hpp"
@@ -96,24 +96,19 @@ vpg::gl::Renderer::~Renderer() {
 void vpg::gl::Renderer::render(float dt) {
     // Get camera
 #pragma region Rendering
-    game::runtime::RuntimeCameraSnapshot camera_snapshot = {};
-    game::runtime::RuntimeTransformSnapshot camera_transform = {};
+    const vpg::gl::Camera* camera_snapshot = nullptr;
+    const vpg::ecs::Transform* camera_transform = nullptr;
     auto found_camera = false;
-    this->ecs_world->each<const game::runtime::RuntimeEntityRef>(
-        [&found_camera, &camera_snapshot, &camera_transform](flecs::entity e, const game::runtime::RuntimeEntityRef&) {
-            if (!e.has<game::runtime::RuntimeCameraTag>() ||
-                !e.has<game::runtime::RuntimeCameraSnapshot>() ||
-                !e.has<game::runtime::RuntimeTransformSnapshot>()) {
+    auto camera_query = this->ecs_world->query<const vpg::ecs::Transform, const vpg::gl::Camera>();
+    camera_query.each(
+        [&found_camera, &camera_snapshot, &camera_transform](const vpg::ecs::Transform& t, const vpg::gl::Camera& c) {
+            if (found_camera) {
                 return;
             }
 
-            auto c = e.get<game::runtime::RuntimeCameraSnapshot>();
-            auto t = e.get<game::runtime::RuntimeTransformSnapshot>();
-            if (!found_camera) {
-                camera_snapshot = c;
-                camera_transform = t;
-                found_camera = true;
-            }
+            camera_snapshot = &c;
+            camera_transform = &t;
+            found_camera = true;
         }
     );
 
@@ -122,34 +117,36 @@ void vpg::gl::Renderer::render(float dt) {
     }
 
     auto camera_proj = glm::perspective(
-        glm::radians(camera_snapshot.fov),
+        glm::radians(camera_snapshot->get_fov()),
         (float)this->size.x / (float)this->size.y,
-        camera_snapshot.z_near,
-        camera_snapshot.z_far
+        camera_snapshot->get_z_near(),
+        camera_snapshot->get_z_far()
     );
-    auto camera_view = glm::inverse(camera_transform.global);
-    this->par_x = camera_transform.global_position.x;
-    this->par_y = camera_transform.global_position.y;
-    this->par_z = camera_transform.global_position.z;
+    auto camera_transform_mut = const_cast<vpg::ecs::Transform*>(camera_transform);
+    auto camera_view = glm::inverse(camera_transform_mut->get_global());
+    this->par_x = camera_transform_mut->get_global_position().x;
+    this->par_y = camera_transform_mut->get_global_position().y;
+    this->par_z = camera_transform_mut->get_global_position().z;
     //RenderText("Hello World", camera.cam_x, camera.cam_y, camera.cam_z, 2.0f, glm::vec3(1, 0, 1));
 
     // Update lights UBO
     glBindBuffer(GL_UNIFORM_BUFFER, this->lights_ubo);
     auto lights = (LightData*)glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
     int light_index = 0;
-    auto draw_light = [&](const game::runtime::RuntimeLightSnapshot& light, const game::runtime::RuntimeTransformSnapshot& transform) {
+    auto draw_light = [&](const vpg::gl::Light& light, const vpg::ecs::Transform& transform) {
+        auto transform_mut = const_cast<vpg::ecs::Transform&>(transform);
 
-        switch ((Light::Type)light.type) {
+        switch (light.type) {
         case Light::Type::Directional:
             lights[light_index].ambient = glm::vec4(light.ambient, 1.0f);
             lights[light_index].diffuse = glm::vec4(light.diffuse, 1.0f);
-            lights[light_index].direction = camera_view * glm::vec4(transform.global_rotation * glm::vec3(0.0f, 0.0f, 1.0f), 0.0f);
+            lights[light_index].direction = camera_view * glm::vec4(transform_mut.get_global_rotation() * glm::vec3(0.0f, 0.0f, 1.0f), 0.0f);
             break;
         case Light::Type::Point:
             if (this->debug_lights) {
-                gl::Debug::draw_sphere(transform.global_position, 1.0f, lights[light_index].diffuse);
+                gl::Debug::draw_sphere(transform_mut.get_global_position(), 1.0f, lights[light_index].diffuse);
             }
-            lights[light_index].position = camera_view * glm::vec4(transform.global_position, 1.0f);
+            lights[light_index].position = camera_view * glm::vec4(transform_mut.get_global_position(), 1.0f);
             lights[light_index].direction.w = 1.0f;
             lights[light_index].constant = light.constant;
             lights[light_index].linear = light.linear;
@@ -162,17 +159,13 @@ void vpg::gl::Renderer::render(float dt) {
         light_index += 1;
     };
 
-    this->ecs_world->each<const game::runtime::RuntimeEntityRef>(
-        [&](flecs::entity e, const game::runtime::RuntimeEntityRef&) {
-            if (light_index >= LIGHT_COUNT ||
-                !e.has<game::runtime::RuntimeLightTag>() ||
-                !e.has<game::runtime::RuntimeLightSnapshot>() ||
-                !e.has<game::runtime::RuntimeTransformSnapshot>()) {
+    auto light_query = this->ecs_world->query<const vpg::ecs::Transform, const vpg::gl::Light>();
+    light_query.each(
+        [&](const vpg::ecs::Transform& transform, const vpg::gl::Light& light) {
+            if (light_index >= LIGHT_COUNT) {
                 return;
             }
 
-            auto light = e.get<game::runtime::RuntimeLightSnapshot>();
-            auto transform = e.get<game::runtime::RuntimeTransformSnapshot>();
             draw_light(light, transform);
         }
     );
@@ -208,14 +201,17 @@ void vpg::gl::Renderer::render(float dt) {
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, &camera_view[0][0]);
     glUniformMatrix4fv(proj_loc, 1, GL_FALSE, &camera_proj[0][0]);
 
-    auto draw_renderable = [&](const game::runtime::RuntimeRenderableSnapshot& renderable,
-        const game::runtime::RuntimeTransformSnapshot& transform) {
+    auto draw_renderable = [&](const vpg::gl::Renderable& renderable,
+        const vpg::ecs::Transform& transform) {
 
-        glUniformMatrix4fv(model_loc, 1, GL_FALSE, &transform.global[0][0]);
+        auto transform_mut = const_cast<vpg::ecs::Transform&>(transform);
 
-        switch ((Renderable::Type)renderable.type) {
+        auto model_matrix = transform_mut.get_global();
+        glUniformMatrix4fv(model_loc, 1, GL_FALSE, &model_matrix[0][0]);
+
+        switch (renderable.type) {
         case Renderable::Type::Model:
-            if (renderable.model != nullptr) {
+            if (renderable.model.get_asset() != nullptr) {
                 renderable.model->get_palette().bind(0);
                 renderable.model->get_vertex_array().bind();
                 renderable.model->get_index_buffer().bind();
@@ -225,16 +221,9 @@ void vpg::gl::Renderer::render(float dt) {
         }
     };
 
-    this->ecs_world->each<const game::runtime::RuntimeEntityRef>(
-        [&](flecs::entity e, const game::runtime::RuntimeEntityRef&) {
-            if (!e.has<game::runtime::RuntimeRenderableTag>() ||
-                !e.has<game::runtime::RuntimeRenderableSnapshot>() ||
-                !e.has<game::runtime::RuntimeTransformSnapshot>()) {
-                return;
-            }
-
-            auto renderable = e.get<game::runtime::RuntimeRenderableSnapshot>();
-            auto transform = e.get<game::runtime::RuntimeTransformSnapshot>();
+    auto renderable_query = this->ecs_world->query<const vpg::ecs::Transform, const vpg::gl::Renderable>();
+    renderable_query.each(
+        [&](const vpg::ecs::Transform& transform, const vpg::gl::Renderable& renderable) {
             draw_renderable(renderable, transform);
         }
     );
@@ -301,7 +290,7 @@ void vpg::gl::Renderer::render(float dt) {
     glUniform1i(lighting_shader.get_uniform_location("ssao_tex"), 3);
     glUniformMatrix4fv(lighting_shader.get_uniform_location("proj"), 1, GL_FALSE, &camera_proj[0][0]);
     glUniformMatrix4fv(lighting_shader.get_uniform_location("view"), 1, GL_FALSE, &camera_view[0][0]);
-    glUniform1f(lighting_shader.get_uniform_location("z_far"), camera_snapshot.z_far);
+    glUniform1f(lighting_shader.get_uniform_location("z_far"), camera_snapshot->get_z_far());
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, this->lights_ubo, 0, sizeof(Light) * LIGHT_COUNT);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -315,18 +304,18 @@ void vpg::gl::Renderer::render(float dt) {
     }
 #pragma endregion
     // Text UI on top of first scene
-    this->text_ui.render("Health: " + std::to_string(camera_snapshot.player_health), 10.0f, (float)this->size.y - 50.0f, .75,
+    this->text_ui.render("Health: " + std::to_string(camera_snapshot->player_health), 10.0f, (float)this->size.y - 50.0f, .75,
         glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
-    this->text_ui.render("Wind Speed: " + std::to_string(camera_snapshot.player_wind), 10.0f, (float)this->size.y - 80.0f, .75,
+    this->text_ui.render("Wind Speed: " + std::to_string(camera_snapshot->player_wind), 10.0f, (float)this->size.y - 80.0f, .75,
         glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
-    this->text_ui.render("Time Left: " + std::to_string(camera_snapshot.seconds), 10.0f, (float)this->size.y - 110.0f, .75,
+    this->text_ui.render("Time Left: " + std::to_string(camera_snapshot->seconds), 10.0f, (float)this->size.y - 110.0f, .75,
         glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
-    this->text_ui.render("Level " + std::to_string(camera_snapshot.level), 10.0f, (float)this->size.y - 140.0f, .75,
+    this->text_ui.render("Level " + std::to_string(camera_snapshot->level), 10.0f, (float)this->size.y - 140.0f, .75,
         glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
 
     this->image_ui.DrawImage(this->black_id, 1, 
         -1, 1, 0.5);
-    this->image_ui.DrawImage(this->health_tex_id, camera_snapshot.player_health / static_cast<float>(3), 
+    this->image_ui.DrawImage(this->health_tex_id, camera_snapshot->player_health / static_cast<float>(3), 
         -1, 1, 0.5);
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -493,5 +482,8 @@ void vpg::gl::Renderer::destroy_ssao() {
     glDeleteFramebuffers(1, &this->ssao_blur.fbo);
     glDeleteTextures(1, &this->ssao_blur.color_buffer);
 }
+
+
+
 
 

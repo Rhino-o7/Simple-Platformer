@@ -39,7 +39,7 @@ Firetrap::Firetrap(vpg::ecs::Entity entity, const Info& info) {
     this->entity = entity;
     this->smoke = info.smoke;
     this->firespread = info.firespread;
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
 
     this->recoil = info.recoil;
     this->delay = info.delay;
@@ -60,7 +60,7 @@ Firetrap::Firetrap(vpg::ecs::Entity entity, const Info& info) {
 
 void Firetrap::set_center(const glm::vec3& center) {
     //this->center = center;
-    //auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    //auto transform = ecs::get_component<ecs::Transform>(this->entity);
     //transform->set_position(this->center);
 }
 
@@ -95,16 +95,26 @@ void Firetrap::MakeSmoke()
     }
 
     std::cout << "   doing smoke\n";
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
+    if (transform == nullptr) {
+        return;
+    }
     auto position = transform->get_position();
 
     siv::PerlinNoise perlin{ 300 };
     double noiseF = perlin.octave2D_01((transform->get_position().x * 0.01) / 2, (transform->get_position().z * 0.01) / 2, 4);
     
     auto e = Manager::instance(this->smoke);
-    
-    auto smoke = (Smoke*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-    auto newTransform = ecs::Coordinator::get_component<ecs::Transform>(e);
+    if (e == ecs::NullEntity) {
+        return;
+    }
+
+    auto behaviour = ecs::get_component<ecs::Behaviour>(e);
+    auto newTransform = ecs::get_component<ecs::Transform>(e);
+    auto smoke = behaviour != nullptr ? dynamic_cast<Smoke*>(behaviour->get()) : nullptr;
+    if (smoke == nullptr || newTransform == nullptr) {
+        return;
+    }
     smoke->windSpeed = noiseF;
     newTransform->set_position(position);
 
@@ -123,12 +133,23 @@ void Firetrap::spread_fire() {
     }
 
     std::cout << "\nspreadfire\n";
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
+    if (transform == nullptr) {
+        return;
+    }
     auto position = transform->get_position();
     auto e = Manager::instance(this->firespread);
-    auto ft = (Firespread*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
-    auto tr = ecs::Coordinator::get_component<ecs::Transform>(e);
-    //auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    if (e == ecs::NullEntity) {
+        return;
+    }
+
+    auto behaviour = ecs::get_component<ecs::Behaviour>(e);
+    auto ft = behaviour != nullptr ? dynamic_cast<Firespread*>(behaviour->get()) : nullptr;
+    auto tr = ecs::get_component<ecs::Transform>(e);
+    if (ft == nullptr || tr == nullptr) {
+        return;
+    }
+    //auto transform = ecs::get_component<ecs::Transform>(this->entity);
     int space = rand() % 8;
     switch (space) {
     case 0: 
@@ -164,6 +185,9 @@ void Firetrap::spread_fire() {
     }
     std::cout << "\nNextspread: " << this->next_fire << "\n";
 }
+
+
+
 
 
 

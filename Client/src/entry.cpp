@@ -5,7 +5,6 @@
 #include <data/data-shader.hpp>
 #include <data/model.hpp>
 
-#include <ecs/coordinator.hpp>
 #include <ecs/transform.hpp>
 #include <ecs/behaviour.hpp>
 #include <physics/collider.hpp>
@@ -22,7 +21,6 @@
 #include <gl/debug.hpp>
 
 #include <game/runtime/flecs_runtime.hpp>
-#include <game/runtime/scene_mirror.hpp>
 #include <game/runtime/scene_state.hpp>
 #include <game/game_manager.hpp>
 
@@ -84,7 +82,6 @@ void APIENTRY gl_debug_output(
 
     std::cout << std::endl;
 }
-
  int main(int argc, char** argv) {
     Config::load(argc, argv);
 
@@ -119,32 +116,14 @@ void APIENTRY gl_debug_output(
         return 1;
     }
 
-    ecs::Coordinator::init();
-    ecs::Coordinator::register_component<ecs::Transform>();
-    ecs::Coordinator::register_component<ecs::Behaviour>();
-    ecs::Coordinator::register_component<physics::Collider>();
-    ecs::Coordinator::register_component<gl::Camera>();
-    ecs::Coordinator::register_component<gl::Light>();
-    ecs::Coordinator::register_component<gl::Renderable>();
-
     game::runtime::SceneState scene;
 
     game::runtime::FlecsRuntime runtime;
-    game::runtime::SceneMirror scene_mirror;
 
     auto renderer = new gl::Renderer(&runtime.get_world());
 
-    runtime.set_physics_update([&scene_mirror, &runtime]() {
-        scene_mirror.update_colliders(runtime.get_world());
-    });
-    runtime.set_behaviour_update([&scene_mirror](float dt) {
-        scene_mirror.update_behaviours(dt);
-    });
     runtime.set_scene_loader([](const std::string& scene_name) {
         return Manager::load_scene(scene_name);
-    });
-    runtime.set_scene_sync([&scene_mirror, &scene](flecs::world& world) {
-        scene_mirror.sync(world, &scene);
     });
 
     if (!load_game(&scene)) {
@@ -185,7 +164,6 @@ void APIENTRY gl_debug_output(
     gl::Debug::terminate();
 
     scene.clean();
-    ecs::Coordinator::terminate();
 
     // Unload assets
     data::Manager::terminate();
@@ -194,5 +172,8 @@ void APIENTRY gl_debug_output(
 
     return 0;
 }
+
+
+
 
 

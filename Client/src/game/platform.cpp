@@ -29,19 +29,28 @@ bool Platform::Info::deserialize(memory::Stream& stream) {
 
 Platform::Platform(vpg::ecs::Entity entity, const Info& info) {
     this->entity = entity;
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
-
-    this->center = transform->get_position();
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
 
     this->from = info.from;
     this->to = info.to;
     this->speed = info.speed;
 
+    if (transform == nullptr) {
+        this->center = glm::vec3(0.0f);
+        this->velocity = glm::vec3(0.0f);
+        return;
+    }
+
+    this->center = transform->get_position();
+
     transform->set_position(this->center + this->from);
 }
 
 void Platform::update(float dt) {
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
+    if (transform == nullptr) {
+        return;
+    }
 
     if (glm::distance(this->center + this->to, transform->get_position()) < this->speed * dt) {
         std::swap(this->to, this->from);
@@ -52,9 +61,14 @@ void Platform::update(float dt) {
 
 void Platform::set_center(const glm::vec3& center) {
     this->center = center;
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
-    transform->set_position(this->center + this->from);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
+    if (transform != nullptr) {
+        transform->set_position(this->center + this->from);
+    }
 }
+
+
+
 
 
 

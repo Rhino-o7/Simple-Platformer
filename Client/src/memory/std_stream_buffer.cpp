@@ -14,3 +14,6 @@ size_t STDStreamBuffer::read(void* data, size_t size) {
     return fread(data, 1, size, this->file);
 }
 
+
+
+

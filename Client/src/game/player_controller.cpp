@@ -19,6 +19,7 @@
 #include <iostream>
 #include <random>
 #include <cmath>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -71,29 +72,32 @@ PlayerController::PlayerController(ecs::Entity entity, const Info& info) {
     std::ifstream file("src/game/my_simulation.csv");
     std::string line;
 
-    std::getline(file, line);
     dataSize = 0;
-    while (std::getline(file, line))
-    {
-        std::istringstream iss(line);
-        std::string word;
+    speedValue = 0;
+    if (file.is_open()) {
+        std::getline(file, line);
+        while (std::getline(file, line))
+        {
+            std::istringstream iss(line);
+            std::string word;
 
-        std::getline(iss, word, ',');
-        winddata_use.x = std::stoi(word);
-        std::getline(iss, word, ',');
-        winddata_use.y = std::stoi(word);
-        std::getline(iss, word, ',');
-        winddata_use.z = std::stoi(word);
+            std::getline(iss, word, ',');
+            winddata_use.x = std::stoi(word);
+            std::getline(iss, word, ',');
+            winddata_use.y = std::stoi(word);
+            std::getline(iss, word, ',');
+            winddata_use.z = std::stoi(word);
 
-        std::getline(iss, word, ',');
-        winddata_use.time = std::stoi(word);
-        std::getline(iss, word, ',');
-        winddata_use.entity_id = std::stoi(word);
-        std::getline(iss, word, ',');
-        winddata_use.speed = std::stoi(word);
+            std::getline(iss, word, ',');
+            winddata_use.time = std::stoi(word);
+            std::getline(iss, word, ',');
+            winddata_use.entity_id = std::stoi(word);
+            std::getline(iss, word, ',');
+            winddata_use.speed = std::stoi(word);
 
-        data.push_back(winddata_use);
-        dataSize++;
+            data.push_back(winddata_use);
+            dataSize++;
+        }
     }
 #pragma endregion //struct seed
 
@@ -136,28 +140,31 @@ PlayerController::PlayerController(ecs::Entity entity, const Info& info) {
     this->sensitivity = (float)Config::get_float("camera.sensitivity", 0.001);
     Mouse::set_mode(Mouse::Mode::Disabled);
 
-    auto collider = ecs::Coordinator::get_component<physics::Collider>(this->feet_collider);
+    auto collider = ecs::get_component<physics::Collider>(this->feet_collider);
     collider->on_collision.add_listener(std::bind(
         &PlayerController::on_feet_collision,
         this,
         std::placeholders::_1
     ));
 
-    collider = ecs::Coordinator::get_component<physics::Collider>(this->entity);
+    collider = ecs::get_component<physics::Collider>(this->entity);
     collider->on_collision.add_listener(std::bind(
         &PlayerController::on_body_collision,
         this,
         std::placeholders::_1
     ));
 
-    this->torso_pos = ecs::Coordinator::get_component<ecs::Transform>(this->torso)->get_position();
-    this->lfoot_pos = ecs::Coordinator::get_component<ecs::Transform>(this->lfoot)->get_position();
-    this->rfoot_pos = ecs::Coordinator::get_component<ecs::Transform>(this->rfoot)->get_position();
-    this->lhand_pos = ecs::Coordinator::get_component<ecs::Transform>(this->lhand)->get_position();
-    this->rhand_pos = ecs::Coordinator::get_component<ecs::Transform>(this->rhand)->get_position();
+    this->torso_pos = ecs::get_component<ecs::Transform>(this->torso)->get_position();
+    this->lfoot_pos = ecs::get_component<ecs::Transform>(this->lfoot)->get_position();
+    this->rfoot_pos = ecs::get_component<ecs::Transform>(this->rfoot)->get_position();
+    this->lhand_pos = ecs::get_component<ecs::Transform>(this->lhand)->get_position();
+    this->rhand_pos = ecs::get_component<ecs::Transform>(this->rhand)->get_position();
 
 #pragma endregion
     this->health = 3;
+    this->timer = (int)Config::get_integer("game.timer", 120);
+    this->level = 1;
+    this->old = steady_clock::now();
     invuln = 0;
 }
 
@@ -170,13 +177,13 @@ PlayerController::~PlayerController() {
 void PlayerController::update(float dt) {
     this->respawned = false;
 
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
-    auto camera = ecs::Coordinator::get_component<ecs::Transform>(this->camera);
-    auto torso = ecs::Coordinator::get_component<ecs::Transform>(this->torso);
-    auto lfoot = ecs::Coordinator::get_component<ecs::Transform>(this->lfoot);
-    auto rfoot = ecs::Coordinator::get_component<ecs::Transform>(this->rfoot);
-    auto lhand = ecs::Coordinator::get_component<ecs::Transform>(this->lhand);
-    auto rhand = ecs::Coordinator::get_component<ecs::Transform>(this->rhand);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
+    auto camera = ecs::get_component<ecs::Transform>(this->camera);
+    auto torso = ecs::get_component<ecs::Transform>(this->torso);
+    auto lfoot = ecs::get_component<ecs::Transform>(this->lfoot);
+    auto rfoot = ecs::get_component<ecs::Transform>(this->rfoot);
+    auto lhand = ecs::get_component<ecs::Transform>(this->lhand);
+    auto rhand = ecs::get_component<ecs::Transform>(this->rhand);
 
     //windData
     double noise = perlin.octave2D_01((transform->get_position().x * 0.01) / 2, (transform->get_position().z * 0.01)/2, 4);
@@ -279,8 +286,15 @@ void PlayerController::update(float dt) {
         air_jumps = 2;
     }
 
-    this->windPower = glm::vec3(data[speedValue].speed * .001, 0, 0);
-    if (this->on_floor);
+    if (!data.empty()) {
+        speedValue = std::clamp(speedValue, 0, (int)data.size() - 1);
+        this->windPower = glm::vec3(data[(size_t)speedValue].speed * .001f, 0.0f, 0.0f);
+    }
+    else {
+        this->windPower = glm::vec3(0.0f);
+    }
+
+    if (this->on_floor)
     {
         transform->translate(windPower);
     }
@@ -292,14 +306,14 @@ void PlayerController::update(float dt) {
     auto pos_xx = transform->get_position().x;
 
     // Sync health with camera component for UI display
-    auto cam = ecs::Coordinator::get_component<vpg::gl::Camera>(this->camera);
+    auto cam = ecs::get_component<vpg::gl::Camera>(this->camera);
     if (cam != nullptr) {
         cam->player_health = this->health;
         cam->player_wind = this->windPower.x * 400;
         //auto seconds = std::chrono::seconds(1s);
         auto dur = steady_clock::now() - old;
         auto sec = duration_cast<seconds>(dur).count();
-        cam->seconds = timer - sec;
+        cam->seconds = std::max(0, timer - (int)sec);
         if (timer < sec)
         {
             respawn(glm::vec3(0, 0, 0));
@@ -314,7 +328,7 @@ void PlayerController::on_feet_collision(const physics::Manifold& manifold) {
         this->floor_velocity = { 0.0f, 0.0f, 0.0f };
 
         bool was_floor = true;
-        auto behaviour = ecs::Coordinator::get_component<ecs::Behaviour>(manifold.a == this->entity ? manifold.b : manifold.a);
+        auto behaviour = ecs::get_component<ecs::Behaviour>(manifold.a == this->entity ? manifold.b : manifold.a);
         if (behaviour != nullptr) {
             auto platform = dynamic_cast<Platform*>(behaviour->get());
             if (platform != nullptr) {
@@ -364,7 +378,7 @@ void PlayerController::on_feet_collision(const physics::Manifold& manifold) {
 
         }
 
-        auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+        auto transform = ecs::get_component<ecs::Transform>(this->entity);
         transform->translate(manifold.normal * manifold.penetration);
 
         if (was_floor) {
@@ -375,10 +389,10 @@ void PlayerController::on_feet_collision(const physics::Manifold& manifold) {
 }
 
 void PlayerController::on_body_collision(const physics::Manifold& manifold) {
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
     transform->translate(manifold.normal * manifold.penetration);
 
-    auto behaviour = ecs::Coordinator::get_component<ecs::Behaviour>(manifold.a == this->entity ? manifold.b : manifold.a);
+    auto behaviour = ecs::get_component<ecs::Behaviour>(manifold.a == this->entity ? manifold.b : manifold.a);
     bool was_bullet = false;
     if (behaviour != nullptr) {
         auto bullet = dynamic_cast<Bullet*>(behaviour->get());
@@ -389,7 +403,7 @@ void PlayerController::on_body_collision(const physics::Manifold& manifold) {
         }
 
         auto firetrap = dynamic_cast<Firetrap*>(behaviour->get());
-        auto firespread = dynamic_cast<Firetrap*>(behaviour->get());
+        auto firespread = dynamic_cast<Firespread*>(behaviour->get());
         if (firetrap != nullptr) {
             this->velocity.y = firetrap->recoil;
         }
@@ -426,7 +440,7 @@ void PlayerController::respawn(glm::vec3 position) {
     std::cout << "\n \n current wind speed SHOULD be " << windSpeed;
     std::cout << "          disFromExit is " << disFromExit;
 
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
     transform->set_position(position);
     entryPosition_x = position.x;
     entryPosition_z = position.z;
@@ -440,7 +454,7 @@ void PlayerController::respawn(glm::vec3 position) {
 
     old = steady_clock::now(); //initial time
 
-    auto cam = ecs::Coordinator::get_component<vpg::gl::Camera>(this->camera);
+    auto cam = ecs::get_component<vpg::gl::Camera>(this->camera);
     if (cam != nullptr) {
         cam->player_health = this->health;
         cam->player_wind = (this->windPower.x - 2) * 800;
@@ -463,6 +477,9 @@ void PlayerController::SetDistance(float dis)
 {
     disFromExit = dis;
 }
+
+
+
 
 
 

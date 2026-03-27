@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <filesystem>
+#include <vector>
 
 using namespace vpg;
 
@@ -41,19 +43,61 @@ bool Config::load(int argc, char** argv) {
 				return false;
 			}
 
-			auto key = std::string(argv[i][0], j - 1);
+          auto key = std::string(argv[i]).substr(0, size_t(j - 1));
 			auto value = std::string(&argv[i][j]);
 
 			Config::variables.insert(std::make_pair(key, value));
 		}
 	}
 
-	// Parse variables from config file
+ // Parse variables from config file
 	std::ifstream fs(config_path);
 	if (!fs.is_open()) {
-		std::cerr << "vpg::Config::load() failed:" << std::endl;
+		namespace fsys = std::filesystem;
+		std::vector<fsys::path> candidates;
+
+		try {
+			auto cwd = fsys::current_path();
+			for (auto p = cwd; !p.empty(); p = p.parent_path()) {
+				candidates.emplace_back(p / "vpg.cfg");
+				auto parent = p.parent_path();
+				if (parent == p) {
+					break;
+				}
+			}
+		}
+		catch (...) {
+		}
+
+		if (argc > 0 && argv != nullptr && argv[0] != nullptr) {
+			try {
+				auto exe_dir = fsys::path(argv[0]).parent_path();
+				for (auto p = exe_dir; !p.empty(); p = p.parent_path()) {
+					candidates.emplace_back(p / "vpg.cfg");
+					auto parent = p.parent_path();
+					if (parent == p) {
+						break;
+					}
+				}
+			}
+			catch (...) {
+			}
+		}
+
+		for (const auto& candidate : candidates) {
+			fs = std::ifstream(candidate);
+			if (fs.is_open()) {
+				config_path = candidate.string();
+				break;
+			}
+		}
+	}
+
+	if (!fs.is_open()) {
+		std::cerr << "vpg::Config::load() warning:" << std::endl;
 		std::cerr << "Couldn't open configuration file on path \"" << config_path << "\"" << std::endl;
-		return false;
+		std::cerr << "Using default configuration values" << std::endl;
+		return true;
 	}
 
 	std::string line;
@@ -196,4 +240,7 @@ void Config::set_string(const std::string& key, const std::string& value) {
 	std::lock_guard guard(Config::mutex);
 	Config::variables[key] = value;
 }
+
+
+
 

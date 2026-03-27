@@ -2,7 +2,7 @@
 
 #include <set>
 
-#include <ecs/entity_manager.hpp>
+#include <ecs/entity.hpp>
 #include <memory/stream.hpp>
 
 namespace game::runtime {
@@ -15,5 +15,8 @@ namespace game::runtime {
         std::set<vpg::ecs::Entity> entities;
     };
 }
+
+
+
 
 

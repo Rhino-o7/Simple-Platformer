@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ecs/entity_manager.hpp>
+#include <ecs/entity.hpp>
 
 #include <glm/glm.hpp>
 
@@ -11,3 +11,6 @@ namespace vpg::physics {
         glm::vec3 normal;
     };
 }
+
+
+

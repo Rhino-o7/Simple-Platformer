@@ -73,3 +73,6 @@ Light::Light(ecs::Entity entity, const Info& create_info) {
     this->quadratic = create_info.quadratic;
 }
 
+
+
+

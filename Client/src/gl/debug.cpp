@@ -212,3 +212,6 @@ void Debug::add_command(const glm::mat4& transform, glm::vec4 color, unsigned in
     Debug::command_mutex.unlock();
 }
 
+
+
+

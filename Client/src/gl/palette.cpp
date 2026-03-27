@@ -72,3 +72,6 @@ Material& Palette::operator[](size_t index) {
     return this->mats[index];
 }
 
+
+
+

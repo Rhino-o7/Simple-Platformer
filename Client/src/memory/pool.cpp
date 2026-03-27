@@ -77,3 +77,6 @@ bool vpg::memory::Pool<void>::has_element(size_t index) {
     return index < this->total && this->state[index] != 0;
 }
 
+
+
+

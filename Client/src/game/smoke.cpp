@@ -29,7 +29,7 @@ bool Smoke::Info::deserialize(memory::Stream& stream) {
 
 Smoke::Smoke(vpg::ecs::Entity entity, const Info& info) {
     this->entity = entity;
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
     this->speed = 12.0f;
     this->time = info.time;
     //this->center = info.center;
@@ -39,10 +39,13 @@ Smoke::Smoke(vpg::ecs::Entity entity, const Info& info) {
 
 void Smoke::update(float dt) {
     this->time += dt;
-    auto tf = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto tf = ecs::get_component<ecs::Transform>(this->entity);
     this->velocity = tf->get_up() * this->speed;// +transform->get_right() * 15.0f; //upward speed
     tf->translate(dt * (this->velocity + (windSpeed*9, windSpeed*3, windSpeed*9)));
 }
+
+
+
 
 
 

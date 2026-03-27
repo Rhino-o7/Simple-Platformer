@@ -75,3 +75,6 @@ Collider::Collider(ecs::Entity entity, const Info& create_info) {
     this->aabb = create_info.aabb;
 }
 
+
+
+

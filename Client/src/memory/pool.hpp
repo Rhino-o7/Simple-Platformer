@@ -43,3 +43,6 @@ namespace vpg::memory {
         return (T*)((char*)this->data + index * this->element_sz);
     }
 }
+
+
+

@@ -84,3 +84,6 @@ bool Stream::failed() const {
     return this->failed_flag;
 }
 
+
+
+

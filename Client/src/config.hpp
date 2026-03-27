@@ -27,3 +27,6 @@ namespace vpg {
 		static std::map<std::string, std::string> variables;
 	};
 }
+
+
+

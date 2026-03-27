@@ -84,7 +84,7 @@ ecs::Entity Manager::instance(data::Handle<data::Text> scene) {
 
         Manager::scene->entities.insert(current);
 
-        auto transform = ecs::Coordinator::get_component<ecs::Transform>(current);
+        auto transform = ecs::get_component<ecs::Transform>(current);
         if (transform == nullptr) {
             continue;
         }
@@ -92,7 +92,7 @@ ecs::Entity Manager::instance(data::Handle<data::Text> scene) {
         auto child = transform->get_child();
         while (child != ecs::NullEntity) {
             stack.push_back(child);
-            auto child_transform = ecs::Coordinator::get_component<ecs::Transform>(child);
+            auto child_transform = ecs::get_component<ecs::Transform>(child);
             if (child_transform == nullptr) {
                 break;
             }
@@ -108,16 +108,16 @@ void Manager::destroy_instance(ecs::Entity entity) {
         Manager::scene->entities.erase(entity);
     }
 
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(entity);
+    auto transform = ecs::get_component<ecs::Transform>(entity);
     if (transform == nullptr) {
-        ecs::Coordinator::destroy_entity(entity);
+        ecs::destroy_entity(entity);
         return;
     }
 
     auto c = transform->get_child();
     while (c != ecs::NullEntity) {
         auto e = c;
-        auto transform = ecs::Coordinator::get_component<ecs::Transform>(e);
+        auto transform = ecs::get_component<ecs::Transform>(e);
         if (transform == nullptr) {
             break;
         }
@@ -126,10 +126,13 @@ void Manager::destroy_instance(ecs::Entity entity) {
         if (Manager::scene != nullptr) {
             Manager::scene->entities.erase(e);
         }
-        ecs::Coordinator::destroy_entity(e);
+        ecs::destroy_entity(e);
     }
-    ecs::Coordinator::destroy_entity(entity);
+    ecs::destroy_entity(entity);
 }
+
+
+
 
 
 

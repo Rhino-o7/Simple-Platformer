@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ecs/entity_manager.hpp>
+#include <ecs/entity.hpp>
 #include <memory/stream.hpp>
 
 #include <map>
@@ -98,4 +98,7 @@ namespace vpg::ecs {
         return std::move(ret);
     }
 }
+
+
+
 

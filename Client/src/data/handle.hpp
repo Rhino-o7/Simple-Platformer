@@ -31,3 +31,6 @@ namespace vpg::data {
         inline T* operator->() const { return (T*)this->get_asset()->get_data(); }
     };
 }
+
+
+

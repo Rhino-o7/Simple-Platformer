@@ -29,6 +29,7 @@ struct MapController : public ecs::IBehaviour {
 
     void on_kill_area_collision(const physics::Manifold& manifold);
     void on_exit_area_collision(const physics::Manifold& manifold);
+    virtual void update(float dt) override;
     void gen_level();
 
     data::Handle<data::Text> tutorial, end_message;
@@ -40,5 +41,10 @@ struct MapController : public ecs::IBehaviour {
     std::vector<ecs::Entity> level;
     PlayerInstance* player;
     int level_num;
+    bool pending_respawn;
+    bool pending_next_level;
 };
+
+
+
 

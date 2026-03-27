@@ -75,19 +75,7 @@
     <ClCompile Include="src\ecs\behaviour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ecs\component_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ecs\coordinator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ecs\entity_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ecs\scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ecs\system_manager.cpp">
+    <ClCompile Include="src\ecs\entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ecs\transform.cpp">
@@ -165,6 +153,21 @@
     <ClCompile Include="src\entry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\runtime\flecs_impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\runtime\flecs_runtime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\runtime\scene_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\scene_manifest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="flecs-4.1.5\distr\flecs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\bullet.hpp">
@@ -227,10 +230,7 @@
     <ClInclude Include="src\ecs\behaviour.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ecs\coordinator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ecs\entity_manager.hpp">
+    <ClInclude Include="src\ecs\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ecs\transform.hpp">
@@ -719,6 +719,9 @@
     <ClInclude Include="flecs-4.1.5\include\flecs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\game\runtime\flecs_runtime.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\entity_view.inl">
@@ -823,5 +826,9 @@
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\system_mixin.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="data\scene\scenes.json" />
   </ItemGroup>
 </Project>
+
+
+

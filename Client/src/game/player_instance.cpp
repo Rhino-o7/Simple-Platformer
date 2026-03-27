@@ -42,15 +42,29 @@ PlayerInstance::PlayerInstance(ecs::Entity entity, const Info& info) {
     this->player = Manager::instance(info.scene);
     this->spawn_position = info.position;
 
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->player);
-    transform->set_position(info.position);
-    this->controller = (PlayerController*)ecs::Coordinator::get_component<ecs::Behaviour>(this->player)->get();
-    this->controller->camera = info.camera;
+    if (this->player == ecs::NullEntity) {
+        this->controller = nullptr;
+        return;
+    }
+
+    auto transform = ecs::get_component<ecs::Transform>(this->player);
+    if (transform != nullptr) {
+        transform->set_position(info.position);
+    }
+
+    auto behaviour = ecs::get_component<ecs::Behaviour>(this->player);
+    this->controller = behaviour != nullptr ? dynamic_cast<PlayerController*>(behaviour->get()) : nullptr;
+    if (this->controller != nullptr) {
+        this->controller->camera = info.camera;
+    }
 }
 
 PlayerInstance::~PlayerInstance() {
     Manager::destroy_instance(this->player);
 }
+
+
+
 
 
 

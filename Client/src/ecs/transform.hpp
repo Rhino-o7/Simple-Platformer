@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ecs/coordinator.hpp>
+#include <ecs/entity.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -62,3 +62,6 @@ namespace vpg::ecs {
         bool dirty;
     };
 }
+
+
+

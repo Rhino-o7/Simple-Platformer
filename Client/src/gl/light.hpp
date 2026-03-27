@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ecs/entity_manager.hpp>
+#include <ecs/entity.hpp>
 #include <memory/stream.hpp>
 
 #include <glm/glm.hpp>
@@ -41,3 +41,6 @@ namespace vpg::gl {
     };
 
 }
+
+
+

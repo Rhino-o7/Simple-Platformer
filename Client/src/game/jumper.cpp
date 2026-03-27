@@ -18,3 +18,6 @@ Jumper::Jumper(vpg::ecs::Entity entity, const Info& info) {
     this->bounciness = info.bounciness;
 }
 
+
+
+

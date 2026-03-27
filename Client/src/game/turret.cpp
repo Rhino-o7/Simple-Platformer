@@ -49,18 +49,36 @@ void Turret::update(float dt) {
 }
 
 void Turret::fire() {
-    auto transform = ecs::Coordinator::get_component<ecs::Transform>(this->entity);
+    auto transform = ecs::get_component<ecs::Transform>(this->entity);
+    if (transform == nullptr) {
+        return;
+    }
 
     if (this->bullets[this->next_bullet] != ecs::NullEntity) {
-        ecs::Coordinator::destroy_entity(this->bullets[this->next_bullet]);
+        ecs::destroy_entity(this->bullets[this->next_bullet]);
     }
 
     auto e = Manager::instance(this->bullet);
-    auto bullet = ecs::Coordinator::get_component<ecs::Transform>(e);
+    if (e == ecs::NullEntity) {
+        return;
+    }
+
+    auto bullet = ecs::get_component<ecs::Transform>(e);
+    if (bullet == nullptr) {
+        return;
+    }
     bullet->set_position(transform->get_global_position());
 
     bullet->look_at(bullet->get_position() - transform->get_forward(), { 0.0f, 1.0f, 0.0f });
-    auto behaviour = (Bullet*)ecs::Coordinator::get_component<ecs::Behaviour>(e)->get();
+    auto behaviour_component = ecs::get_component<ecs::Behaviour>(e);
+    if (behaviour_component == nullptr) {
+        return;
+    }
+
+    auto behaviour = dynamic_cast<Bullet*>(behaviour_component->get());
+    if (behaviour == nullptr) {
+        return;
+    }
     behaviour->speed = this->speed;
 
     this->bullets[this->next_bullet] = e;
@@ -69,6 +87,9 @@ void Turret::fire() {
         this->next_bullet = 0;
     }
 }
+
+
+
 
 
 

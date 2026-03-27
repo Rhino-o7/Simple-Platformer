@@ -1,5 +1,5 @@
 #include <ecs/transform.hpp>
-#include <ecs/coordinator.hpp>
+#include <ecs/entity.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -66,15 +66,15 @@ void Transform::set_parent(Entity parent) {
     }
 
     if (this->parent != NullEntity) {
-        auto p_transform = Coordinator::get_component<Transform>(this->parent);
+        auto p_transform = get_component<Transform>(this->parent);
         if (p_transform != nullptr) {
-            auto c = Coordinator::get_component<Transform>(p_transform->child);
+            auto c = get_component<Transform>(p_transform->child);
             if (c == this) {
                 p_transform->child = c->next;
             }
             else {
                 for (;;) {
-                    auto n = Coordinator::get_component<Transform>(c->next);
+                    auto n = get_component<Transform>(c->next);
                     if (n == this) {
                         c->next = this->next;
                         break;
@@ -87,7 +87,7 @@ void Transform::set_parent(Entity parent) {
     this->parent = parent;
 
     if (this->parent != NullEntity) {
-        auto p_transform = Coordinator::get_component<Transform>(this->parent);
+        auto p_transform = get_component<Transform>(this->parent);
         this->next = p_transform->child;
         p_transform->child = this->entity;
     }
@@ -116,7 +116,7 @@ void Transform::set_scale(const glm::vec3& scale) {
 void Transform::look_at(const glm::vec3& point, const glm::vec3& up) {
     glm::mat4 parent_global = glm::mat4(1.0f);
     if (this->parent != NullEntity) {
-        auto parent = Coordinator::get_component<Transform>(this->parent);
+        auto parent = get_component<Transform>(this->parent);
         if (parent == nullptr) {
             this->parent = NullEntity;
         }
@@ -171,7 +171,7 @@ void Transform::update() {
         this->global_rotation = this->rotation;
     }
     else {
-        auto parent = Coordinator::get_component<Transform>(this->parent);
+        auto parent = get_component<Transform>(this->parent);
         assert(parent != nullptr);
         this->global = parent->get_global() * this->local;
         this->global_position = this->global * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -192,13 +192,16 @@ void Transform::set_dirty() {
         return;
     }
 
-    auto c = Coordinator::get_component<Transform>(this->child);
+    auto c = get_component<Transform>(this->child);
     for (;;) {
         c->set_dirty();
         if (c->next == NullEntity) {
             break;
         }
-        c = Coordinator::get_component<Transform>(c->next);
+        c = get_component<Transform>(c->next);
     }
 }
+
+
+
 

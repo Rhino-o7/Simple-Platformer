@@ -1,4 +1,4 @@
-ï»¿#include <GL/glew.h>
+#include <GL/glew.h>
 #include "image_ui.hpp"
 
 #include <iostream>
@@ -90,13 +90,13 @@ bool ImageUI::init()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    // aPos      â€“ location 0, 3 floats
+    // aPos      – location 0, 3 floats
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // aColor    â€“ location 1, 3 floats
+    // aColor    – location 1, 3 floats
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    // aTexCoord â€“ location 2, 2 floats
+    // aTexCoord – location 2, 2 floats
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
@@ -106,7 +106,7 @@ bool ImageUI::init()
 }
 
 // ---------------------------------------------------------------------------
-// load_texture â€“ upload one image and return its integer ID.
+// load_texture – upload one image and return its integer ID.
 // ---------------------------------------------------------------------------
 int ImageUI::load_texture(int width, int height, unsigned char* data)
 {
@@ -143,7 +143,7 @@ void ImageUI::DrawImage(int texture_id, float crop_percent, float x1, float y1, 
     crop_percent = std::max(0.0f, std::min(1.0f, crop_percent));
 
     // The quad spans the full screen width at the bottom; its right edge and
-    // the UV's right edge both shrink by crop_percent â†’ crop, not stretch.
+    // the UV's right edge both shrink by crop_percent ? crop, not stretch.
     const float BAR_HEIGHT_NDC = 0.07f;
 
     const float x_lft = x1; 
@@ -160,7 +160,7 @@ void ImageUI::DrawImage(int texture_id, float crop_percent, float x1, float y1, 
     const float u_lft = 0.0f;
     const float u_rgt = crop_percent;
 
-    // 4 vertices Ã— 8 floats  (x y z  r g b  u v)
+    // 4 vertices × 8 floats  (x y z  r g b  u v)
     float vertices[] = {
         x_rgt, y_top, 0.0f,  1.0f, 1.0f, 1.0f,  u_rgt, 1.0f,  // top-right
         x_rgt, y_bot, 0.0f,  1.0f, 1.0f, 1.0f,  u_rgt, 0.0f,  // bottom-right
@@ -210,3 +210,5 @@ void ImageUI::shutdown()
     if (VAO) { glDeleteVertexArrays(1, &VAO);      VAO = 0; }
     if (shaderProgram) { glDeleteProgram(shaderProgram);     shaderProgram = 0; }
 }
+
+

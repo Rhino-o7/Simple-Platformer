@@ -22,3 +22,6 @@ size_t StringStreamBuffer::read(void* data, size_t size) {
     return read;
 }
 
+
+
+
