@@ -44,6 +44,18 @@ $Map
 1				# Number of components
 "Behaviour" "MapController"
 $Player $KillArea
-"scene.entry" "scene.exit" "scene.tutorial" "scene.end_message"
-"scene.platform.8" "scene.platform.8.32" "scene.wall.8.32" "scene.turret"
-"scene.base.32" "scene.base.8.32" "scene.firetrap" "scene.grass.1.16" "scene.smoke" "scene.firespread"
+14
+"entry" "scene.entry"
+"exit" "scene.exit"
+"tutorial" "scene.tutorial"
+"end_message" "scene.end_message"
+"platform_8" "scene.platform.8"
+"platform_8_32" "scene.platform.8.32"
+"wall_8_32" "scene.wall.8.32"
+"turret" "scene.turret"
+"base_32" "scene.base.32"
+"base_8_32" "scene.base.8.32"
+"firetrap" "scene.firetrap"
+"grass_16" "scene.grass.1.16"
+"smoke" "scene.smoke"
+"firespread" "scene.firespread"

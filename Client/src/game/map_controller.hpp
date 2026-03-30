@@ -8,6 +8,7 @@
 #include "player_controller.hpp"
 
 #include <vector>
+#include <unordered_map>
 
 using namespace vpg;
 
@@ -16,9 +17,7 @@ struct MapController : public ecs::IBehaviour {
 
     struct Info : public IBehaviour::Info {
         ecs::Entity player, kill_area;
-        data::Handle<data::Text> entry, exit, tutorial, end_message;
-        data::Handle<data::Text> platform_8, platform_8_32, wall_8_32, turret;
-        data::Handle<data::Text> base_32, base_8_32, firetrap, grass_16, smoke, firespread;
+        std::unordered_map<std::string, data::Handle<data::Text>> scenes;
 
         virtual bool serialize(memory::Stream& stream) const override;
         virtual bool deserialize(memory::Stream& stream) override;
@@ -32,9 +31,11 @@ struct MapController : public ecs::IBehaviour {
     virtual void update(float dt) override;
     void gen_level();
 
-    data::Handle<data::Text> tutorial, end_message;
-    data::Handle<data::Text> platform_8, platform_8_32, wall_8_32, turret;
-    data::Handle<data::Text> base_32, base_8_32, firetrap, grass_16, smoke, firespread;
+    static const char* get_level_name(int level_num);
+    data::Handle<data::Text> get_scene(const std::string& key) const;
+    ecs::Entity spawn_scene(const std::string& key);
+
+    std::unordered_map<std::string, data::Handle<data::Text>> scenes;
 
     ecs::Entity kill_area;
     ecs::Entity entry, exit;
