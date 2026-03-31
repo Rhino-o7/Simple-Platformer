@@ -14,8 +14,8 @@ namespace {
                 return false;
             }
 
-            bool has_entry_scene = false;
-            bool has_scenes = false;
+            bool has_entry_prefab = false;
+            bool has_prefabs = false;
 
             skip_whitespace();
             if (peek() == '}') {
@@ -34,17 +34,17 @@ namespace {
                     return false;
                 }
 
-                if (key == "entryScene") {
-                    if (!parse_string(out_manifest.entry_scene)) {
+                if (key == "entryPrefab" || key == "entryScene") {
+                    if (!parse_string(out_manifest.entry_prefab)) {
                         return false;
                     }
-                    has_entry_scene = true;
+                    has_entry_prefab = true;
                 }
-                else if (key == "scenes") {
-                    if (!parse_scene_object(out_manifest)) {
+                else if (key == "prefabs" || key == "scenes") {
+                    if (!parse_prefab_object(out_manifest)) {
                         return false;
                     }
-                    has_scenes = true;
+                    has_prefabs = true;
                 }
                 else {
                     if (!skip_value()) {
@@ -62,12 +62,12 @@ namespace {
                 }
             }
 
-            if (!has_scenes || out_manifest.scenes.empty()) {
+            if (!has_prefabs || out_manifest.prefabs.empty()) {
                 return false;
             }
 
-            if (!has_entry_scene) {
-                out_manifest.entry_scene = out_manifest.scenes.begin()->first;
+            if (!has_entry_prefab) {
+                out_manifest.entry_prefab = out_manifest.prefabs.begin()->first;
             }
 
             return true;
@@ -137,7 +137,7 @@ namespace {
             return false;
         }
 
-        bool parse_scene_object(game::SceneManifest& out_manifest) {
+        bool parse_prefab_object(game::SceneManifest& out_manifest) {
             skip_whitespace();
             if (!consume('{')) {
                 return false;
@@ -149,10 +149,10 @@ namespace {
             }
 
             while (index < text.size()) {
-                std::string scene_name;
-                std::string scene_asset;
+                std::string prefab_name;
+                std::string prefab_asset;
 
-                if (!parse_string(scene_name)) {
+                if (!parse_string(prefab_name)) {
                     return false;
                 }
 
@@ -160,11 +160,11 @@ namespace {
                     return false;
                 }
 
-                if (!parse_string(scene_asset)) {
+                if (!parse_string(prefab_asset)) {
                     return false;
                 }
 
-                out_manifest.scenes[scene_name] = scene_asset;
+                out_manifest.prefabs[prefab_name] = prefab_asset;
 
                 skip_whitespace();
                 if (consume('}')) {
@@ -233,9 +233,9 @@ namespace {
     };
 }
 
-bool game::SceneManifest::try_get_asset(const std::string& scene_name, std::string& out_asset_id) const {
-    auto it = scenes.find(scene_name);
-    if (it == scenes.end()) {
+bool game::SceneManifest::try_get_asset(const std::string& prefab_name, std::string& out_asset_id) const {
+    auto it = prefabs.find(prefab_name);
+    if (it == prefabs.end()) {
         return false;
     }
 

@@ -1,0 +1,60 @@
+{
+  "format": "prefab-v1",
+  "name": "firetrap",
+  "entities": [
+    {
+      "id": "Root",
+      "components": {
+        "transform": {
+          "position": [
+            1,
+            1,
+            1
+          ],
+          "scale": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [
+            -4,
+            -4,
+            -4
+          ],
+          "max": [
+            4,
+            4,
+            4
+          ]
+        },
+        "renderable": {
+          "model": "model.firetrap"
+        },
+        "behaviour": {
+          "type": "Firetrap",
+          "smokeAsset": "prefab.smoke",
+          "firespreadAsset": "prefab.firespread",
+          "recoil": 5,
+          "delay": 2,
+          "time": 1,
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "seed": 0
+        }
+      }
+    }
+  ]
+}

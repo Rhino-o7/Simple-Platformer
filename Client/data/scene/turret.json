@@ -1,0 +1,52 @@
+{
+  "format": "prefab-v1",
+  "name": "turret",
+  "entities": [
+    {
+      "id": "Root",
+      "components": {
+        "transform": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            2,
+            2,
+            2
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [
+            -8,
+            -8,
+            -10
+          ],
+          "max": [
+            8,
+            8,
+            6
+          ]
+        },
+        "renderable": {
+          "model": "model.turret"
+        },
+        "behaviour": {
+          "type": "Turret",
+          "bulletAsset": "prefab.bullet",
+          "delay": 5,
+          "speed": 10
+        }
+      }
+    }
+  ]
+}

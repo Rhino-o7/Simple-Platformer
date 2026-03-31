@@ -1,0 +1,114 @@
+{
+  "format": "prefab-v1",
+  "name": "main",
+  "entities": [
+    {
+      "id": "WorldRoot",
+      "components": {
+        "transform": {
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1]
+        }
+      }
+    },
+    {
+      "id": "Sun",
+      "components": {
+        "transform": {
+          "parent": "WorldRoot",
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [-0.44, -0.02, -0.59, 0.67]
+        },
+        "light": {
+          "type": "Directional",
+          "ambient": [0.6, 0.6, 0.6],
+          "diffuse": [1.0, 1.0, 1.0]
+        }
+      }
+    },
+    {
+      "id": "Camera",
+      "components": {
+        "transform": {
+          "parent": "WorldRoot",
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1]
+        },
+        "camera": {
+          "fov": 70.0,
+          "zNear": 0.1,
+          "zFar": 400.0
+        }
+      }
+    },
+    {
+      "id": "Player",
+      "components": {
+        "transform": {
+          "parent": "WorldRoot",
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1]
+        },
+        "behaviour": {
+          "type": "PlayerInstance",
+          "prefabAsset": "prefab.player",
+          "position": [0.0, 10.0, 0.0],
+          "camera": "Camera"
+        }
+      }
+    },
+    {
+      "id": "KillArea",
+      "components": {
+        "transform": {
+          "parent": "WorldRoot",
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1]
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [-5000.0, -210.0, -5000.0],
+          "max": [5000.0, -200.0, 5000.0]
+        }
+      }
+    },
+    {
+      "id": "Map",
+      "components": {
+        "transform": {
+          "parent": "WorldRoot",
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1]
+        },
+        "behaviour": {
+          "type": "MapController",
+          "player": "Player",
+          "killArea": "KillArea",
+          "prefabs": {
+            "entry": "prefab.entry",
+            "exit": "prefab.exit",
+            "tutorial": "prefab.tutorial",
+            "end_message": "prefab.end_message",
+            "platform_8": "prefab.platform.8",
+            "platform_8_32": "prefab.platform.8.32",
+            "wall_8_32": "prefab.wall.8.32",
+            "turret": "prefab.turret",
+            "base_32": "prefab.base.32",
+            "base_8_32": "prefab.base.8.32",
+            "firetrap": "prefab.firetrap",
+            "grass_16": "prefab.grass.1.16",
+            "smoke": "prefab.smoke",
+            "firespread": "prefab.firespread"
+          }
+        }
+      }
+    }
+  ]
+}

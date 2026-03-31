@@ -1,0 +1,198 @@
+{
+  "format": "prefab-v1",
+  "name": "exit",
+  "entities": [
+    {
+      "id": "Root",
+      "components": {
+        "transform": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [
+            -16,
+            4,
+            -16
+          ],
+          "max": [
+            16,
+            8,
+            -8
+          ]
+        }
+      }
+    },
+    {
+      "id": "Base",
+      "components": {
+        "transform": {
+          "position": [
+            0,
+            13,
+            0
+          ],
+          "scale": [
+            2,
+            2,
+            2
+          ],
+          "rotation": [
+            0,
+            1,
+            0,
+            1
+          ],
+          "parent": "Root"
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [
+            -16,
+            -17,
+            -16
+          ],
+          "max": [
+            16,
+            -9,
+            16
+          ]
+        },
+        "renderable": {
+          "model": "model.base.end"
+        }
+      }
+    },
+    {
+      "id": "ArchCollider1",
+      "components": {
+        "transform": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "parent": "Root"
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [
+            -16,
+            4,
+            -4
+          ],
+          "max": [
+            -14,
+            28,
+            4
+          ]
+        }
+      }
+    },
+    {
+      "id": "ArchCollider2",
+      "components": {
+        "transform": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "parent": "Root"
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [
+            14,
+            4,
+            -4
+          ],
+          "max": [
+            16,
+            28,
+            4
+          ]
+        }
+      }
+    },
+    {
+      "id": "ArchCollider3",
+      "components": {
+        "transform": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "parent": "Root"
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [
+            -14,
+            28,
+            -4
+          ],
+          "max": [
+            14,
+            30,
+            4
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -7,17 +7,17 @@
       "playerTimer": 90,
       "spawns": [
         {
-          "scene": "tutorial",
+          "prefab": "tutorial",
           "position": [-60.0, 25.0, -50.0],
           "rotation": [1.0, 0.0, 1.0, 0.0]
         },
         {
-          "scene": "grass_16",
+          "prefab": "grass_16",
           "position": [0.0, 0.0, -50.0],
           "rotation": [0.0, 0.0, 1.0, 0.0]
         },
         {
-          "scene": "firetrap",
+          "prefab": "firetrap",
           "position": [0.0, 0.0, -85.0]
         }
       ]
@@ -29,7 +29,7 @@
       "playerTimer": 100,
       "spawns": [
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [25.0, 0.0, 0.0],
             "to": [-150.0, 0.0, 0.0],
@@ -38,15 +38,15 @@
           }
         },
         {
-          "scene": "grass_16",
+          "prefab": "grass_16",
           "position": [-150.0, 0.0, -80.0]
         },
         {
-          "scene": "firetrap",
+          "prefab": "firetrap",
           "position": [0.0, 0.0, -70.0]
         },
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [-95.0, 0.0, 0.0],
             "to": [-150.0, 0.0, 0.0],
@@ -54,7 +54,7 @@
           }
         },
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [-55.0, 0.0, 0.0],
             "to": [0.0, 0.0, 0.0],
@@ -70,7 +70,7 @@
       "playerTimer": 110,
       "spawns": [
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [0.0, 0.0, -130.0],
             "to": [0.0, 0.0, -30.0],
@@ -78,11 +78,11 @@
           }
         },
         {
-          "scene": "grass_16",
+          "prefab": "grass_16",
           "position": [0.0, 0.0, -160.0]
         },
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [0.0, -20.0, 0.0],
             "to": [0.0, 100.0, 0.0],
@@ -90,7 +90,7 @@
           }
         },
         {
-          "scene": "turret",
+          "prefab": "turret",
           "position": [-40.0, 10.0, -60.0],
           "lookAtDirection": [-1.0, 0.0, 0.0],
           "turret": {
@@ -99,7 +99,7 @@
           }
         },
         {
-          "scene": "turret",
+          "prefab": "turret",
           "position": [40.0, 10.0, -100.0],
           "lookAtDirection": [1.0, 0.0, 0.0],
           "turret": {
@@ -116,7 +116,7 @@
       "playerTimer": 120,
       "spawns": [
         {
-          "scene": "platform_8_32",
+          "prefab": "platform_8_32",
           "platform": {
             "from": [0.0, 0.0, -120.0],
             "to": [0.0, 0.0, -60.0],
@@ -124,7 +124,7 @@
           }
         },
         {
-          "scene": "platform_8_32",
+          "prefab": "platform_8_32",
           "platform": {
             "from": [0.0, 0.0, -210.0],
             "to": [0.0, 0.0, -270.0],
@@ -132,7 +132,7 @@
           }
         },
         {
-          "scene": "wall_8_32",
+          "prefab": "wall_8_32",
           "platform": {
             "from": [-60.0, 0.0, 0.0],
             "to": [60.0, 0.0, 0.0],
@@ -141,7 +141,7 @@
           }
         },
         {
-          "scene": "wall_8_32",
+          "prefab": "wall_8_32",
           "platform": {
             "from": [60.0, 0.0, 0.0],
             "to": [-60.0, 0.0, 0.0],
@@ -150,11 +150,11 @@
           }
         },
         {
-          "scene": "grass_16",
+          "prefab": "grass_16",
           "position": [0.0, 0.0, -330.0]
         },
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [0.0, -5.0, 0.0],
             "to": [0.0, 5.0, 0.0],
@@ -163,12 +163,12 @@
           }
         },
         {
-          "scene": "grass_16",
+          "prefab": "grass_16",
           "position": [0.0, 40.0, -390.0],
           "rotation": [0.0, 0.0, 1.0, 0.0]
         },
         {
-          "scene": "platform_8_32",
+          "prefab": "platform_8_32",
           "platform": {
             "from": [0.0, 40.0, -450.0],
             "to": [0.0, 40.0, -600.0],
@@ -176,7 +176,7 @@
           }
         },
         {
-          "scene": "turret",
+          "prefab": "turret",
           "position": [-40.0, 46.0, -460.0],
           "lookAtDirection": [-1.0, 0.0, 0.0],
           "turret": {
@@ -185,7 +185,7 @@
           }
         },
         {
-          "scene": "turret",
+          "prefab": "turret",
           "position": [40.0, 46.0, -525.0],
           "lookAtDirection": [1.0, 0.0, 0.0],
           "turret": {
@@ -194,7 +194,7 @@
           }
         },
         {
-          "scene": "turret",
+          "prefab": "turret",
           "position": [-40.0, 46.0, -590.0],
           "lookAtDirection": [-1.0, 0.0, 0.0],
           "turret": {
@@ -210,7 +210,7 @@
       "playerDistance": -480.0,
       "spawns": [
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [0.0, 60.0, -90.0],
             "to": [0.0, 0.0, -30.0],
@@ -219,11 +219,11 @@
           }
         },
         {
-          "scene": "grass_16",
+          "prefab": "grass_16",
           "position": [0.0, 50.0, -130.0]
         },
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [0.0, 50.0, -160.0],
             "to": [0.0, 110.0, -220.0],
@@ -232,12 +232,12 @@
           }
         },
         {
-          "scene": "grass_16",
+          "prefab": "grass_16",
           "position": [0.0, 100.0, -260.0],
           "rotation": [0.70710678, 0.0, 0.70710678, 0.0]
         },
         {
-          "scene": "turret",
+          "prefab": "turret",
           "position": [40.0, 110.0, -260.0],
           "lookAtDirection": [1.0, 0.0, 0.0],
           "turret": {
@@ -246,11 +246,11 @@
           }
         },
         {
-          "scene": "base_32",
+          "prefab": "base_32",
           "position": [-300.0, 50.0, -260.0]
         },
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [-300.0, 50.0, -310.0],
             "to": [-300.0, 50.0, -370.0],
@@ -258,7 +258,7 @@
           }
         },
         {
-          "scene": "platform_8",
+          "prefab": "platform_8",
           "platform": {
             "from": [-300.0, 50.0, -445.0],
             "to": [-300.0, 50.0, -385.0],
@@ -273,7 +273,7 @@
       "playerDistance": 2000000.0,
       "spawns": [
         {
-          "scene": "end_message",
+          "prefab": "end_message",
           "position": [0.0, 25.0, -75.0],
           "rotation": [-20.0, 0.0, 1.0, 0.0]
         }

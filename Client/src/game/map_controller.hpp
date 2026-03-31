@@ -17,7 +17,7 @@ struct MapController : public ecs::IBehaviour {
 
     struct Info : public IBehaviour::Info {
         ecs::Entity player, kill_area;
-        std::unordered_map<std::string, data::Handle<data::Text>> scenes;
+        std::unordered_map<std::string, data::Handle<data::Text>> prefabs;
 
         virtual bool serialize(memory::Stream& stream) const override;
         virtual bool deserialize(memory::Stream& stream) override;
@@ -32,10 +32,10 @@ struct MapController : public ecs::IBehaviour {
     void gen_level();
 
     static const char* get_level_name(int level_num);
-    data::Handle<data::Text> get_scene(const std::string& key) const;
-    ecs::Entity spawn_scene(const std::string& key);
+    data::Handle<data::Text> get_prefab(const std::string& key) const;
+    ecs::Entity spawn_prefab(const std::string& key);
 
-    std::unordered_map<std::string, data::Handle<data::Text>> scenes;
+    std::unordered_map<std::string, data::Handle<data::Text>> prefabs;
 
     ecs::Entity kill_area;
     ecs::Entity entry, exit;

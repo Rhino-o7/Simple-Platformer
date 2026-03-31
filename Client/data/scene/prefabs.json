@@ -1,0 +1,22 @@
+{
+  "entryPrefab": "main",
+  "prefabs": {
+    "main": "prefab.main",
+    "player": "prefab.player",
+    "entry": "prefab.entry",
+    "exit": "prefab.exit",
+    "tutorial": "prefab.tutorial",
+    "firetrap": "prefab.firetrap",
+    "end_message": "prefab.end_message",
+    "platform_8": "prefab.platform.8",
+    "turret": "prefab.turret",
+    "smoke": "prefab.smoke",
+    "bullet": "prefab.bullet",
+    "base_8_32": "prefab.base.8.32",
+    "base_32": "prefab.base.32",
+    "platform_8_32": "prefab.platform.8.32",
+    "wall_8_32": "prefab.wall.8.32",
+    "grass_1_16": "prefab.grass.1.16",
+    "firespread": "prefab.firespread"
+  }
+}

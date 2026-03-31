@@ -1,7 +1,6 @@
 #include "game_manager.hpp"
+#include "prefab_json.hpp"
 
-#include <memory/text_stream.hpp>
-#include <memory/string_stream_buffer.hpp>
 #include <ecs/transform.hpp>
 #include <config.hpp>
 
@@ -14,11 +13,11 @@ bool Manager::scene_manifest_loaded = false;
 
 bool Manager::load() {
     if (Manager::load_manifest_if_available()) {
-        auto start_scene = vpg::Config::get_string("game.start_scene", scene_manifest.entry_scene);
-        return Manager::load_scene(start_scene);
+        auto start_prefab = vpg::Config::get_string("game.start_prefab", scene_manifest.entry_prefab);
+        return Manager::load_scene(start_prefab);
     }
 
-    return Manager::load_scene_asset("scene.main");
+    return Manager::load_scene_asset("prefab.main");
 }
 
 bool Manager::load_scene(const std::string& scene_name) {
@@ -26,7 +25,7 @@ bool Manager::load_scene(const std::string& scene_name) {
         std::string scene_asset_id;
         if (!Manager::scene_manifest.try_get_asset(scene_name, scene_asset_id)) {
             std::cerr << "Manager::load_scene() failed:\n"
-                      << "Unknown scene '" << scene_name << "' in scene manifest\n";
+                      << "Unknown prefab '" << scene_name << "' in prefab manifest\n";
             return false;
         }
 
@@ -42,9 +41,14 @@ bool Manager::load_scene_asset(const std::string& scene_asset_id) {
         return false;
     }
 
-    auto stream_buf = memory::StringStreamBuffer(scene_asset->get_content());
-    auto stream = memory::TextStream(&stream_buf);
-    return Manager::scene->deserialize(stream);
+    if (Manager::scene == nullptr) {
+        std::cerr << "Manager::load_scene_asset() failed:\n"
+                  << "Scene state is null\n";
+        return false;
+    }
+
+    Manager::scene->clean();
+    return Manager::instance(scene_asset) != ecs::NullEntity;
 }
 
 bool Manager::load_manifest_if_available() {
@@ -52,7 +56,7 @@ bool Manager::load_manifest_if_available() {
         return true;
     }
 
-    auto manifest_id = vpg::Config::get_string("game.scene_manifest", "scene.manifest");
+    auto manifest_id = vpg::Config::get_string("game.prefab_manifest", "prefab.manifest");
     auto manifest = data::Manager::load<data::Text>(manifest_id);
     if (manifest.get_asset() == nullptr) {
         return false;
@@ -69,9 +73,13 @@ bool Manager::load_manifest_if_available() {
 }
 
 ecs::Entity Manager::instance(data::Handle<data::Text> scene) {
-    auto stream_buf = memory::StringStreamBuffer(scene->get_content());
-    auto stream = memory::TextStream(&stream_buf);
-    auto root = game::runtime::SceneState::deserialize_tree(stream);
+    std::string error;
+    auto root = game::prefab_json::instantiate(scene->get_content(), error);
+    if (root == ecs::NullEntity) {
+        std::cerr << "Manager::instance() failed:\n"
+                  << "Prefab asset '" << scene.get_asset()->get_id() << "' couldn't be instantiated from JSON:\n"
+                  << error << "\n";
+    }
     if (root == ecs::NullEntity || Manager::scene == nullptr) {
         return root;
     }

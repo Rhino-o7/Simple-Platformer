@@ -5,10 +5,10 @@
 
 namespace game {
     struct SceneManifest {
-        std::string entry_scene;
-        std::unordered_map<std::string, std::string> scenes;
+        std::string entry_prefab;
+        std::unordered_map<std::string, std::string> prefabs;
 
-        bool try_get_asset(const std::string& scene_name, std::string& out_asset_id) const;
+        bool try_get_asset(const std::string& prefab_name, std::string& out_asset_id) const;
     };
 
     class SceneManifestLoader {

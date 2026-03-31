@@ -145,8 +145,10 @@
     <ClCompile Include="src\game\firespread.cpp" />
     <ClCompile Include="src\game\firetrap.cpp" />
     <ClCompile Include="src\game\jumper.cpp" />
+    <ClCompile Include="src\game\level_layout.cpp" />
     <ClCompile Include="src\game\load.cpp" />
     <ClCompile Include="src\game\game_manager.cpp" />
+    <ClCompile Include="src\game\prefab_json.cpp" />
     <ClCompile Include="src\game\runtime\flecs_impl.cpp" />
     <ClCompile Include="src\game\runtime\flecs_runtime.cpp" />
     <ClCompile Include="src\game\runtime\scene_state.cpp" />
@@ -329,11 +331,13 @@
     <ClInclude Include="src\game\firetrap.hpp" />
     <ClInclude Include="src\game\jumper.hpp" />
     <ClInclude Include="src\game\game_manager.hpp" />
+    <ClInclude Include="src\game\level_layout.hpp" />
     <ClInclude Include="src\game\map_controller.hpp" />
     <ClInclude Include="src\game\PerlinNoise.hpp" />
     <ClInclude Include="src\game\platform.hpp" />
     <ClInclude Include="src\game\player_controller.hpp" />
     <ClInclude Include="src\game\player_instance.hpp" />
+    <ClInclude Include="src\game\prefab_json.hpp" />
     <ClInclude Include="src\game\runtime\flecs_runtime.hpp" />
     <ClInclude Include="src\game\smoke.hpp" />
     <ClInclude Include="src\game\turret.hpp" />
@@ -381,7 +385,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\level\levels.json" />
-    <None Include="data\scene\scenes.json" />
+    <None Include="data\scene\main.json" />
+    <None Include="data\scene\prefabs.json" />
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\entity_view.inl" />
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\mixin.inl" />
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\app\mixin.inl" />
@@ -416,6 +421,8 @@
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\mixin.inl" />
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\mixin.inl" />
     <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\system_mixin.inl" />
+    <None Include="tools\convert_prefab_wrappers.ps1" />
+    <None Include="tools\convert_scn_to_prefab_json.ps1" />
     <None Include="vpg.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
