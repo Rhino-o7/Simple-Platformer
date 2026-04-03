@@ -1,41 +1,19 @@
 {
-  "format": "prefab-v1",
   "name": "entry",
   "entities": [
     {
       "id": "Base",
       "components": {
         "transform": {
-          "position": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            2,
-            2,
-            2
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ]
+          "position": [0, 0, 0],
+          "scale": [2, 2, 2],
+          "rotation": [0, 0, 0, 1]
         },
         "collider": {
           "body": "Static",
           "shape": "AABB",
-          "min": [
-            -16,
-            -4,
-            -16
-          ],
-          "max": [
-            16,
-            4,
-            16
-          ]
+          "min": [-16, -4, -16],
+          "max": [16, 4, 16]
         },
         "renderable": {
           "model": "model.base.16"
@@ -46,22 +24,9 @@
       "id": "Sign",
       "components": {
         "transform": {
-          "position": [
-            -30,
-            10,
-            3
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ],
+          "position": [-30, 10, 3],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
           "parent": "Base"
         },
         "renderable": {

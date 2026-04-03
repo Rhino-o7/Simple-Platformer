@@ -1,27 +1,13 @@
 {
-  "format": "prefab-v1",
   "name": "tutorial",
   "entities": [
     {
       "id": "Root",
       "components": {
         "transform": {
-          "position": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            1,
-            1,
-            1
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ]
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1]
         },
         "renderable": {
           "model": "model.keyboard"

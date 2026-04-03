@@ -1,41 +1,19 @@
 {
-  "format": "prefab-v1",
   "name": "player",
   "entities": [
     {
       "id": "Controller",
       "components": {
         "transform": {
-          "position": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            1,
-            1,
-            1
-          ],
-          "rotation": [
-            0,
-            -1,
-            0,
-            0
-          ]
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, -1, 0, 0]
         },
         "collider": {
           "body": "Dynamic",
           "shape": "AABB",
-          "min": [
-            -2.5,
-            2.75,
-            -2.5
-          ],
-          "max": [
-            2.5,
-            12.25,
-            2.5
-          ]
+          "min": [-2.5, 2.75, -2.5],
+          "max": [2.5, 12.25, 2.5]
         }
       }
     },
@@ -43,37 +21,16 @@
       "id": "FeetCollider",
       "components": {
         "transform": {
-          "position": [
-            0,
-            0.75,
-            0.25
-          ],
-          "scale": [
-            1,
-            1,
-            1
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ],
+          "position": [0, 0.75, 0.25],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1],
           "parent": "Controller"
         },
         "collider": {
           "body": "Dynamic",
           "shape": "AABB",
-          "min": [
-            -2,
-            -0.65,
-            -2
-          ],
-          "max": [
-            2,
-            -0.5,
-            2
-          ]
+          "min": [-2, -0.65, -2],
+          "max": [2, -0.5, 2]
         }
       }
     },
@@ -81,22 +38,9 @@
       "id": "Torso",
       "components": {
         "transform": {
-          "position": [
-            0,
-            7.5,
-            0
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ],
+          "position": [0, 7.5, 0],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
           "parent": "Controller"
         },
         "renderable": {
@@ -108,22 +52,9 @@
       "id": "LFoot",
       "components": {
         "transform": {
-          "position": [
-            1.5,
-            0.75,
-            0.25
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ],
+          "position": [1.5, 0.75, 0.25],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
           "parent": "Controller"
         },
         "renderable": {
@@ -135,22 +66,9 @@
       "id": "RFoot",
       "components": {
         "transform": {
-          "position": [
-            -1.5,
-            0.75,
-            0.25
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ],
+          "position": [-1.5, 0.75, 0.25],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
           "parent": "Controller"
         },
         "renderable": {
@@ -162,22 +80,9 @@
       "id": "LHand",
       "components": {
         "transform": {
-          "position": [
-            3.5,
-            5,
-            1
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ],
+          "position": [3.5, 5, 1],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
           "parent": "Controller"
         },
         "renderable": {
@@ -189,22 +94,9 @@
       "id": "RHand",
       "components": {
         "transform": {
-          "position": [
-            -3.5,
-            5,
-            1
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ],
+          "position": [-3.5, 5, 1],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
           "parent": "Controller"
         },
         "renderable": {

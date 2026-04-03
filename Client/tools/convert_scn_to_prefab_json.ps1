@@ -181,7 +181,7 @@ foreach ($file in $files) {
         $entities += [ordered]@{ id = $entityId; components = $components }
     }
 
-    $out = [ordered]@{ format = 'prefab-v1'; name = [System.IO.Path]::GetFileNameWithoutExtension($file.Name); entities = $entities }
+    $out = [ordered]@{ name = [System.IO.Path]::GetFileNameWithoutExtension($file.Name); entities = $entities }
     $json = $out | ConvertTo-Json -Depth 16
     $outPath = [System.IO.Path]::ChangeExtension($file.FullName, '.json')
     Set-Content -Path $outPath -Value $json -Encoding utf8

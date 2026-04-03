@@ -185,7 +185,6 @@ foreach ($file in $files) {
     }
 
     $out = [ordered]@{
-        format = 'prefab-v1'
         name = $obj.name
         entities = $entities
     }

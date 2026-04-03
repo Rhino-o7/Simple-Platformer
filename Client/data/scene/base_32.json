@@ -1,41 +1,19 @@
 {
-  "format": "prefab-v1",
   "name": "base_32",
   "entities": [
     {
       "id": "Root",
       "components": {
         "transform": {
-          "position": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            2,
-            2,
-            2
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ]
+          "position": [0, 0, 0],
+          "scale": [2, 2, 2],
+          "rotation": [0, 0, 0, 1]
         },
         "collider": {
           "body": "Static",
           "shape": "AABB",
-          "min": [
-            -32,
-            -4,
-            -32
-          ],
-          "max": [
-            32,
-            4,
-            32
-          ]
+          "min": [-32, -4, -32],
+          "max": [32, 4, 32]
         },
         "renderable": {
           "model": "model.base.32"

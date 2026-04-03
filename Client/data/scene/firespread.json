@@ -1,41 +1,19 @@
 {
-  "format": "prefab-v1",
   "name": "firespread",
   "entities": [
     {
       "id": "Root",
       "components": {
         "transform": {
-          "position": [
-            1,
-            1,
-            1
-          ],
-          "scale": [
-            0.45,
-            0.45,
-            0.45
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            0
-          ]
+          "position": [1, 1, 1],
+          "scale": [0.45, 0.45, 0.45],
+          "rotation": [0, 0, 0, 0]
         },
         "collider": {
           "body": "Static",
           "shape": "AABB",
-          "min": [
-            -4,
-            -4,
-            -4
-          ],
-          "max": [
-            4,
-            4,
-            4
-          ]
+          "min": [-4, -4, -4],
+          "max": [4, 4, 4]
         },
         "renderable": {
           "model": "model.firespread"
@@ -46,11 +24,7 @@
           "recoil": 5,
           "delay": 2,
           "time": 1,
-          "center": [
-            0,
-            0,
-            0
-          ],
+          "center": [0, 0, 0],
           "seed": 0
         }
       }

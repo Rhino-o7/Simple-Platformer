@@ -1,41 +1,19 @@
 {
-  "format": "prefab-v1",
   "name": "grass_1_16",
   "entities": [
     {
       "id": "Root",
       "components": {
         "transform": {
-          "position": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            2,
-            2,
-            2
-          ],
-          "rotation": [
-            0,
-            0,
-            0,
-            1
-          ]
+          "position": [0, 0, 0],
+          "scale": [2, 2, 2],
+          "rotation": [0, 0, 0, 1]
         },
         "collider": {
           "body": "Static",
           "shape": "AABB",
-          "min": [
-            -16,
-            -4,
-            -16
-          ],
-          "max": [
-            16,
-            4,
-            16
-          ]
+          "min": [-16, -4, -16],
+          "max": [16, 4, 16]
         },
         "renderable": {
           "model": "model.grass.16"
@@ -46,37 +24,16 @@
       "id": "Tree",
       "components": {
         "transform": {
-          "position": [
-            -5,
-            8.5,
-            -3
-          ],
-          "scale": [
-            1,
-            1,
-            1
-          ],
-          "rotation": [
-            0,
-            1,
-            0,
-            1
-          ],
+          "position": [-5, 8.5, -3],
+          "scale": [1, 1, 1],
+          "rotation": [0, 1, 0, 1],
           "parent": "Root"
         },
         "collider": {
           "body": "Static",
           "shape": "AABB",
-          "min": [
-            -3,
-            -13,
-            -3
-          ],
-          "max": [
-            3,
-            13,
-            3
-          ]
+          "min": [-3, -13, -3],
+          "max": [3, 13, 3]
         },
         "renderable": {
           "model": "model.tree.1"
