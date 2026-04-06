@@ -55,7 +55,7 @@ void Turret::fire() {
     }
 
     if (this->bullets[this->next_bullet] != ecs::NullEntity) {
-        ecs::destroy_entity(this->bullets[this->next_bullet]);
+        Manager::destroy_instance(this->bullets[this->next_bullet]);
     }
 
     auto e = Manager::instance(this->bullet);

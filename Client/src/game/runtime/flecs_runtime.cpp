@@ -150,29 +150,55 @@ namespace game::runtime {
     FlecsRuntime::FlecsRuntime() {
         vpg::ecs::bind_world(&world);
 
-        world.component<FixedDelta>();
-        world.component<FixedUpdateRequest>();
+        world.component<RuntimeControl>();
         world.component<SceneLoadRequest>();
 
-        world.system<const SceneLoadRequest>()
+        world.set<RuntimeControl>({ 0.0f, false });
+        world.set<SceneLoadRequest>({ "", false });
+
+        collider_query = world.query<vpg::ecs::Transform, vpg::physics::Collider>();
+        fixed_tick_behaviour_entities.reserve(1024);
+
+        auto fixed_update_collision_phase = world.entity("FixedUpdateCollision")
+            .add(flecs::Phase)
+            .depends_on(flecs::OnUpdate);
+
+        auto fixed_update_behaviour_phase = world.entity("FixedUpdateBehaviour")
+            .add(flecs::Phase)
+            .depends_on(fixed_update_collision_phase);
+
+        world.system<SceneLoadRequest>()
             .kind(flecs::PreUpdate)
-            .each([this](flecs::entity e, const SceneLoadRequest& request) {
+            .each([this](SceneLoadRequest& request) {
+                if (!request.pending || request.scene_name.empty()) {
+                    return;
+                }
+
                 if (scene_loader_callback) {
                     scene_loader_callback(request.scene_name);
                 }
 
-                e.destruct();
+                request.pending = false;
+                request.scene_name.clear();
             });
 
-        world.system<const FixedUpdateRequest>()
-            .kind(flecs::OnUpdate)
-            .each([this](const FixedUpdateRequest&) {
-                update_colliders();
+        world.system<const RuntimeControl>()
+            .kind(fixed_update_collision_phase)
+            .each([this](const RuntimeControl& control) {
+                if (control.fixed_update_active) {
+                    update_colliders();
+                }
             });
 
-        world.system<const FixedDelta, const FixedUpdateRequest>()
-            .kind(flecs::OnUpdate)
-            .each([](const FixedDelta&, const FixedUpdateRequest&) {
+        world.system<const vpg::ecs::Behaviour>()
+            .kind(fixed_update_behaviour_phase)
+            .each([this](flecs::entity e, const vpg::ecs::Behaviour&) {
+                const auto& control = world.get<RuntimeControl>();
+                if (!control.fixed_update_active) {
+                    return;
+                }
+
+                fixed_tick_behaviour_entities.push_back(e.id());
             });
     }
 
@@ -185,8 +211,10 @@ namespace game::runtime {
     }
 
     void FlecsRuntime::request_scene_load(const std::string& scene_name) {
-        world.entity()
-            .set<SceneLoadRequest>({ scene_name });
+        auto& request = world.get_mut<SceneLoadRequest>();
+        request.scene_name = scene_name;
+        request.pending = true;
+        world.modified<SceneLoadRequest>();
     }
 
     void FlecsRuntime::pump() {
@@ -194,35 +222,16 @@ namespace game::runtime {
     }
 
     void FlecsRuntime::run_fixed_update(float dt) {
-        auto request = world.entity()
-            .set<FixedDelta>({ dt })
-            .add<FixedUpdateRequest>();
-
-        world.progress(0.0f);
-        update_behaviours(dt);
-        if (fixed_update_callback) {
-            fixed_update_callback(dt);
-        }
-        request.destruct();
+        run_fixed_pipeline(dt);
     }
 
     void FlecsRuntime::update_behaviours(float dt) {
-        std::vector<flecs::entity_t> behaviour_entities;
-        auto behaviour_query = world.query<vpg::ecs::Behaviour>();
-        behaviour_query.each([&](flecs::entity e, vpg::ecs::Behaviour&) {
-            behaviour_entities.push_back(e.id());
-        });
-
-        for (auto id : behaviour_entities) {
+        for (auto id : fixed_tick_behaviour_entities) {
             if (!world.is_alive(id)) {
                 continue;
             }
 
             auto e = world.entity(id);
-            if (!e.has<vpg::ecs::Behaviour>()) {
-                continue;
-            }
-
             auto behaviour = e.try_get_mut<vpg::ecs::Behaviour>();
             if (behaviour != nullptr) {
                 behaviour->update(dt);
@@ -230,25 +239,43 @@ namespace game::runtime {
         }
     }
 
+    void FlecsRuntime::run_fixed_pipeline(float dt) {
+        fixed_tick_behaviour_entities.clear();
+
+        auto& control = world.get_mut<RuntimeControl>();
+        control.fixed_dt = dt;
+        control.fixed_update_active = true;
+        world.modified<RuntimeControl>();
+
+        world.progress(0.0f);
+
+        auto& control_after = world.get_mut<RuntimeControl>();
+        control_after.fixed_update_active = false;
+        world.modified<RuntimeControl>();
+
+        update_behaviours(dt);
+
+        if (fixed_update_callback) {
+            fixed_update_callback(dt);
+        }
+    }
+
     void FlecsRuntime::update_colliders() {
         std::vector<ColliderItem> colliders;
 
-        auto collider_query = world.query<const vpg::ecs::Transform, const vpg::physics::Collider>();
         collider_query.each(
-            [&](flecs::entity e, const vpg::ecs::Transform& transform, const vpg::physics::Collider& collider) {
-                auto collider_mut = const_cast<vpg::physics::Collider*>(&collider);
-                auto transform_mut = const_cast<vpg::ecs::Transform*>(&transform);
-                colliders.emplace_back((vpg::ecs::Entity)e.id(), collider_mut, transform_mut);
+            [&](flecs::entity e, vpg::ecs::Transform& transform, vpg::physics::Collider& collider) {
+                colliders.emplace_back((vpg::ecs::Entity)e.id(), &collider, &transform);
 
                 switch (collider.type) {
                 case vpg::physics::Collider::Type::Sphere:
-                    vpg::gl::Debug::draw_sphere(transform_mut->get_global_position(), collider.sphere.radius, { 1.0f, 1.0f, 1.0f, 1.0f });
+                    vpg::gl::Debug::draw_sphere(transform.get_global_position(), collider.sphere.radius, { 1.0f, 1.0f, 1.0f, 1.0f });
                     break;
                 case vpg::physics::Collider::Type::AABB:
                 {
                     auto center = (collider.aabb.min + collider.aabb.max) / 2.0f;
                     auto scale = (collider.aabb.max - collider.aabb.min) / 2.0f;
-                    vpg::gl::Debug::draw_box(transform_mut->get_global_position() + center, scale, { 1.0f, 1.0f, 1.0f, 1.0f });
+                    vpg::gl::Debug::draw_box(transform.get_global_position() + center, scale, { 1.0f, 1.0f, 1.0f, 1.0f });
                     break;
                 }
                 }

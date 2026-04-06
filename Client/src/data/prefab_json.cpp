@@ -85,8 +85,12 @@ vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::st
         }
     }
 
+    auto root_entity = vpg::ecs::NullEntity;
     for (const auto& [entity, parent_name] : pending_parents) {
         if (parent_name.empty()) {
+            if (root_entity == vpg::ecs::NullEntity) {
+                root_entity = entity;
+            }
             continue;
         }
 
@@ -104,11 +108,8 @@ vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::st
         t->set_parent(it->second);
     }
 
-    for (const auto& [entity, _] : pending_parents) {
-        auto t = vpg::ecs::get_component<vpg::ecs::Transform>(entity);
-        if (t != nullptr && t->get_parent() == vpg::ecs::NullEntity) {
-            return entity;
-        }
+    if (root_entity != vpg::ecs::NullEntity) {
+        return root_entity;
     }
 
     error = "Prefab has no root entity";

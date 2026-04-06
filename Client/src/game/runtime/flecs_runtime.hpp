@@ -6,8 +6,13 @@
 
 #include <flecs.h>
 
+#include <ecs/behaviour.hpp>
+#include <ecs/transform.hpp>
+#include <physics/collider.hpp>
+
 #include <functional>
 #include <string>
+#include <vector>
 
 namespace game::runtime {
     class FlecsRuntime {
@@ -27,19 +32,21 @@ namespace game::runtime {
     private:
         void update_colliders();
         void update_behaviours(float dt);
+        void run_fixed_pipeline(float dt);
 
-        struct FixedDelta {
-            float value;
-        };
-
-        struct FixedUpdateRequest {
+        struct RuntimeControl {
+            float fixed_dt;
+            bool fixed_update_active;
         };
 
         struct SceneLoadRequest {
             std::string scene_name;
+            bool pending;
         };
 
         flecs::world world;
+        flecs::query<vpg::ecs::Transform, vpg::physics::Collider> collider_query;
+        std::vector<flecs::entity_t> fixed_tick_behaviour_entities;
         std::function<void(float)> fixed_update_callback;
         std::function<bool(const std::string&)> scene_loader_callback;
     };

@@ -2,6 +2,11 @@
 
 #include <data/data-shader.hpp>
 #include <ecs/entity.hpp>
+#include <ecs/transform.hpp>
+
+#include <gl/camera.hpp>
+#include <gl/light.hpp>
+#include <gl/renderable.hpp>
 
 #include <input/window.hpp>
 #include <input/keyboard.hpp>
@@ -39,6 +44,9 @@ namespace vpg::gl {
         Listener debug_render_toggle_listener;
 
         flecs::world* ecs_world;
+        flecs::query<vpg::ecs::Transform, const vpg::gl::Camera> camera_query;
+        flecs::query<vpg::ecs::Transform, const vpg::gl::Light> light_query;
+        flecs::query<vpg::ecs::Transform, const vpg::gl::Renderable> renderable_query;
 
         data::Handle<data::Shader> model_shader;
         gl::TextUI text_ui;

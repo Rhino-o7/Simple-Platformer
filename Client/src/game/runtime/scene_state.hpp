@@ -6,6 +6,9 @@
 #include <memory/stream.hpp>
 
 namespace game::runtime {
+    struct SceneOwned {
+    };
+
     class SceneState {
     public:
         bool deserialize(vpg::memory::Stream& stream);

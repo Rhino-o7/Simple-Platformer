@@ -4,6 +4,7 @@
 #include <ecs/transform.hpp>
 
 #include <iostream>
+#include <vector>
 
 using namespace vpg;
 using namespace vpg::ecs;
@@ -15,6 +16,10 @@ bool game::runtime::SceneState::deserialize(memory::Stream& stream) {
     stream.push_ref_map();
     for (uint32_t i = 0; i < count; ++i) {
         auto entity = create_entity();
+        auto world = get_world();
+        if (world != nullptr) {
+            world->entity((flecs::entity_t)entity).add<game::runtime::SceneOwned>();
+        }
         this->entities.insert(entity);
         stream.add_ref_map(entity, (int64_t)i);
     }
@@ -39,7 +44,12 @@ Entity game::runtime::SceneState::deserialize_tree(memory::Stream& stream) {
     uint32_t count = stream.read_u32();
     stream.push_ref_map();
     for (uint32_t i = 0; i < count; ++i) {
-        stream.add_ref_map(create_entity(), (int64_t)i);
+        auto entity = create_entity();
+        auto world = get_world();
+        if (world != nullptr) {
+            world->entity((flecs::entity_t)entity).add<game::runtime::SceneOwned>();
+        }
+        stream.add_ref_map(entity, (int64_t)i);
     }
 
     Entity root = NullEntity;
@@ -91,6 +101,19 @@ Entity game::runtime::SceneState::deserialize_tree(memory::Stream& stream) {
 }
 
 void game::runtime::SceneState::clean() {
+    auto world = get_world();
+    if (world != nullptr) {
+        std::vector<Entity> owned_entities;
+        auto owned_query = world->query<const game::runtime::SceneOwned>();
+        owned_query.each([&](flecs::entity e, const game::runtime::SceneOwned&) {
+            owned_entities.push_back((Entity)e.id());
+        });
+
+        for (auto e : owned_entities) {
+            destroy_entity(e);
+        }
+    }
+
     while (!this->entities.empty()) {
         destroy_entity(*this->entities.begin());
         this->entities.erase(this->entities.begin());

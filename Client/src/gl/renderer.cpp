@@ -33,6 +33,9 @@ vpg::gl::Renderer::Renderer(flecs::world* ecs_world) {
 #pragma region not freetype
     this->size = input::Window::get_framebuffer_size();
     this->ecs_world = ecs_world;
+    this->camera_query = this->ecs_world->query<vpg::ecs::Transform, const vpg::gl::Camera>();
+    this->light_query = this->ecs_world->query<vpg::ecs::Transform, const vpg::gl::Light>();
+    this->renderable_query = this->ecs_world->query<vpg::ecs::Transform, const vpg::gl::Renderable>();
 
     
     this->gbuffer.shader = data::Manager::load<data::Shader>("shader.gbuffer");
@@ -97,11 +100,10 @@ void vpg::gl::Renderer::render(float dt) {
     // Get camera
 #pragma region Rendering
     const vpg::gl::Camera* camera_snapshot = nullptr;
-    const vpg::ecs::Transform* camera_transform = nullptr;
+    vpg::ecs::Transform* camera_transform = nullptr;
     auto found_camera = false;
-    auto camera_query = this->ecs_world->query<const vpg::ecs::Transform, const vpg::gl::Camera>();
     camera_query.each(
-        [&found_camera, &camera_snapshot, &camera_transform](const vpg::ecs::Transform& t, const vpg::gl::Camera& c) {
+        [&found_camera, &camera_snapshot, &camera_transform](vpg::ecs::Transform& t, const vpg::gl::Camera& c) {
             if (found_camera) {
                 return;
             }
@@ -122,31 +124,29 @@ void vpg::gl::Renderer::render(float dt) {
         camera_snapshot->get_z_near(),
         camera_snapshot->get_z_far()
     );
-    auto camera_transform_mut = const_cast<vpg::ecs::Transform*>(camera_transform);
-    auto camera_view = glm::inverse(camera_transform_mut->get_global());
-    this->par_x = camera_transform_mut->get_global_position().x;
-    this->par_y = camera_transform_mut->get_global_position().y;
-    this->par_z = camera_transform_mut->get_global_position().z;
+    auto camera_view = glm::inverse(camera_transform->get_global());
+    this->par_x = camera_transform->get_global_position().x;
+    this->par_y = camera_transform->get_global_position().y;
+    this->par_z = camera_transform->get_global_position().z;
     //RenderText("Hello World", camera.cam_x, camera.cam_y, camera.cam_z, 2.0f, glm::vec3(1, 0, 1));
 
     // Update lights UBO
     glBindBuffer(GL_UNIFORM_BUFFER, this->lights_ubo);
     auto lights = (LightData*)glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
     int light_index = 0;
-    auto draw_light = [&](const vpg::gl::Light& light, const vpg::ecs::Transform& transform) {
-        auto transform_mut = const_cast<vpg::ecs::Transform&>(transform);
+    auto draw_light = [&](const vpg::gl::Light& light, vpg::ecs::Transform& transform) {
 
         switch (light.type) {
         case Light::Type::Directional:
             lights[light_index].ambient = glm::vec4(light.ambient, 1.0f);
             lights[light_index].diffuse = glm::vec4(light.diffuse, 1.0f);
-            lights[light_index].direction = camera_view * glm::vec4(transform_mut.get_global_rotation() * glm::vec3(0.0f, 0.0f, 1.0f), 0.0f);
+            lights[light_index].direction = camera_view * glm::vec4(transform.get_global_rotation() * glm::vec3(0.0f, 0.0f, 1.0f), 0.0f);
             break;
         case Light::Type::Point:
             if (this->debug_lights) {
-                gl::Debug::draw_sphere(transform_mut.get_global_position(), 1.0f, lights[light_index].diffuse);
+                gl::Debug::draw_sphere(transform.get_global_position(), 1.0f, lights[light_index].diffuse);
             }
-            lights[light_index].position = camera_view * glm::vec4(transform_mut.get_global_position(), 1.0f);
+            lights[light_index].position = camera_view * glm::vec4(transform.get_global_position(), 1.0f);
             lights[light_index].direction.w = 1.0f;
             lights[light_index].constant = light.constant;
             lights[light_index].linear = light.linear;
@@ -159,9 +159,8 @@ void vpg::gl::Renderer::render(float dt) {
         light_index += 1;
     };
 
-    auto light_query = this->ecs_world->query<const vpg::ecs::Transform, const vpg::gl::Light>();
     light_query.each(
-        [&](const vpg::ecs::Transform& transform, const vpg::gl::Light& light) {
+        [&](vpg::ecs::Transform& transform, const vpg::gl::Light& light) {
             if (light_index >= LIGHT_COUNT) {
                 return;
             }
@@ -202,11 +201,8 @@ void vpg::gl::Renderer::render(float dt) {
     glUniformMatrix4fv(proj_loc, 1, GL_FALSE, &camera_proj[0][0]);
 
     auto draw_renderable = [&](const vpg::gl::Renderable& renderable,
-        const vpg::ecs::Transform& transform) {
-
-        auto transform_mut = const_cast<vpg::ecs::Transform&>(transform);
-
-        auto model_matrix = transform_mut.get_global();
+        vpg::ecs::Transform& transform) {
+        auto model_matrix = transform.get_global();
         glUniformMatrix4fv(model_loc, 1, GL_FALSE, &model_matrix[0][0]);
 
         switch (renderable.type) {
@@ -221,9 +217,8 @@ void vpg::gl::Renderer::render(float dt) {
         }
     };
 
-    auto renderable_query = this->ecs_world->query<const vpg::ecs::Transform, const vpg::gl::Renderable>();
     renderable_query.each(
-        [&](const vpg::ecs::Transform& transform, const vpg::gl::Renderable& renderable) {
+        [&](vpg::ecs::Transform& transform, const vpg::gl::Renderable& renderable) {
             draw_renderable(renderable, transform);
         }
     );

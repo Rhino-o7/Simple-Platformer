@@ -7,6 +7,63 @@
 #include <iostream>
 #include <vector>
 
+namespace {
+    void collect_instance_entities(vpg::ecs::Entity root, std::set<vpg::ecs::Entity>& out_entities) {
+        auto world = vpg::ecs::get_world();
+        std::vector<vpg::ecs::Entity> stack;
+        stack.push_back(root);
+
+        while (!stack.empty()) {
+            auto current = stack.back();
+            stack.pop_back();
+
+            out_entities.insert(current);
+            if (world != nullptr) {
+                world->entity((flecs::entity_t)current).add<game::runtime::SceneOwned>();
+            }
+
+            auto transform = vpg::ecs::get_component<vpg::ecs::Transform>(current);
+            if (transform == nullptr) {
+                continue;
+            }
+
+            auto child = transform->get_child();
+            while (child != vpg::ecs::NullEntity) {
+                stack.push_back(child);
+                auto child_transform = vpg::ecs::get_component<vpg::ecs::Transform>(child);
+                if (child_transform == nullptr) {
+                    break;
+                }
+                child = child_transform->get_next();
+            }
+        }
+    }
+
+    void destroy_instance_children(vpg::ecs::Entity root, std::set<vpg::ecs::Entity>* scene_entities) {
+        auto transform = vpg::ecs::get_component<vpg::ecs::Transform>(root);
+        if (transform == nullptr) {
+            return;
+        }
+
+        auto c = transform->get_child();
+        while (c != vpg::ecs::NullEntity) {
+            auto e = c;
+            auto child_transform = vpg::ecs::get_component<vpg::ecs::Transform>(e);
+            if (child_transform == nullptr) {
+                break;
+            }
+            c = child_transform->get_next();
+            child_transform->set_parent(vpg::ecs::NullEntity);
+
+            if (scene_entities != nullptr) {
+                scene_entities->erase(e);
+            }
+
+            vpg::ecs::destroy_entity(e);
+        }
+    }
+}
+
 game::runtime::SceneState* Manager::scene = nullptr;
 game::SceneManifest Manager::scene_manifest = {};
 bool Manager::scene_manifest_loaded = false;
@@ -84,29 +141,7 @@ ecs::Entity Manager::instance(data::Handle<data::Text> scene) {
         return root;
     }
 
-    std::vector<ecs::Entity> stack;
-    stack.push_back(root);
-    while (!stack.empty()) {
-        auto current = stack.back();
-        stack.pop_back();
-
-        Manager::scene->entities.insert(current);
-
-        auto transform = ecs::get_component<ecs::Transform>(current);
-        if (transform == nullptr) {
-            continue;
-        }
-
-        auto child = transform->get_child();
-        while (child != ecs::NullEntity) {
-            stack.push_back(child);
-            auto child_transform = ecs::get_component<ecs::Transform>(child);
-            if (child_transform == nullptr) {
-                break;
-            }
-            child = child_transform->get_next();
-        }
-    }
+    collect_instance_entities(root, Manager::scene->entities);
 
     return root;
 }
@@ -116,26 +151,12 @@ void Manager::destroy_instance(ecs::Entity entity) {
         Manager::scene->entities.erase(entity);
     }
 
-    auto transform = ecs::get_component<ecs::Transform>(entity);
-    if (transform == nullptr) {
+    if (ecs::get_component<ecs::Transform>(entity) == nullptr) {
         ecs::destroy_entity(entity);
         return;
     }
 
-    auto c = transform->get_child();
-    while (c != ecs::NullEntity) {
-        auto e = c;
-        auto transform = ecs::get_component<ecs::Transform>(e);
-        if (transform == nullptr) {
-            break;
-        }
-        c = transform->get_next();
-        transform->set_parent(ecs::NullEntity);
-        if (Manager::scene != nullptr) {
-            Manager::scene->entities.erase(e);
-        }
-        ecs::destroy_entity(e);
-    }
+    destroy_instance_children(entity, Manager::scene != nullptr ? &Manager::scene->entities : nullptr);
     ecs::destroy_entity(entity);
 }
 

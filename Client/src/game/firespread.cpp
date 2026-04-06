@@ -83,7 +83,7 @@ void Firespread::MakeSmoke()
     auto position = transform->get_position();
 
     if (this->smoke_count[this->next_smoke] != ecs::NullEntity) {
-        ecs::destroy_entity(this->smoke_count[this->next_smoke]);
+        Manager::destroy_instance(this->smoke_count[this->next_smoke]);
     }
 
     siv::PerlinNoise perlin{ 300 };
