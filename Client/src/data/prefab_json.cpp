@@ -6,28 +6,12 @@
 #endif
 
 #include "prefab_json.hpp"
-#include "json_utils.hpp"
+#include "prefab_json_registry.hpp"
+#include "prefab_json_parsers.hpp"
 
-#include <ecs/entity.hpp>
 #include <ecs/transform.hpp>
-#include <ecs/behaviour.hpp>
-#include <physics/collider.hpp>
-#include <gl/renderable.hpp>
-#include <gl/light.hpp>
-#include <gl/camera.hpp>
 
-#include "platform.hpp"
-#include "turret.hpp"
-#include "firetrap.hpp"
-#include "firespread.hpp"
-#include "smoke.hpp"
-#include "bullet.hpp"
-#include "player_controller.hpp"
-#include "player_instance.hpp"
-#include "map_controller.hpp"
-
-#include <data/manager.hpp>
-#include <data/text.hpp>
+#include <data/json_utils.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -36,17 +20,9 @@
 namespace {
     using JsonValue = game::json_utils::JsonValue;
     using JsonDocument = game::json_utils::JsonDocument;
-    using game::json_utils::as_float;
     using game::json_utils::as_string;
-    using game::json_utils::as_vec3;
     using game::json_utils::get_field;
     using game::json_utils::parse_document;
-
-    bool as_quat(const JsonValue* value, glm::quat& out) {
-        return game::json_utils::as_quat_xyzw(value, out);
-    }
-
-#include "prefab_json_parsers.inl"
 }
 
 vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::string& error) {
@@ -66,6 +42,8 @@ vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::st
     entities.reserve(entities_field->Size());
     pending_parents.reserve(entities_field->Size());
 
+    game::prefab_json_parsers::register_default_parsers();
+
     for (const auto& node : entities_field->GetArray()) {
         if (!node.IsObject()) {
             error = "Each entity entry must be an object";
@@ -83,15 +61,6 @@ vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::st
         }
     }
 
-    static const std::unordered_map<std::string, ComponentParser> component_parsers = {
-        { "transform", parse_transform_component },
-        { "collider", parse_collider_component },
-        { "renderable", parse_renderable_component },
-        { "light", parse_light_component },
-        { "camera", parse_camera_component },
-        { "behaviour", parse_behaviour_component },
-    };
-
     for (const auto& node : entities_field->GetArray()) {
         std::string id;
         as_string(get_field(node, "id"), id);
@@ -104,12 +73,12 @@ vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::st
         }
 
         for (auto component_it = components->MemberBegin(); component_it != components->MemberEnd(); ++component_it) {
-            auto parser_it = component_parsers.find(component_it->name.GetString());
-            if (parser_it == component_parsers.end()) {
+            auto parser = game::prefab_json_registry::find_component_parser(component_it->name.GetString());
+            if (parser == nullptr) {
                 continue;
             }
 
-            if (!parser_it->second(entity, component_it->value, entities, pending_parents, error)) {
+            if (!parser(entity, component_it->value, entities, pending_parents, error)) {
                 error = "Entity '" + id + "' " + error;
                 return vpg::ecs::NullEntity;
             }

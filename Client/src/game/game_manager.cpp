@@ -1,5 +1,5 @@
 #include "game_manager.hpp"
-#include "prefab_json.hpp"
+#include <data/prefab_json.hpp>
 
 #include <ecs/transform.hpp>
 #include <config.hpp>

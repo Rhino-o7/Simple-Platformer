@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Dev\GitRepos\Voxel-ECS\Client\external\rapidjson-1.1.0\include;C:\Dev\GitRepos\Voxel-ECS\Client\external;C:\Dev\GitRepos\Voxel-ECS\Client\external\flecs-4.1.5\include;C:\Dev\GitRepos\Voxel-ECS\Client\src;C:\Dev\GitRepos\Voxel-ECS\Client\external\freetype\freetype-2.14.3\include;C:\Dev\GitRepos\Voxel-ECS\Client\external\glm;C:\Dev\GitRepos\Voxel-ECS\Client\external\GLFW\include;C:\Dev\GitRepos\Voxel-ECS\Client\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Dev\GitRepos\Voxel-ECS\Client\src\game;C:\Dev\GitRepos\Voxel-ECS\Client\external\rapidjson-1.1.0\include;C:\Dev\GitRepos\Voxel-ECS\Client\external;C:\Dev\GitRepos\Voxel-ECS\Client\external\flecs-4.1.5\include;C:\Dev\GitRepos\Voxel-ECS\Client\src;C:\Dev\GitRepos\Voxel-ECS\Client\external\freetype\freetype-2.14.3\include;C:\Dev\GitRepos\Voxel-ECS\Client\external\glm;C:\Dev\GitRepos\Voxel-ECS\Client\external\GLFW\include;C:\Dev\GitRepos\Voxel-ECS\Client\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,7 +131,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Dev\GitRepos\Voxel-ECS\Client\external\rapidjson-1.1.0\include;C:\Dev\GitRepos\Voxel-ECS\Client\external;C:\Dev\GitRepos\Voxel-ECS\Client\external\flecs-4.1.5\include;C:\Dev\GitRepos\Voxel-ECS\Client\src;C:\Dev\GitRepos\Voxel-ECS\Client\external\freetype\freetype-2.14.3\include;C:\Dev\GitRepos\Voxel-ECS\Client\external\glm;C:\Dev\GitRepos\Voxel-ECS\Client\external\GLFW\include;C:\Dev\GitRepos\Voxel-ECS\Client\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Dev\GitRepos\Voxel-ECS\Client\src\game;C:\Dev\GitRepos\Voxel-ECS\Client\external\rapidjson-1.1.0\include;C:\Dev\GitRepos\Voxel-ECS\Client\external;C:\Dev\GitRepos\Voxel-ECS\Client\external\flecs-4.1.5\include;C:\Dev\GitRepos\Voxel-ECS\Client\src;C:\Dev\GitRepos\Voxel-ECS\Client\external\freetype\freetype-2.14.3\include;C:\Dev\GitRepos\Voxel-ECS\Client\external\glm;C:\Dev\GitRepos\Voxel-ECS\Client\external\GLFW\include;C:\Dev\GitRepos\Voxel-ECS\Client\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,7 +149,7 @@
     <ClCompile Include="src\game\level_layout.cpp" />
     <ClCompile Include="src\game\load.cpp" />
     <ClCompile Include="src\game\game_manager.cpp" />
-    <ClCompile Include="src\game\prefab_json.cpp" />
+    <ClCompile Include="src\data\prefab_json.cpp" />
     <ClCompile Include="src\game\runtime\flecs_impl.cpp" />
     <ClCompile Include="src\game\runtime\flecs_runtime.cpp" />
     <ClCompile Include="src\game\runtime\scene_state.cpp" />
@@ -362,10 +362,10 @@
     <ClInclude Include="glew\include\GL\glxew.h" />
     <ClInclude Include="glew\include\GL\wglew.h" />
     <ClInclude Include="glfw\include\GLFW\glfw3.h" />
+    <ClInclude Include="src\data\json_utils.hpp" />
     <ClInclude Include="src\game\bullet.hpp" />
     <ClInclude Include="src\game\firespread.hpp" />
     <ClInclude Include="src\game\firetrap.hpp" />
-    <ClInclude Include="src\game\json_utils.hpp" />
     <ClInclude Include="src\game\jumper.hpp" />
     <ClInclude Include="src\game\game_manager.hpp" />
     <ClInclude Include="src\game\level_layout.hpp" />
@@ -374,7 +374,9 @@
     <ClInclude Include="src\game\platform.hpp" />
     <ClInclude Include="src\game\player_controller.hpp" />
     <ClInclude Include="src\game\player_instance.hpp" />
-    <ClInclude Include="src\game\prefab_json.hpp" />
+    <ClInclude Include="src\data\prefab_json.hpp" />
+    <ClInclude Include="src\data\prefab_json_parsers.hpp" />
+    <ClInclude Include="src\data\prefab_json_registry.hpp" />
     <ClInclude Include="src\game\runtime\flecs_runtime.hpp" />
     <ClInclude Include="src\game\smoke.hpp" />
     <ClInclude Include="src\game\turret.hpp" />
@@ -458,7 +460,6 @@
     <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\term\mixin.inl" />
     <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\mixin.inl" />
     <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\system_mixin.inl" />
-    <None Include="src\game\prefab_json_parsers.inl" />
     <None Include="vpg.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

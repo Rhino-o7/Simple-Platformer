@@ -6,9 +6,9 @@
 #endif
 
 #include "level_layout.hpp"
-#include "json_utils.hpp"
 
 #include <config.hpp>
+#include <data/json_utils.hpp>
 #include <data/manager.hpp>
 #include <data/text.hpp>
 
