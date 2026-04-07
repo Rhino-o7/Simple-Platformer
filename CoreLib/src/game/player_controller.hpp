@@ -70,6 +70,7 @@ struct PlayerController : public ecs::IBehaviour {
 
     float camera_distance, camera_x, camera_y, disFromExit;
     bool on_floor, respawned;
+    bool network_spawn_synced;
 
     float time;
     unsigned int seed;

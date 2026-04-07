@@ -29,6 +29,7 @@
 #include <ctime>
 
 #include "PerlinNoise.hpp"
+#include <corelib/net/websocket.hpp>
 #include <gl/camera.hpp>
 using namespace vpg::gl;
 using namespace std::chrono;
@@ -126,6 +127,7 @@ PlayerController::PlayerController(ecs::Entity entity, const Info& info) {
     this->camera_y = glm::pi<float>() / 4.0f;
     this->on_floor = false;
     this->respawned = false;
+    this->network_spawn_synced = false;
 
     this->keyboard_space_listener = Keyboard::Down.add_listener(std::bind(
         &PlayerController::air_jump,
@@ -195,13 +197,13 @@ void PlayerController::update(float dt) {
     double noise = perlin.octave2D_01((transform->get_position().x * 0.01) / 2, (transform->get_position().z * 0.01)/2, 4);
     windSpeed = noise;
 
-    auto center = glm::vec3(0.0f, 5.0f, 0.0f);
-    camera->set_position(transform->get_position() + center + glm::normalize(glm::vec3(
+        auto center_net = glm::vec3(0.0f, 5.0f, 0.0f);
+        camera->set_position(transform->get_position() + center_net + glm::normalize(glm::vec3(
         cos(camera_x) * cos(camera_y),
         sin(camera_y),
         sin(camera_x) * cos(camera_y)
     )) * this->camera_distance);
-    camera->look_at(transform->get_position() + center, glm::vec3(0.0f, 1.0f, 0.0f));
+        camera->look_at(transform->get_position() + center_net, glm::vec3(0.0f, 1.0f, 0.0f));
 
     if (!this->on_floor) {
         this->velocity.y -= 98.1f * dt;
@@ -228,6 +230,21 @@ void PlayerController::update(float dt) {
     }
     else if (Keyboard::is_key_pressed(Key::A)) {
         input.x = -1.0f;
+    }
+
+    if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
+        if (!this->network_spawn_synced) {
+            auto p = transform->get_position();
+            network->send_spawn(p.x, p.y, p.z);
+            this->network_spawn_synced = true;
+        }
+
+        network->send_input(
+            input.x,
+            input.y,
+            Keyboard::is_key_pressed(Key::Space),
+            Keyboard::is_key_pressed(Key::LShift)
+        );
     }
 
     if (input.x == 0.0f && input.y == 0.0f) {

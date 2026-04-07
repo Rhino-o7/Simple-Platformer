@@ -186,11 +186,21 @@ int corelib::run_client(int argc, char** argv) {
 
 int corelib::run_network_client(int argc, char** argv, const char* uri) {
     corelib::net::GameClient client;
-    if (uri != nullptr && uri[0] != '\0') {
-        client.connect(uri);
+    corelib::net::set_active_client(&client);
+    if (uri == nullptr || uri[0] == '\0') {
+        corelib::net::set_active_client(nullptr);
+        std::cerr << "Network client requires a server URI\n";
+        return 1;
+    }
+
+    if (!client.connect(uri)) {
+        corelib::net::set_active_client(nullptr);
+        std::cerr << "Failed to connect to server: " << uri << '\n';
+        return 1;
     }
 
     auto result = run_client(argc, argv);
+    corelib::net::set_active_client(nullptr);
     client.stop();
     return result;
 }
