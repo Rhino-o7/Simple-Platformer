@@ -78,7 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;$(SolutionDir)CoreLib\external\websocketpp-0.8.2;$(SolutionDir)CoreLib\external\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -96,7 +96,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;$(SolutionDir)CoreLib\external\websocketpp-0.8.2;$(SolutionDir)CoreLib\external\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -112,7 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;$(SolutionDir)CoreLib\external\websocketpp-0.8.2;$(SolutionDir)CoreLib\external\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -130,7 +130,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;$(SolutionDir)CoreLib\external\websocketpp-0.8.2;$(SolutionDir)CoreLib\external\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -141,7 +141,10 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ClInclude Include="include\corelib\net\asio.hpp" />
+    <ClInclude Include="include\corelib\net\websocket.hpp" />
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\client_program.cpp" />
     <ClCompile Include="external\flecs-4.1.5\distr\flecs.c" />

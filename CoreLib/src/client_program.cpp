@@ -16,15 +16,44 @@
 #include <game/runtime/scene_state.hpp>
 #include <game/game_manager.hpp>
 #include <game/behaviour_registry.hpp>
+#include <corelib/net/websocket.hpp>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <filesystem>
 #include <iostream>
 
 using namespace vpg;
+namespace fs = std::filesystem;
 
 namespace {
+    void resolve_runtime_working_directory() {
+        auto has_runtime_files = [](const fs::path& p) {
+            return fs::exists(p / "vpg.cfg") && fs::exists(p / "data" / "assets.cfg");
+        };
+
+        fs::path p = fs::current_path();
+        while (!p.empty()) {
+            if (has_runtime_files(p)) {
+                fs::current_path(p);
+                return;
+            }
+
+            auto client_path = p / "Client";
+            if (has_runtime_files(client_path)) {
+                fs::current_path(client_path);
+                return;
+            }
+
+            if (p == p.root_path()) {
+                break;
+            }
+
+            p = p.parent_path();
+        }
+    }
+
     void APIENTRY gl_debug_output(
         GLenum source,
         GLenum type,
@@ -76,6 +105,7 @@ namespace {
 }
 
 int corelib::run_client(int argc, char** argv) {
+    resolve_runtime_working_directory();
     Config::load(argc, argv);
 
     if (!input::Window::init()) {
@@ -152,4 +182,15 @@ int corelib::run_client(int argc, char** argv) {
     input::Window::terminate();
 
     return 0;
+}
+
+int corelib::run_network_client(int argc, char** argv, const char* uri) {
+    corelib::net::GameClient client;
+    if (uri != nullptr && uri[0] != '\0') {
+        client.connect(uri);
+    }
+
+    auto result = run_client(argc, argv);
+    client.stop();
+    return result;
 }
