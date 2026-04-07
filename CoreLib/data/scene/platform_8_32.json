@@ -1,0 +1,30 @@
+{
+  "name": "platform_8_32",
+  "entities": [
+    {
+      "id": "Base",
+      "components": {
+        "transform": {
+          "position": [0, 0, 0],
+          "scale": [2, 2, 2],
+          "rotation": [0, 0, 0, 1]
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [-8, -1, -32],
+          "max": [8, 1, 32]
+        },
+        "renderable": {
+          "model": "model.base.8.32"
+        },
+        "behaviour": {
+          "type": "Platform",
+          "from": [-100, 0, 0],
+          "to": [100, 0, 0],
+          "speed": 20
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "name": "player",
+  "entities": [
+    {
+      "id": "Controller",
+      "components": {
+        "transform": {
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, -1, 0, 0]
+        },
+        "collider": {
+          "body": "Dynamic",
+          "shape": "AABB",
+          "min": [-2.5, 2.75, -2.5],
+          "max": [2.5, 12.25, 2.5]
+        }
+      }
+    },
+    {
+      "id": "FeetCollider",
+      "components": {
+        "transform": {
+          "position": [0, 0.75, 0.25],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1],
+          "parent": "Controller"
+        },
+        "collider": {
+          "body": "Dynamic",
+          "shape": "AABB",
+          "min": [-2, -0.65, -2],
+          "max": [2, -0.5, 2]
+        }
+      }
+    },
+    {
+      "id": "Torso",
+      "components": {
+        "transform": {
+          "position": [0, 7.5, 0],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
+          "parent": "Controller"
+        },
+        "renderable": {
+          "model": "model.player.torso"
+        }
+      }
+    },
+    {
+      "id": "LFoot",
+      "components": {
+        "transform": {
+          "position": [1.5, 0.75, 0.25],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
+          "parent": "Controller"
+        },
+        "renderable": {
+          "model": "model.player.lfoot"
+        }
+      }
+    },
+    {
+      "id": "RFoot",
+      "components": {
+        "transform": {
+          "position": [-1.5, 0.75, 0.25],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
+          "parent": "Controller"
+        },
+        "renderable": {
+          "model": "model.player.rfoot"
+        }
+      }
+    },
+    {
+      "id": "LHand",
+      "components": {
+        "transform": {
+          "position": [3.5, 5, 1],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
+          "parent": "Controller"
+        },
+        "renderable": {
+          "model": "model.player.lhand"
+        }
+      }
+    },
+    {
+      "id": "RHand",
+      "components": {
+        "transform": {
+          "position": [-3.5, 5, 1],
+          "scale": [0.5, 0.5, 0.5],
+          "rotation": [0, 0, 0, 1],
+          "parent": "Controller"
+        },
+        "renderable": {
+          "model": "model.player.rhand"
+        }
+      }
+    },
+    {
+      "id": "Controller",
+      "components": {
+        "behaviour": {
+          "type": "PlayerController",
+          "torso": "Torso",
+          "lfoot": "LFoot",
+          "rfoot": "RFoot",
+          "lhand": "LHand",
+          "rhand": "RHand",
+          "feetCollider": "FeetCollider"
+        }
+      }
+    }
+  ]
+}

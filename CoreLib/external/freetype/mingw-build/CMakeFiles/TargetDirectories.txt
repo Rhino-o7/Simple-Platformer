@@ -1,0 +1,9 @@
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/freetype.dir
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/package.dir
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/package_source.dir
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/edit_cache.dir
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/rebuild_cache.dir
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/list_install_components.dir
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/install.dir
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/install/local.dir
+C:/Users/r2osb/Downloads/freetype-2.14.3/mingw-build/CMakeFiles/install/strip.dir

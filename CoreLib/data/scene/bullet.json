@@ -1,0 +1,35 @@
+{
+  "name": "bullet",
+  "entities": [
+    {
+      "id": "Root",
+      "components": {
+        "transform": {
+          "position": [0, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0, 1]
+        },
+        "collider": {
+          "body": "Static",
+          "shape": "AABB",
+          "min": [-3, -3, -3],
+          "max": [3, 3, 3]
+        },
+        "renderable": {
+          "model": "model.bullet"
+        },
+        "behaviour": {
+          "type": "Bullet"
+        },
+        "light": {
+          "type": "Point",
+          "constant": 1,
+          "linear": 0.045,
+          "quadratic": 0.0075,
+          "ambient": [0, 0, 0],
+          "diffuse": [1, 0.4, 0.1]
+        }
+      }
+    }
+  ]
+}

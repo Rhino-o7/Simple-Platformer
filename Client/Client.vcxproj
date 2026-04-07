@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -141,58 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="external\flecs-4.1.5\distr\flecs.c" />
-    <ClCompile Include="src\game\bullet.cpp" />
-    <ClCompile Include="src\game\firespread.cpp" />
-    <ClCompile Include="src\game\firetrap.cpp" />
-    <ClCompile Include="src\game\jumper.cpp" />
-    <ClCompile Include="src\game\level_layout.cpp" />
-    <ClCompile Include="src\game\load.cpp" />
-    <ClCompile Include="src\game\game_manager.cpp" />
-    <ClCompile Include="src\data\prefab_json.cpp" />
-    <ClCompile Include="src\ecs\flecs_runtime.cpp" />
-    <ClCompile Include="src\game\runtime\scene_state.cpp" />
-    <ClCompile Include="src\game\map_controller.cpp" />
-    <ClCompile Include="src\game\platform.cpp" />
-    <ClCompile Include="src\game\player_controller.cpp" />
-    <ClCompile Include="src\game\player_instance.cpp" />
-    <ClCompile Include="src\game\scene_manifest.cpp" />
-    <ClCompile Include="src\game\smoke.cpp" />
-    <ClCompile Include="src\game\turret.cpp" />
-    <ClCompile Include="src\config.cpp" />
-    <ClCompile Include="src\data\asset.cpp" />
-    <ClCompile Include="src\data\handle.cpp" />
-    <ClCompile Include="src\data\manager.cpp" />
-    <ClCompile Include="src\data\model.cpp" />
-    <ClCompile Include="src\data\qb_parser.cpp" />
-    <ClCompile Include="src\data\data-shader.cpp" />
-    <ClCompile Include="src\data\text.cpp" />
-    <ClCompile Include="src\ecs\behaviour.cpp" />
-    <ClCompile Include="src\ecs\entity.cpp" />
-    <ClCompile Include="src\ecs\transform.cpp" />
     <ClCompile Include="src\entry.cpp" />
-    <ClCompile Include="src\gl\camera.cpp" />
-    <ClCompile Include="src\gl\debug.cpp" />
-    <ClCompile Include="src\gl\image_ui.cpp" />
-    <ClCompile Include="src\gl\index_buffer.cpp" />
-    <ClCompile Include="src\gl\light.cpp" />
-    <ClCompile Include="src\gl\matrix.cpp" />
-    <ClCompile Include="src\gl\palette.cpp" />
-    <ClCompile Include="src\gl\renderable.cpp" />
-    <ClCompile Include="src\gl\renderer.cpp" />
-    <ClCompile Include="src\gl\shader.cpp" />
-    <ClCompile Include="src\gl\text_ui.cpp" />
-    <ClCompile Include="src\gl\vertex_array.cpp" />
-    <ClCompile Include="src\gl\vertex_buffer.cpp" />
-    <ClCompile Include="src\input\keyboard.cpp" />
-    <ClCompile Include="src\input\mouse.cpp" />
-    <ClCompile Include="src\input\window.cpp" />
-    <ClCompile Include="src\memory\pool.cpp" />
-    <ClCompile Include="src\memory\std_stream_buffer.cpp" />
-    <ClCompile Include="src\memory\stream.cpp" />
-    <ClCompile Include="src\memory\string_stream_buffer.cpp" />
-    <ClCompile Include="src\memory\text_stream.cpp" />
-    <ClCompile Include="src\physics\collider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\flecs-4.1.5\distr\flecs.h" />
@@ -361,65 +310,6 @@
     <ClInclude Include="glew\include\GL\glxew.h" />
     <ClInclude Include="glew\include\GL\wglew.h" />
     <ClInclude Include="glfw\include\GLFW\glfw3.h" />
-    <ClInclude Include="src\data\json_utils.hpp" />
-    <ClInclude Include="src\game\bullet.hpp" />
-    <ClInclude Include="src\game\firespread.hpp" />
-    <ClInclude Include="src\game\firetrap.hpp" />
-    <ClInclude Include="src\game\jumper.hpp" />
-    <ClInclude Include="src\game\game_manager.hpp" />
-    <ClInclude Include="src\game\level_layout.hpp" />
-    <ClInclude Include="src\game\map_controller.hpp" />
-    <ClInclude Include="src\game\PerlinNoise.hpp" />
-    <ClInclude Include="src\game\platform.hpp" />
-    <ClInclude Include="src\game\player_controller.hpp" />
-    <ClInclude Include="src\game\player_instance.hpp" />
-    <ClInclude Include="src\data\prefab_json.hpp" />
-    <ClInclude Include="src\data\prefab_json_parsers.hpp" />
-    <ClInclude Include="src\data\prefab_json_registry.hpp" />
-    <ClInclude Include="src\ecs\flecs_runtime.hpp" />
-    <ClInclude Include="src\game\smoke.hpp" />
-    <ClInclude Include="src\game\turret.hpp" />
-    <ClInclude Include="src\config.hpp" />
-    <ClInclude Include="src\data\asset.hpp" />
-    <ClInclude Include="src\data\handle.hpp" />
-    <ClInclude Include="src\data\manager.hpp" />
-    <ClInclude Include="src\data\model.hpp" />
-    <ClInclude Include="src\data\qb_parser.hpp" />
-    <ClInclude Include="src\data\data-shader.hpp" />
-    <ClInclude Include="src\data\text.hpp" />
-    <ClInclude Include="src\ecs\behaviour.hpp" />
-    <ClInclude Include="src\ecs\entity.hpp" />
-    <ClInclude Include="src\ecs\transform.hpp" />
-    <ClInclude Include="src\event.hpp" />
-    <ClInclude Include="src\gl\camera.hpp" />
-    <ClInclude Include="src\gl\debug.hpp" />
-    <ClInclude Include="src\gl\image_ui.hpp" />
-    <ClInclude Include="src\gl\index_buffer.hpp" />
-    <ClInclude Include="src\gl\light.hpp" />
-    <ClInclude Include="src\gl\matrix.hpp" />
-    <ClInclude Include="src\gl\palette.hpp" />
-    <ClInclude Include="src\gl\renderable.hpp" />
-    <ClInclude Include="src\gl\renderer.hpp" />
-    <ClInclude Include="src\gl\shader.hpp" />
-    <ClInclude Include="src\gl\stb_image.h" />
-    <ClInclude Include="src\gl\text_ui.hpp" />
-    <ClInclude Include="src\gl\usage.hpp" />
-    <ClInclude Include="src\gl\vertex_array.hpp" />
-    <ClInclude Include="src\gl\vertex_buffer.hpp" />
-    <ClInclude Include="src\input\keyboard.hpp" />
-    <ClInclude Include="src\input\mouse.hpp" />
-    <ClInclude Include="src\input\window.hpp" />
-    <ClInclude Include="src\memory\endianness.hpp" />
-    <ClInclude Include="src\memory\pool.hpp" />
-    <ClInclude Include="src\memory\std_stream_buffer.hpp" />
-    <ClInclude Include="src\memory\stream.hpp" />
-    <ClInclude Include="src\memory\stream_buffer.hpp" />
-    <ClInclude Include="src\memory\string_stream_buffer.hpp" />
-    <ClInclude Include="src\memory\text_stream.hpp" />
-    <ClInclude Include="src\physics\aabb.hpp" />
-    <ClInclude Include="src\physics\collider.hpp" />
-    <ClInclude Include="src\physics\manifold.hpp" />
-    <ClInclude Include="src\physics\sphere.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\level\levels.json" />
@@ -460,6 +350,12 @@
     <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\mixin.inl" />
     <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\system_mixin.inl" />
     <None Include="vpg.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CoreLib\CoreLib.vcxproj">
+      <Project>{cbc11248-bd02-43d6-9d3c-2852bacf126c}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

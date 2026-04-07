@@ -77,8 +77,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -95,8 +95,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -111,8 +111,8 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -129,8 +129,8 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)CoreLib\include;$(SolutionDir)CoreLib\src\game;$(SolutionDir)CoreLib\external\rapidjson-1.1.0\include;$(SolutionDir)CoreLib\external;$(SolutionDir)CoreLib\external\flecs-4.1.5\include;$(SolutionDir)CoreLib\src;$(SolutionDir)CoreLib\external\freetype\freetype-2.14.3\include;$(SolutionDir)CoreLib\external\glm;$(SolutionDir)CoreLib\external\GLFW\include;$(SolutionDir)CoreLib\external\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -138,20 +138,62 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="pch.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CoreLib.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ClCompile Include="src\client_program.cpp" />
+    <ClCompile Include="external\flecs-4.1.5\distr\flecs.c" />
+    <ClCompile Include="src\game\bullet.cpp" />
+    <ClCompile Include="src\game\firespread.cpp" />
+    <ClCompile Include="src\game\firetrap.cpp" />
+    <ClCompile Include="src\game\jumper.cpp" />
+    <ClCompile Include="src\game\level_layout.cpp" />
+    <ClCompile Include="src\game\load.cpp" />
+    <ClCompile Include="src\game\game_manager.cpp" />
+    <ClCompile Include="src\data\prefab_json.cpp" />
+    <ClCompile Include="src\ecs\flecs_runtime.cpp" />
+    <ClCompile Include="src\game\runtime\scene_state.cpp" />
+    <ClCompile Include="src\game\map_controller.cpp" />
+    <ClCompile Include="src\game\platform.cpp" />
+    <ClCompile Include="src\game\player_controller.cpp" />
+    <ClCompile Include="src\game\player_instance.cpp" />
+    <ClCompile Include="src\game\scene_manifest.cpp" />
+    <ClCompile Include="src\game\smoke.cpp" />
+    <ClCompile Include="src\game\turret.cpp" />
+    <ClCompile Include="src\config.cpp" />
+    <ClCompile Include="src\data\asset.cpp" />
+    <ClCompile Include="src\data\handle.cpp" />
+    <ClCompile Include="src\data\manager.cpp" />
+    <ClCompile Include="src\data\model.cpp" />
+    <ClCompile Include="src\data\qb_parser.cpp" />
+    <ClCompile Include="src\data\data-shader.cpp" />
+    <ClCompile Include="src\data\text.cpp" />
+    <ClCompile Include="src\ecs\behaviour.cpp" />
+    <ClCompile Include="src\ecs\entity.cpp" />
+    <ClCompile Include="src\ecs\transform.cpp" />
+    <ClCompile Include="src\gl\camera.cpp" />
+    <ClCompile Include="src\gl\debug.cpp" />
+    <ClCompile Include="src\gl\image_ui.cpp" />
+    <ClCompile Include="src\gl\index_buffer.cpp" />
+    <ClCompile Include="src\gl\light.cpp" />
+    <ClCompile Include="src\gl\matrix.cpp" />
+    <ClCompile Include="src\gl\palette.cpp" />
+    <ClCompile Include="src\gl\renderable.cpp" />
+    <ClCompile Include="src\gl\renderer.cpp" />
+    <ClCompile Include="src\gl\shader.cpp" />
+    <ClCompile Include="src\gl\text_ui.cpp" />
+    <ClCompile Include="src\gl\vertex_array.cpp" />
+    <ClCompile Include="src\gl\vertex_buffer.cpp" />
+    <ClCompile Include="src\input\keyboard.cpp" />
+    <ClCompile Include="src\input\mouse.cpp" />
+    <ClCompile Include="src\input\window.cpp" />
+    <ClCompile Include="src\memory\pool.cpp" />
+    <ClCompile Include="src\memory\std_stream_buffer.cpp" />
+    <ClCompile Include="src\memory\stream.cpp" />
+    <ClCompile Include="src\memory\string_stream_buffer.cpp" />
+    <ClCompile Include="src\memory\text_stream.cpp" />
+    <ClCompile Include="src\physics\collider.cpp" />
+  </ItemGroup>
 </Project>
