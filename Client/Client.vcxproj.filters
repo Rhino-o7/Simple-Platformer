@@ -153,10 +153,10 @@
     <ClCompile Include="src\entry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\runtime\flecs_impl.cpp">
+    <ClCompile Include="src\ecs\flecs_impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\runtime\flecs_runtime.cpp">
+    <ClCompile Include="src\ecs\flecs_runtime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\game\runtime\scene_state.cpp">
@@ -165,7 +165,13 @@
     <ClCompile Include="src\game\scene_manifest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="flecs-4.1.5\distr\flecs.c">
+    <ClCompile Include="external\flecs-4.1.5\distr\flecs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\level_layout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\data\prefab_json.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -344,491 +350,614 @@
     <ClInclude Include="glew\include\GL\wglew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\impl\field.hpp">
+    <ClInclude Include="src\ecs\flecs_runtime.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\impl\iter.hpp">
+    <ClInclude Include="external\flecs-4.1.5\distr\flecs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\impl\world.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\alerts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\builder_i.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\app.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\component.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\c_types.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\app\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\delegate.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\app\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\component\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\entity_component_tuple.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\entity_view.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\field.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\flecs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\impl\field.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\impl\iter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\impl\world.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\iter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\lifecycle_traits.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\id\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\log.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\id\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\builder_i.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\cursor.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\app\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\opaque.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\app\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\component\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\module\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\builder_i.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\event\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\event\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\event\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\builder_i.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\id\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\id\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\json\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\cursor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\builder_i.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\opaque.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\rest\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\rest\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\script\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\script\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\module\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\script\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\stats\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\builder_i.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\stats\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\builder_i.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\builder_i.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\builder_i.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\query\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\query\builder_i.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\query\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\query\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\units\decl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\rest\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\units\impl.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\rest\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\array.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\script\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\script\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\enum.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\script\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\function_traits.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\stats\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\iterable.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\stats\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\node_builder.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\system\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\signature.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\system\builder_i.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\string.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\system\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\stringstream.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\system\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\utils\utils.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\term\builder_i.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\c_types.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\term\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\component.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\term\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\delegate.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\entity.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\entity_component_tuple.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\units\decl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\entity_view.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\units\impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\field.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\pair.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\flecs.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\ref.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\iter.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\table.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\lifecycle_traits.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\type.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\log.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\array.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\pair.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\ref.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\enum.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\table.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\function_traits.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\type.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\iterable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\cpp\world.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\node_builder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\alerts.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\signature.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\app.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\string.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\deprecated.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\stringstream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\doc.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\utils\utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\flecs_c.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\cpp\world.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\flecs_cpp.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\deprecated.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\http.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\doc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\json.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\flecs_c.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\log.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\flecs_cpp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\meta.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\http.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\meta_c.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\json.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\metrics.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\module.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\meta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\os_api_impl.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\meta_c.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\pipeline.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\metrics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\rest.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\script.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\os_api_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\script_math.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\stats.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\rest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\system.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\script.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\timer.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\script_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\addons\units.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\stats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\allocator.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\bitset.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\block_allocator.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\addons\units.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\hashmap.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\bake_config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\map.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\allocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\sparse.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\bitset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\stack_allocator.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\block_allocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\strbuf.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\hashmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\datastructures\vec.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\private\addons.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\sparse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_defines.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\stack_allocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_flags.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\strbuf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_internals.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\datastructures\vec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_support.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\os_api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\private\api_types.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\private\addons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\bake_config.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\private\api_defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs\os_api.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\private\api_flags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flecs-4.1.5\include\flecs.h">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\private\api_internals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\runtime\flecs_runtime.hpp">
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\private\api_support.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\flecs-4.1.5\include\flecs\private\api_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\allocators.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\document.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\encodedstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\encodings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\error\en.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\error\error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\filereadstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\filewritestream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\fwd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\biginteger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\diyfp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\dtoa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\ieee754.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\itoa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\meta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\pow10.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\regex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\strfunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\strtod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\internal\swap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\istreamwrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\memorybuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\memorystream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\msinttypes\inttypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\msinttypes\stdint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\ostreamwrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\pointer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\prettywriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\rapidjson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\schema.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\stringbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\rapidjson-1.1.0\include\rapidjson\writer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\data\json_utils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\level_layout.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\data\prefab_json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\data\prefab_json_parsers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\data\prefab_json_registry.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\entity_view.inl">
+    <None Include="data\level\levels.json" />
+    <None Include="data\scene\main.json" />
+    <None Include="data\scene\prefabs.json" />
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\entity_view.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\alerts\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\app\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\app\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\component\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\component\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\entity_builder.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\entity_builder.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\entity_view.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\doc\entity_view.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\entity\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\entity_view.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\entity_view.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\enum\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\entity_builder.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\event\entity_builder.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\entity_view.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\event\entity_view.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\event\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\event\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\id\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\id\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity_builder.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity_builder.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity_view.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\json\entity_view.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\iterable.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\json\iterable.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\query.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\json\query.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\json\world.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\json\world.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\component.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\component.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\entity_builder.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\entity_builder.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\untyped_component.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\untyped_component.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\world.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\meta\world.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\untyped_component.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\metrics\untyped_component.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\module\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\module\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\observer\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\pipeline\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\query\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\query\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\script\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\script\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\system\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\system\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\term\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\term\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\system_mixin.inl">
+    <None Include="external\flecs-4.1.5\include\flecs\addons\cpp\mixins\timer\system_mixin.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="data\scene\scenes.json" />
+    <None Include="vpg.cfg" />
   </ItemGroup>
 </Project>
-
-
-

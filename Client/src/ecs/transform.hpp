@@ -31,7 +31,7 @@ namespace vpg::ecs {
         void set_scale(const glm::vec3& scale);
 
         void look_at(const glm::vec3& point, const glm::vec3& up);
-        
+
         inline Entity get_parent() const { return this->parent; }
         inline Entity get_child() const { return this->child; }
         inline Entity get_next() const { return this->next; }
@@ -46,7 +46,7 @@ namespace vpg::ecs {
         inline const glm::vec3& get_forward() const { return this->forward; }
         inline const glm::vec3& get_right() const { return this->right; }
         inline const glm::vec3& get_up() const { return this->up; }
-        
+
         glm::mat4 get_global();
         const glm::mat4& get_local();
 
@@ -54,6 +54,7 @@ namespace vpg::ecs {
         void set_dirty();
 
     private:
+        flecs::world* world;
         Entity entity, parent, child, next;
         glm::vec3 position, global_position, scale;
         glm::vec3 forward, right, up;

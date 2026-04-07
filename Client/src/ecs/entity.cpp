@@ -25,15 +25,15 @@ vpg::ecs::Entity vpg::ecs::create_entity() {
         abort();
     }
 
-    return (Entity)g_world->entity().id();
+    return g_world->entity().id();
 }
 
 void vpg::ecs::destroy_entity(Entity entity) {
-    if (g_world == nullptr || entity == NullEntity || !g_world->is_alive((flecs::entity_t)entity)) {
+    if (g_world == nullptr || entity == NullEntity || !g_world->is_alive(entity)) {
         return;
     }
 
-    g_world->entity((flecs::entity_t)entity).destruct();
+    g_world->entity(entity).destruct();
 }
 
 bool vpg::ecs::add_component(Entity entity, vpg::memory::Stream& stream) {
@@ -44,7 +44,16 @@ bool vpg::ecs::add_component(Entity entity, vpg::memory::Stream& stream) {
         if (!info.deserialize(stream) || stream.failed()) {
             return false;
         }
-        vpg::ecs::add_component<Transform>(entity, info);
+        if (g_world == nullptr || entity == NullEntity) {
+            std::cerr << "vpg::ecs::add_component() failed:\n"
+                      << "World not bound or entity is null\n";
+            return false;
+        }
+        auto e = g_world->entity(entity);
+        if (e.has<Transform>()) {
+            e.remove<Transform>();
+        }
+        e.emplace<Transform>(entity, info);
         return true;
     }
 
@@ -53,7 +62,16 @@ bool vpg::ecs::add_component(Entity entity, vpg::memory::Stream& stream) {
         if (!info.deserialize(stream) || stream.failed()) {
             return false;
         }
-        vpg::ecs::add_component<Behaviour>(entity, info);
+        if (g_world == nullptr || entity == NullEntity) {
+            std::cerr << "vpg::ecs::add_component() failed:\n"
+                      << "World not bound or entity is null\n";
+            return false;
+        }
+        auto e = g_world->entity(entity);
+        if (e.has<Behaviour>()) {
+            e.remove<Behaviour>();
+        }
+        e.emplace<Behaviour>(entity, info);
         return true;
     }
 
@@ -62,7 +80,16 @@ bool vpg::ecs::add_component(Entity entity, vpg::memory::Stream& stream) {
         if (!info.deserialize(stream) || stream.failed()) {
             return false;
         }
-        vpg::ecs::add_component<vpg::physics::Collider>(entity, info);
+        if (g_world == nullptr || entity == NullEntity) {
+            std::cerr << "vpg::ecs::add_component() failed:\n"
+                      << "World not bound or entity is null\n";
+            return false;
+        }
+        auto e = g_world->entity(entity);
+        if (e.has<vpg::physics::Collider>()) {
+            e.remove<vpg::physics::Collider>();
+        }
+        e.emplace<vpg::physics::Collider>(entity, info);
         return true;
     }
 
@@ -71,7 +98,16 @@ bool vpg::ecs::add_component(Entity entity, vpg::memory::Stream& stream) {
         if (!info.deserialize(stream) || stream.failed()) {
             return false;
         }
-        vpg::ecs::add_component<vpg::gl::Camera>(entity, info);
+        if (g_world == nullptr || entity == NullEntity) {
+            std::cerr << "vpg::ecs::add_component() failed:\n"
+                      << "World not bound or entity is null\n";
+            return false;
+        }
+        auto e = g_world->entity(entity);
+        if (e.has<vpg::gl::Camera>()) {
+            e.remove<vpg::gl::Camera>();
+        }
+        e.emplace<vpg::gl::Camera>(entity, info);
         return true;
     }
 
@@ -80,7 +116,16 @@ bool vpg::ecs::add_component(Entity entity, vpg::memory::Stream& stream) {
         if (!info.deserialize(stream) || stream.failed()) {
             return false;
         }
-        vpg::ecs::add_component<vpg::gl::Light>(entity, info);
+        if (g_world == nullptr || entity == NullEntity) {
+            std::cerr << "vpg::ecs::add_component() failed:\n"
+                      << "World not bound or entity is null\n";
+            return false;
+        }
+        auto e = g_world->entity(entity);
+        if (e.has<vpg::gl::Light>()) {
+            e.remove<vpg::gl::Light>();
+        }
+        e.emplace<vpg::gl::Light>(entity, info);
         return true;
     }
 
@@ -89,7 +134,16 @@ bool vpg::ecs::add_component(Entity entity, vpg::memory::Stream& stream) {
         if (!info.deserialize(stream) || stream.failed()) {
             return false;
         }
-        vpg::ecs::add_component<vpg::gl::Renderable>(entity, info);
+        if (g_world == nullptr || entity == NullEntity) {
+            std::cerr << "vpg::ecs::add_component() failed:\n"
+                      << "World not bound or entity is null\n";
+            return false;
+        }
+        auto e = g_world->entity(entity);
+        if (e.has<vpg::gl::Renderable>()) {
+            e.remove<vpg::gl::Renderable>();
+        }
+        e.emplace<vpg::gl::Renderable>(entity, info);
         return true;
     }
 

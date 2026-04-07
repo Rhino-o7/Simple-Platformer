@@ -26,7 +26,7 @@ bool Transform::Info::serialize(memory::Stream& stream) const {
 }
 
 bool Transform::Info::deserialize(memory::Stream& stream) {
-    this->parent = (Entity)stream.read_ref();
+    this->parent = stream.read_ref();
     this->position.x = stream.read_f32();
     this->position.y = stream.read_f32();
     this->position.z = stream.read_f32();
@@ -41,6 +41,7 @@ bool Transform::Info::deserialize(memory::Stream& stream) {
 }
 
 Transform::Transform(Entity entity, const Info& create_info) {
+    this->world = get_world();
     this->entity = entity;
     this->parent = NullEntity;
     this->child = NullEntity;
@@ -65,20 +66,21 @@ void Transform::set_parent(Entity parent) {
         return;
     }
 
-    if (this->parent != NullEntity) {
-        auto p_transform = get_component<Transform>(this->parent);
+    if (this->parent != NullEntity && this->world != nullptr) {
+        auto p_transform = this->world->entity(this->parent).try_get_mut<Transform>();
         if (p_transform != nullptr) {
-            auto c = get_component<Transform>(p_transform->child);
+            auto c = this->world->entity(p_transform->child).try_get_mut<Transform>();
             if (c == this) {
                 p_transform->child = c->next;
             }
             else {
                 for (;;) {
-                    auto n = get_component<Transform>(c->next);
+                    auto n = this->world->entity(c->next).try_get_mut<Transform>();
                     if (n == this) {
                         c->next = this->next;
                         break;
                     }
+                    c = n;
                 }
             }
         }
@@ -86,10 +88,12 @@ void Transform::set_parent(Entity parent) {
 
     this->parent = parent;
 
-    if (this->parent != NullEntity) {
-        auto p_transform = get_component<Transform>(this->parent);
-        this->next = p_transform->child;
-        p_transform->child = this->entity;
+    if (this->parent != NullEntity && this->world != nullptr) {
+        auto p_transform = this->world->entity(this->parent).try_get_mut<Transform>();
+        if (p_transform != nullptr) {
+            this->next = p_transform->child;
+            p_transform->child = this->entity;
+        }
     }
 
     this->set_dirty();
@@ -115,12 +119,14 @@ void Transform::set_scale(const glm::vec3& scale) {
 
 void Transform::look_at(const glm::vec3& point, const glm::vec3& up) {
     glm::mat4 parent_global = glm::mat4(1.0f);
-    if (this->parent != NullEntity) {
-        auto parent = get_component<Transform>(this->parent);
+    if (this->parent != NullEntity && this->world != nullptr) {
+        auto parent = this->world->entity(this->parent).try_get_mut<Transform>();
         if (parent == nullptr) {
             this->parent = NullEntity;
         }
-        parent_global = parent->get_global();
+        else {
+            parent_global = parent->get_global();
+        }
     }
 
     glm::vec3 local_point = glm::inverse(parent_global) * glm::vec4(point, 1.0f);
@@ -170,12 +176,13 @@ void Transform::update() {
         this->global_position = this->position;
         this->global_rotation = this->rotation;
     }
-    else {
-        auto parent = get_component<Transform>(this->parent);
-        assert(parent != nullptr);
-        this->global = parent->get_global() * this->local;
-        this->global_position = this->global * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        this->global_rotation = glm::normalize(parent->global_rotation * this->rotation);
+    else if (this->world != nullptr) {
+        auto parent = this->world->entity(this->parent).try_get_mut<Transform>();
+        if (parent != nullptr) {
+            this->global = parent->get_global() * this->local;
+            this->global_position = this->global * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            this->global_rotation = glm::normalize(parent->global_rotation * this->rotation);
+        }
     }
 
     this->dirty = false;
@@ -188,17 +195,24 @@ void Transform::set_dirty() {
 
     this->dirty = true;
 
-    if (this->child == NullEntity) {
+    if (this->child == NullEntity || this->world == nullptr) {
         return;
     }
 
-    auto c = get_component<Transform>(this->child);
+    auto c = this->world->entity(this->child).try_get_mut<Transform>();
+    if (c == nullptr) {
+        return;
+    }
+
     for (;;) {
         c->set_dirty();
         if (c->next == NullEntity) {
             break;
         }
-        c = get_component<Transform>(c->next);
+        c = this->world->entity(c->next).try_get_mut<Transform>();
+        if (c == nullptr) {
+            break;
+        }
     }
 }
 

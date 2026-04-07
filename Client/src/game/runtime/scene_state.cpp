@@ -14,11 +14,11 @@ bool game::runtime::SceneState::deserialize(memory::Stream& stream) {
 
     uint32_t count = stream.read_u32();
     stream.push_ref_map();
+    auto world = get_world();
     for (uint32_t i = 0; i < count; ++i) {
         auto entity = create_entity();
-        auto world = get_world();
         if (world != nullptr) {
-            world->entity((flecs::entity_t)entity).add<game::runtime::SceneOwned>();
+            world->entity(entity).add<game::runtime::SceneOwned>();
         }
         this->entities.insert(entity);
         stream.add_ref_map(entity, (int64_t)i);
@@ -43,11 +43,11 @@ bool game::runtime::SceneState::deserialize(memory::Stream& stream) {
 Entity game::runtime::SceneState::deserialize_tree(memory::Stream& stream) {
     uint32_t count = stream.read_u32();
     stream.push_ref_map();
+    auto world = get_world();
     for (uint32_t i = 0; i < count; ++i) {
         auto entity = create_entity();
-        auto world = get_world();
         if (world != nullptr) {
-            world->entity((flecs::entity_t)entity).add<game::runtime::SceneOwned>();
+            world->entity(entity).add<game::runtime::SceneOwned>();
         }
         stream.add_ref_map(entity, (int64_t)i);
     }

@@ -67,14 +67,14 @@ namespace vpg::ecs {
         IBehaviour* behaviour;
 
         static std::map<std::string, std::function<IBehaviour::Info*()>> info_constructors;
-        static std::map<std::string, std::function<IBehaviour*(Entity, const IBehaviour::Info*)>> constructors;
+        static std::map<std::string, std::function<IBehaviour*(flecs::entity_t, const IBehaviour::Info*)>> constructors;
     };
 
     template<typename T>
     inline void Behaviour::register_type() {
         static_assert(std::is_base_of<IBehaviour, T>::value);
         static_assert(std::is_base_of<IBehaviour::Info, typename T::Info>::value);
-        
+
         if (Behaviour::constructors.find(T::TypeName) != Behaviour::constructors.end()) {
             std::cerr << "vpg::ecs::Behaviour::register_type() failed:\n"
                       << "Behaviour type already registered\n";
@@ -85,7 +85,7 @@ namespace vpg::ecs {
             return new typename T::Info();
         });
 
-        Behaviour::constructors.emplace(T::TypeName, [](Entity entity, const IBehaviour::Info* create_info) -> IBehaviour* {
+        Behaviour::constructors.emplace(T::TypeName, [](flecs::entity_t entity, const IBehaviour::Info* create_info) -> IBehaviour* {
             return new T(entity, *((const typename T::Info*)create_info));
         });
     }

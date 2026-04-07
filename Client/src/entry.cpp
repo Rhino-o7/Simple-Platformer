@@ -20,7 +20,7 @@
 #include <gl/renderer.hpp>
 #include <gl/debug.hpp>
 
-#include <game/runtime/flecs_runtime.hpp>
+#include <ecs/flecs_runtime.hpp>
 #include <game/runtime/scene_state.hpp>
 #include <game/game_manager.hpp>
 

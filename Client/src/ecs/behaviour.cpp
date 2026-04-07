@@ -3,7 +3,7 @@
 using namespace vpg::ecs;
 
 std::map<std::string, std::function<IBehaviour::Info*()>> Behaviour::info_constructors;
-std::map<std::string, std::function<IBehaviour*(Entity, const IBehaviour::Info*)>> Behaviour::constructors;
+std::map<std::string, std::function<IBehaviour*(flecs::entity_t, const IBehaviour::Info*)>> Behaviour::constructors;
 
 Behaviour::Info::Info() {
     this->info = nullptr;

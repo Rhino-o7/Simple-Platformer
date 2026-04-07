@@ -150,8 +150,7 @@
     <ClCompile Include="src\game\load.cpp" />
     <ClCompile Include="src\game\game_manager.cpp" />
     <ClCompile Include="src\data\prefab_json.cpp" />
-    <ClCompile Include="src\game\runtime\flecs_impl.cpp" />
-    <ClCompile Include="src\game\runtime\flecs_runtime.cpp" />
+    <ClCompile Include="src\ecs\flecs_runtime.cpp" />
     <ClCompile Include="src\game\runtime\scene_state.cpp" />
     <ClCompile Include="src\game\map_controller.cpp" />
     <ClCompile Include="src\game\platform.cpp" />
@@ -377,7 +376,7 @@
     <ClInclude Include="src\data\prefab_json.hpp" />
     <ClInclude Include="src\data\prefab_json_parsers.hpp" />
     <ClInclude Include="src\data\prefab_json_registry.hpp" />
-    <ClInclude Include="src\game\runtime\flecs_runtime.hpp" />
+    <ClInclude Include="src\ecs\flecs_runtime.hpp" />
     <ClInclude Include="src\game\smoke.hpp" />
     <ClInclude Include="src\game\turret.hpp" />
     <ClInclude Include="src\config.hpp" />

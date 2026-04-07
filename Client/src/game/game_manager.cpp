@@ -18,29 +18,39 @@ namespace {
             stack.pop_back();
 
             out_entities.insert(current);
-            if (world != nullptr) {
-                world->entity((flecs::entity_t)current).add<game::runtime::SceneOwned>();
+            if (world != nullptr && world->is_alive(current)) {
+                world->entity(current).add<game::runtime::SceneOwned>();
             }
 
-            auto transform = vpg::ecs::get_component<vpg::ecs::Transform>(current);
-            if (transform == nullptr) {
-                continue;
-            }
-
-            auto child = transform->get_child();
-            while (child != vpg::ecs::NullEntity) {
-                stack.push_back(child);
-                auto child_transform = vpg::ecs::get_component<vpg::ecs::Transform>(child);
-                if (child_transform == nullptr) {
-                    break;
+            if (world != nullptr && world->is_alive(current)) {
+                auto transform = world->entity(current).try_get_mut<vpg::ecs::Transform>();
+                if (transform == nullptr) {
+                    continue;
                 }
-                child = child_transform->get_next();
+
+                auto child = transform->get_child();
+                while (child != vpg::ecs::NullEntity) {
+                    stack.push_back(child);
+                    if (!world->is_alive(child)) {
+                        break;
+                    }
+                    auto child_transform = world->entity(child).try_get_mut<vpg::ecs::Transform>();
+                    if (child_transform == nullptr) {
+                        break;
+                    }
+                    child = child_transform->get_next();
+                }
             }
         }
     }
 
     void destroy_instance_children(vpg::ecs::Entity root, std::set<vpg::ecs::Entity>* scene_entities) {
-        auto transform = vpg::ecs::get_component<vpg::ecs::Transform>(root);
+        auto world = vpg::ecs::get_world();
+        if (world == nullptr || !world->is_alive(root)) {
+            return;
+        }
+
+        auto transform = world->entity(root).try_get_mut<vpg::ecs::Transform>();
         if (transform == nullptr) {
             return;
         }
@@ -48,7 +58,10 @@ namespace {
         auto c = transform->get_child();
         while (c != vpg::ecs::NullEntity) {
             auto e = c;
-            auto child_transform = vpg::ecs::get_component<vpg::ecs::Transform>(e);
+            if (!world->is_alive(e)) {
+                break;
+            }
+            auto child_transform = world->entity(e).try_get_mut<vpg::ecs::Transform>();
             if (child_transform == nullptr) {
                 break;
             }
@@ -59,7 +72,7 @@ namespace {
                 scene_entities->erase(e);
             }
 
-            vpg::ecs::destroy_entity(e);
+            world->entity(e).destruct();
         }
     }
 }
@@ -147,17 +160,22 @@ ecs::Entity Manager::instance(data::Handle<data::Text> scene) {
 }
 
 void Manager::destroy_instance(ecs::Entity entity) {
+    auto world = vpg::ecs::get_world();
+    if (world == nullptr || !world->is_alive(entity)) {
+        return;
+    }
+
     if (Manager::scene != nullptr) {
         Manager::scene->entities.erase(entity);
     }
 
-    if (ecs::get_component<ecs::Transform>(entity) == nullptr) {
-        ecs::destroy_entity(entity);
+    if (world->entity(entity).try_get_mut<ecs::Transform>() == nullptr) {
+        world->entity(entity).destruct();
         return;
     }
 
     destroy_instance_children(entity, Manager::scene != nullptr ? &Manager::scene->entities : nullptr);
-    ecs::destroy_entity(entity);
+    world->entity(entity).destruct();
 }
 
 

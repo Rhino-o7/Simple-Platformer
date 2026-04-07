@@ -12,24 +12,45 @@
 #include <iostream>
 
 namespace vpg::ecs {
-    using Entity = int64_t;
-    constexpr Entity NullEntity = -1;
+    using Entity = flecs::entity_t;
+    constexpr Entity NullEntity = 0;
 
     flecs::world* get_world();
     void bind_world(flecs::world* world);
 
+    bool add_component(Entity entity, memory::Stream& stream);
+
     Entity create_entity();
     void destroy_entity(Entity entity);
 
+    // Direct FLECS access helpers
     template<typename T>
-    T& add_component(Entity entity, const typename T::Info& create_info);
-    bool add_component(Entity entity, memory::Stream& stream);
+    inline T* get_component(Entity entity) {
+        auto world = get_world();
+        if (world == nullptr || entity == NullEntity || !world->is_alive(entity)) {
+            return nullptr;
+        }
+
+        auto e = world->entity(entity);
+        if (!e.has<T>()) {
+            return nullptr;
+        }
+
+        return e.try_get_mut<T>();
+    }
 
     template<typename T>
-    void remove_component(Entity entity);
+    inline void remove_component(Entity entity) {
+        auto world = get_world();
+        if (world == nullptr || entity == NullEntity) {
+            return;
+        }
 
-    template<typename T>
-    T* get_component(Entity entity);
+        auto e = world->entity(entity);
+        if (e.has<T>()) {
+            e.remove<T>();
+        }
+    }
 
     template<typename T>
     inline T& add_component(Entity entity, const typename T::Info& create_info) {
@@ -40,41 +61,13 @@ namespace vpg::ecs {
             abort();
         }
 
-        auto e = world->entity((flecs::entity_t)entity);
+        auto e = world->entity(entity);
         if (e.has<T>()) {
             e.remove<T>();
         }
 
         e.emplace<T>(entity, create_info);
-        return *e.template try_get_mut<T>();
-    }
-
-    template<typename T>
-    inline void remove_component(Entity entity) {
-        auto world = get_world();
-        if (world == nullptr || entity == NullEntity) {
-            return;
-        }
-
-        auto e = world->entity((flecs::entity_t)entity);
-        if (e.has<T>()) {
-            e.remove<T>();
-        }
-    }
-
-    template<typename T>
-    inline T* get_component(Entity entity) {
-        auto world = get_world();
-        if (world == nullptr || entity == NullEntity || !world->is_alive((flecs::entity_t)entity)) {
-            return nullptr;
-        }
-
-        auto e = world->entity((flecs::entity_t)entity);
-        if (!e.has<T>()) {
-            return nullptr;
-        }
-
-        return e.template try_get_mut<T>();
+        return *e.try_get_mut<T>();
     }
 }
 

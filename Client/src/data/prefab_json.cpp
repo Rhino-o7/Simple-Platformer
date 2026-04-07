@@ -31,6 +31,12 @@ vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::st
         return vpg::ecs::NullEntity;
     }
 
+    auto world = vpg::ecs::get_world();
+    if (world == nullptr) {
+        error = "Flecs world not bound";
+        return vpg::ecs::NullEntity;
+    }
+
     auto entities_field = get_field(root, "entities");
     if (entities_field == nullptr || !entities_field->IsArray() || entities_field->Empty()) {
         error = "Prefab JSON must contain non-empty 'entities' array";
@@ -57,7 +63,7 @@ vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::st
         }
 
         if (entities.find(id) == entities.end()) {
-            entities[id] = vpg::ecs::create_entity();
+            entities[id] = world->entity().id();
         }
     }
 
@@ -100,7 +106,7 @@ vpg::ecs::Entity game::prefab_json::instantiate(const std::string& json, std::st
             return vpg::ecs::NullEntity;
         }
 
-        auto t = vpg::ecs::get_component<vpg::ecs::Transform>(entity);
+        auto t = world->entity(entity).try_get_mut<vpg::ecs::Transform>();
         if (t == nullptr) {
             error = "Missing transform while applying parent";
             return vpg::ecs::NullEntity;

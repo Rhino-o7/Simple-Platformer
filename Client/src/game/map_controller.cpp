@@ -158,6 +158,11 @@ ecs::Entity MapController::spawn_prefab(const std::string& key) {
 }
 
 void MapController::gen_level() {
+    auto world = vpg::ecs::get_world();
+    if (world == nullptr) {
+        return;
+    }
+
     for (auto& e : this->level) {
         Manager::destroy_instance(e);
     }
@@ -183,8 +188,8 @@ void MapController::gen_level() {
     }
     this->player->controller->seed = seed;
 
-    auto exit = ecs::get_component<ecs::Transform>(this->exit);
-    if (exit == nullptr) {
+    auto exit_transform = world->entity(this->exit).try_get_mut<ecs::Transform>();
+    if (exit_transform == nullptr) {
         return;
     }
 
@@ -194,7 +199,7 @@ void MapController::gen_level() {
             continue;
         }
 
-        auto transform = ecs::get_component<ecs::Transform>(e);
+        auto transform = world->entity(e).try_get_mut<ecs::Transform>();
         if (transform != nullptr) {
             if (spawn.has_position) {
                 transform->set_position(spawn.position);
@@ -236,7 +241,7 @@ void MapController::gen_level() {
     }
 
     if (level_definition->has_exit) {
-        exit->set_position(level_definition->exit_position);
+        exit_transform->set_position(level_definition->exit_position);
     }
 
     if (level_definition->has_player_distance) {
