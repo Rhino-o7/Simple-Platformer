@@ -6,17 +6,44 @@
 
 #include <data/manager.hpp>
 #include <ecs/transform.hpp>
+#include <corelib/net/websocket.hpp>
+#include <input/keyboard.hpp>
 
 #include "PerlinNoise.hpp"
 
 #include <random>
 #include <iostream>
+#include <algorithm>
+#include <fstream>
+
+using input::Keyboard;
+using Key = Keyboard::Key;
 
 namespace {
     template<typename T>
     T* get_behaviour(vpg::ecs::Entity e) {
         auto b = vpg::ecs::get_component<vpg::ecs::Behaviour>(e);
         return b != nullptr ? dynamic_cast<T*>(b->get()) : nullptr;
+    }
+
+    int load_local_level_save() {
+        const auto save_path = corelib::net::path_in_executable_directory("client_save.txt");
+        std::ifstream in(save_path);
+        int level = 1;
+        if (in >> level && level > 0) {
+            return level;
+        }
+        return 1;
+    }
+
+    void save_local_level(int level) {
+        const auto save_path = corelib::net::path_in_executable_directory("client_save.txt");
+        std::ofstream out(save_path, std::ios::trunc);
+        if (!out.is_open()) {
+            return;
+        }
+
+        out << std::max(1, level) << '\n';
     }
 }
 
@@ -91,6 +118,13 @@ MapController::MapController(vpg::ecs::Entity entity, const Info& info) {
     this->level_num = 0;
     this->pending_respawn = false;
     this->pending_next_level = false;
+    this->save_key_was_down = false;
+    this->network_level = 1;
+    this->network_respawn_revision = -1;
+
+    if (auto network = corelib::net::active_client(); network == nullptr || !network->connected()) {
+        this->level_num = std::max(0, load_local_level_save() - 1);
+    }
     this->gen_level();
 }
 
@@ -100,16 +134,64 @@ MapController::~MapController() {
 
 void MapController::on_kill_area_collision(const physics::Manifold& manifold) {
     (void)manifold;
+    if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
+        if (!this->pending_respawn) {
+            network->send_event("RESPAWN", 0);
+            this->pending_respawn = true;
+        }
+        return;
+    }
     this->pending_respawn = true;
 }
 
 void MapController::on_exit_area_collision(const physics::Manifold& manifold) {
     (void)manifold;
+    if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
+        if (!this->pending_next_level) {
+            network->send_event("NEXT_LEVEL", 1);
+            this->pending_next_level = true;
+        }
+        return;
+    }
     this->pending_next_level = true;
 }
 
 void MapController::update(float dt) {
     (void)dt;
+
+    if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
+        corelib::net::PlayerState state;
+        if (network->try_get_latest_state(state)) {
+            if (state.level != this->network_level) {
+                this->network_level = state.level;
+                this->level_num = std::max(0, state.level - 1);
+                this->gen_level();
+                this->pending_next_level = false;
+            }
+
+            if (this->network_respawn_revision != -1 && state.respawn_revision != this->network_respawn_revision) {
+                if (this->player != nullptr && this->player->controller != nullptr) {
+                    this->player->controller->respawn(this->player->spawn_position);
+                }
+                this->pending_respawn = false;
+            }
+
+            this->network_respawn_revision = state.respawn_revision;
+        }
+    }
+
+    const bool save_key_down = Keyboard::is_key_pressed(Key::F5);
+    if (save_key_down && !this->save_key_was_down) {
+        if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
+            network->send_event("SAVE", 0);
+            std::cout << "\nProgress save requested on server.";
+        }
+        else {
+            save_local_level(this->level_num + 1);
+            std::cout << "\nProgress saved locally at level " << (this->level_num + 1) << ".";
+        }
+    }
+    this->save_key_was_down = save_key_down;
 
     if (this->pending_next_level) {
         this->pending_next_level = false;
@@ -177,6 +259,11 @@ void MapController::gen_level() {
 
     std::cout << "\nLoading level " << (this->level_num + 1)
               << " (" << level_definition->name << ")\n";
+
+    if (auto network = corelib::net::active_client(); network == nullptr || !network->connected()) {
+        save_local_level(this->level_num + 1);
+    }
+
     std::random_device rd;  // a seed source for the random number engine
     std::mt19937 gen(rd()); // mersenne_twister_engine seeded with rd()
     std::uniform_int_distribution<> distrib(1, 12346);
@@ -250,6 +337,9 @@ void MapController::gen_level() {
 
     if (level_definition->has_player_timer) {
         player->controller->timer = level_definition->player_timer;
+        if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
+            network->send_event("SET_TIMER", level_definition->player_timer);
+        }
     }
 
     player->controller->level = this->level_num + 1;

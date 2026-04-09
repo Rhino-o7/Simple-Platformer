@@ -184,7 +184,7 @@ int corelib::run_client(int argc, char** argv) {
     return 0;
 }
 
-int corelib::run_network_client(int argc, char** argv, const char* uri) {
+int corelib::run_network_client(int argc, char** argv, const char* uri, bool reset_save) {
     corelib::net::GameClient client;
     corelib::net::set_active_client(&client);
     if (uri == nullptr || uri[0] == '\0') {
@@ -197,6 +197,10 @@ int corelib::run_network_client(int argc, char** argv, const char* uri) {
         corelib::net::set_active_client(nullptr);
         std::cerr << "Failed to connect to server: " << uri << '\n';
         return 1;
+    }
+
+    if (reset_save) {
+        client.send_event("RESET_SAVE", 0);
     }
 
     auto result = run_client(argc, argv);

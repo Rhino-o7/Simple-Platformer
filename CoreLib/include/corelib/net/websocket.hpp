@@ -8,9 +8,14 @@
 #include <websocketpp/client.hpp>
 
 #include <atomic>
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <condition_variable>
+#include <cstdlib>
+#include <cctype>
+#include <fstream>
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <map>
@@ -20,7 +25,29 @@
 #include <string>
 #include <thread>
 
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <Windows.h>
+#endif
+
 namespace corelib::net {
+    inline std::filesystem::path executable_directory() {
+#ifdef _WIN32
+        char module_path[MAX_PATH] = {};
+        const DWORD size = GetModuleFileNameA(nullptr, module_path, MAX_PATH);
+        if (size > 0) {
+            return std::filesystem::path(std::string(module_path, size)).parent_path();
+        }
+#endif
+        return std::filesystem::current_path();
+    }
+
+    inline std::string path_in_executable_directory(const char* filename) {
+        return (executable_directory() / filename).string();
+    }
+
     struct InputState {
         float move_x = 0.0f;
         float move_z = 0.0f;
@@ -39,6 +66,9 @@ namespace corelib::net {
         float wind = 0.0f;
         int health = 3;
         int seconds = 120;
+        int level = 1;
+        int respawn_revision = 0;
+        std::string profile_id;
         InputState input;
     };
 
@@ -51,7 +81,9 @@ namespace corelib::net {
             << state.z << ' '
             << state.wind << ' '
             << state.health << ' '
-            << state.seconds;
+            << state.seconds << ' '
+            << state.level << ' '
+            << state.respawn_revision;
         return out.str();
     }
 
@@ -72,6 +104,14 @@ namespace corelib::net {
             out_state.wind = 0.0f;
             out_state.health = 3;
             out_state.seconds = 120;
+            out_state.level = 1;
+            out_state.respawn_revision = 0;
+            return true;
+        }
+
+        if (!(in >> out_state.level >> out_state.respawn_revision)) {
+            out_state.level = 1;
+            out_state.respawn_revision = 0;
         }
         return !in.fail();
     }
@@ -84,6 +124,8 @@ namespace corelib::net {
             if (running_) {
                 return true;
             }
+
+            load_saved_progress();
 
             endpoint_.clear_access_channels(websocketpp::log::alevel::all);
             endpoint_.clear_error_channels(websocketpp::log::elevel::all);
@@ -109,6 +151,7 @@ namespace corelib::net {
                 std::lock_guard<std::mutex> lock(mutex_);
                 auto it = clients_.find(hdl);
                 if (it != clients_.end()) {
+                    persist_client_progress(it->second);
                     std::cout << "[SERVER] client disconnected id=" << it->second.id << '\n';
                 }
                 clients_.erase(hdl);
@@ -124,9 +167,6 @@ namespace corelib::net {
                 std::istringstream in(msg->get_payload());
                 std::string type;
                 in >> type;
-                if (type != "INPUT") {
-                    std::cout << "[CLIENT " << it->second.id << " -> SERVER] " << msg->get_payload() << '\n';
-                }
                 if (type == "INPUT") {
                     int jump = 0;
                     int sprint = 0;
@@ -134,13 +174,69 @@ namespace corelib::net {
                     it->second.input.jump = jump != 0;
                     it->second.input.sprint = sprint != 0;
                 }
+                else if (type == "HELLO") {
+                    std::string profile_id;
+                    in >> profile_id;
+                    if (profile_id.empty()) {
+                        return;
+                    }
+
+                    it->second.profile_id = profile_id;
+                    auto saved = saved_levels_.find(profile_id);
+                    if (saved != saved_levels_.end()) {
+                        it->second.level = saved->second;
+                        std::cout << "[SERVER] loaded save for '" << profile_id
+                                  << "' at level " << it->second.level << '\n';
+                    }
+                }
                 else if (type == "SPAWN") {
+                    std::cout << "[CLIENT " << it->second.id << " -> SERVER] " << msg->get_payload() << std::endl;
                     in >> it->second.x >> it->second.y >> it->second.z;
                     it->second.vy = 0.0f;
                     it->second.on_ground = false;
                     it->second.ground_y = it->second.y;
                     std::cout << "[SERVER] spawn set for client " << it->second.id
                               << " at (" << it->second.x << ", " << it->second.y << ", " << it->second.z << ")\n";
+                }
+                else if (type == "EVENT") {
+                    std::cout << "[CLIENT " << it->second.id << " -> SERVER] " << msg->get_payload() << std::endl;
+                    std::string event_type;
+                    int value = 0;
+                    in >> event_type >> value;
+
+                    if (event_type == "DAMAGE") {
+                        const int damage = std::max(1, value);
+                        it->second.health -= damage;
+                        if (it->second.health <= 0) {
+                            it->second.health = 3;
+                            it->second.respawn_revision += 1;
+                        }
+                    }
+                    else if (event_type == "RESPAWN") {
+                        it->second.respawn_revision += 1;
+                    }
+                    else if (event_type == "NEXT_LEVEL") {
+                        it->second.level += 1;
+                        it->second.respawn_revision += 1;
+                    }
+                    else if (event_type == "SET_TIMER") {
+                        if (value > 0) {
+                            it->second.seconds = value;
+                        }
+                    }
+                    else if (event_type == "RESET_SAVE") {
+                        it->second.level = 1;
+                        it->second.health = 3;
+                        it->second.seconds = 120;
+                        it->second.respawn_revision += 1;
+                        persist_client_progress(it->second);
+                    }
+                    else if (event_type == "SAVE") {
+                        persist_client_progress(it->second);
+                    }
+
+                    std::cout << "[CLIENT " << it->second.id << " -> SERVER] EVENT "
+                              << event_type << " " << value << "\n";
                 }
             });
 
@@ -165,6 +261,12 @@ namespace corelib::net {
             }
 
             running_ = false;
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                for (const auto& [_, state] : clients_) {
+                    persist_client_progress(state);
+                }
+            }
             try {
                 endpoint_.stop_listening();
                 endpoint_.stop();
@@ -185,6 +287,47 @@ namespace corelib::net {
         }
 
     private:
+        void load_saved_progress() {
+            std::lock_guard<std::mutex> lock(mutex_);
+            saved_levels_.clear();
+
+            std::ifstream file(save_file_path_);
+            if (!file.is_open()) {
+                return;
+            }
+
+            std::string profile;
+            int level = 1;
+            while (file >> profile >> level) {
+                if (!profile.empty() && level > 0) {
+                    saved_levels_[profile] = level;
+                }
+            }
+        }
+
+        void flush_saved_progress() {
+            std::ofstream file(save_file_path_, std::ios::trunc);
+            if (!file.is_open()) {
+                return;
+            }
+
+            for (const auto& [profile, level] : saved_levels_) {
+                file << profile << ' ' << level << '\n';
+            }
+        }
+
+        void persist_client_progress(const PlayerState& state) {
+            if (state.profile_id.empty()) {
+                return;
+            }
+
+            const int safe_level = std::max(1, state.level);
+            saved_levels_[state.profile_id] = safe_level;
+            flush_saved_progress();
+            std::cout << "[SERVER] saved progress for '" << state.profile_id
+                      << "' at level " << safe_level << '\n';
+        }
+
         void logic_loop() {
             using clock = std::chrono::steady_clock;
             auto last = clock::now();
@@ -200,17 +343,19 @@ namespace corelib::net {
                     second_accumulator_ -= 1.0f;
                 }
 
-                std::lock_guard<std::mutex> lock(mutex_);
-                for (auto& [hdl, state] : clients_) {
-                    if (elapsed_seconds > 0) {
-                        state.seconds = std::max(0, state.seconds - elapsed_seconds);
+                {
+                    std::lock_guard<std::mutex> lock(mutex_);
+                    for (auto& [hdl, state] : clients_) {
+                        if (elapsed_seconds > 0) {
+                            state.seconds = std::max(0, state.seconds - elapsed_seconds);
+                        }
+
+                        // Movement is client-authoritative for now.
+                        // Server keeps session/time state only.
+                        state.wind = 0.0f;
+
+                        endpoint_.send(hdl, serialize_state(state), websocketpp::frame::opcode::text);
                     }
-
-                    // Movement is client-authoritative for now.
-                    // Server keeps session/time state only.
-                    state.wind = 0.0f;
-
-                    endpoint_.send(hdl, serialize_state(state), websocketpp::frame::opcode::text);
                 }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -229,8 +374,10 @@ namespace corelib::net {
         std::thread logic_thread_;
         std::mutex mutex_;
         std::map<websocketpp::connection_hdl, PlayerState, HdlOwnerLess> clients_;
+        std::map<std::string, int> saved_levels_;
         int next_id_ = 0;
         float second_accumulator_ = 0.0f;
+        const std::string save_file_path_ = path_in_executable_directory("server_saves.txt");
     };
 
     class GameClient {
@@ -256,6 +403,11 @@ namespace corelib::net {
                 connection_ = hdl;
                 connected_ = true;
                 std::cout << "[CLIENT] connected\n";
+
+                std::ostringstream hello;
+                hello << "HELLO " << profile_id_;
+                websocketpp::lib::error_code ec;
+                endpoint_.send(connection_, hello.str(), websocketpp::frame::opcode::text, ec);
 
                 {
                     std::lock_guard<std::mutex> guard(connection_mutex_);
@@ -382,6 +534,21 @@ namespace corelib::net {
             }
         }
 
+        void send_event(const std::string& event_type, int value = 0) {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (!connected_) {
+                return;
+            }
+
+            std::ostringstream out;
+            out << "EVENT " << event_type << ' ' << value;
+            websocketpp::lib::error_code ec;
+            endpoint_.send(connection_, out.str(), websocketpp::frame::opcode::text, ec);
+            if (!ec) {
+                std::cout << "[CLIENT -> SERVER] " << out.str() << '\n';
+            }
+        }
+
         std::string last_message() const {
             std::lock_guard<std::mutex> lock(mutex_);
             return last_message_;
@@ -423,6 +590,59 @@ namespace corelib::net {
         }
 
     private:
+        static std::string default_profile_id() {
+            auto read_env = [](const char* name) {
+                std::string value;
+#ifdef _WIN32
+                char* buffer = nullptr;
+                size_t len = 0;
+                if (_dupenv_s(&buffer, &len, name) == 0 && buffer != nullptr) {
+                    value = buffer;
+                    free(buffer);
+                }
+#else
+                if (const char* env = std::getenv(name)) {
+                    value = env;
+                }
+#endif
+                return value;
+            };
+
+            std::string user;
+            user = read_env("USERNAME");
+            if (user.empty()) {
+                user = read_env("USER");
+            }
+
+            if (user.empty()) {
+                user = "player";
+            }
+
+            std::string host;
+            host = read_env("COMPUTERNAME");
+            if (host.empty()) {
+                host = read_env("HOSTNAME");
+            }
+
+            for (char& c : user) {
+                if (std::isspace(static_cast<unsigned char>(c))) {
+                    c = '_';
+                }
+            }
+
+            for (char& c : host) {
+                if (std::isspace(static_cast<unsigned char>(c))) {
+                    c = '_';
+                }
+            }
+
+            if (!host.empty()) {
+                return user + "@" + host;
+            }
+
+            return user;
+        }
+
         client_t endpoint_;
         mutable std::mutex mutex_;
         websocketpp::connection_hdl connection_;
@@ -439,6 +659,7 @@ namespace corelib::net {
         InputState last_sent_input_;
         bool has_last_sent_input_ = false;
         std::chrono::steady_clock::time_point last_send_time_{};
+        std::string profile_id_ = default_profile_id();
     };
 
     inline GameClient*& active_client_slot() {

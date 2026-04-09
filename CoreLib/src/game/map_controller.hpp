@@ -44,6 +44,9 @@ struct MapController : public ecs::IBehaviour {
     int level_num;
     bool pending_respawn;
     bool pending_next_level;
+    bool save_key_was_down;
+    int network_level;
+    int network_respawn_revision;
 };
 
 

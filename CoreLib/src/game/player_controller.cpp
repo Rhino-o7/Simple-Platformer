@@ -128,6 +128,7 @@ PlayerController::PlayerController(ecs::Entity entity, const Info& info) {
     this->on_floor = false;
     this->respawned = false;
     this->network_spawn_synced = false;
+    this->network_respawn_revision = -1;
 
     this->keyboard_space_listener = Keyboard::Down.add_listener(std::bind(
         &PlayerController::air_jump,
@@ -232,7 +233,10 @@ void PlayerController::update(float dt) {
         input.x = -1.0f;
     }
 
-    if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
+    auto network = corelib::net::active_client();
+    const bool network_connected = network != nullptr && network->connected();
+
+    if (network_connected) {
         if (!this->network_spawn_synced) {
             auto p = transform->get_position();
             network->send_spawn(p.x, p.y, p.z);
@@ -245,6 +249,13 @@ void PlayerController::update(float dt) {
             Keyboard::is_key_pressed(Key::Space),
             Keyboard::is_key_pressed(Key::LShift)
         );
+
+        corelib::net::PlayerState state;
+        if (network->try_get_latest_state(state)) {
+            this->health = state.health;
+            this->level = state.level;
+            this->network_respawn_revision = state.respawn_revision;
+        }
     }
 
     if (input.x == 0.0f && input.y == 0.0f) {
@@ -336,8 +347,18 @@ void PlayerController::update(float dt) {
         //auto seconds = std::chrono::seconds(1s);
         auto dur = steady_clock::now() - old;
         auto sec = duration_cast<seconds>(dur).count();
-        cam->seconds = std::max(0, timer - (int)sec);
-        if (timer < sec)
+        if (network_connected) {
+            corelib::net::PlayerState state;
+            if (network->try_get_latest_state(state)) {
+                cam->seconds = state.seconds;
+                cam->player_wind = state.wind * 400;
+            }
+        }
+        else {
+            cam->seconds = std::max(0, timer - (int)sec);
+        }
+
+        if (!network_connected && timer < sec)
         {
             respawn(glm::vec3(0, 0, 0));
             std::cout << "\n\n\n\n\n\n TIME \n";
@@ -380,10 +401,17 @@ void PlayerController::on_feet_collision(const physics::Manifold& manifold) {
                 was_floor = false;
                 if (invuln > 5)
                 {
-                    health--;
+                    auto network = corelib::net::active_client();
+                    if (network != nullptr && network->connected()) {
+                        network->send_event("DAMAGE", 1);
+                        this->health = std::max(0, this->health - 1);
+                    }
+                    else {
+                        health--;
+                    }
                     invuln = 0;
                 }
-                if (health <= 0)
+                if (health <= 0 && (corelib::net::active_client() == nullptr || !corelib::net::active_client()->connected()))
                     this->respawn(glm::vec3(0, 0, 0));
             }
             auto firespread = dynamic_cast<Firespread*>(behaviour->get());
@@ -392,10 +420,17 @@ void PlayerController::on_feet_collision(const physics::Manifold& manifold) {
                 was_floor = false;
                 if (invuln > 5)
                 {
-                    health--;
+                    auto network = corelib::net::active_client();
+                    if (network != nullptr && network->connected()) {
+                        network->send_event("DAMAGE", 1);
+                        this->health = std::max(0, this->health - 1);
+                    }
+                    else {
+                        health--;
+                    }
                     invuln = 0;
                 }
-                if (health <= 0)
+                if (health <= 0 && (corelib::net::active_client() == nullptr || !corelib::net::active_client()->connected()))
                     this->respawn(glm::vec3(0, 0, 0));
             }
 
@@ -429,10 +464,38 @@ void PlayerController::on_body_collision(const physics::Manifold& manifold) {
         auto firespread = dynamic_cast<Firespread*>(behaviour->get());
         if (firetrap != nullptr) {
             this->velocity.y = firetrap->recoil;
+            if (invuln > 5) {
+                auto network = corelib::net::active_client();
+                if (network != nullptr && network->connected()) {
+                    network->send_event("DAMAGE", 1);
+                    this->health = std::max(0, this->health - 1);
+                }
+                else {
+                    health--;
+                    if (health <= 0) {
+                        this->respawn(glm::vec3(0, 0, 0));
+                    }
+                }
+                invuln = 0;
+            }
         }
         if (firespread != nullptr)
         {
             this->velocity.y = firespread->recoil;
+            if (invuln > 5) {
+                auto network = corelib::net::active_client();
+                if (network != nullptr && network->connected()) {
+                    network->send_event("DAMAGE", 1);
+                    this->health = std::max(0, this->health - 1);
+                }
+                else {
+                    health--;
+                    if (health <= 0) {
+                        this->respawn(glm::vec3(0, 0, 0));
+                    }
+                }
+                invuln = 0;
+            }
         }
     }
 
