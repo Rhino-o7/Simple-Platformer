@@ -59,20 +59,28 @@ vpg::gl::Renderer::Renderer(flecs::world* ecs_world) {
     this->create_gbuffer();
     this->create_ssao();
 
-    // Optional: init text UI (use your data folder + font path)
+    // Optional: init text UI (try multiple runtime paths)
     std::string font_path = vpg::Config::get_string("data.folder", "./data/") + "fonts/arial.ttf";
     if (!this->text_ui.init(font_path.c_str(), 32))
     {
+#ifdef __EMSCRIPTEN__
+        if (!this->text_ui.init("/Client/data/fonts/arial.ttf", 32)) {
+            this->text_ui.init("Client/data/fonts/arial.ttf", 32);
+        }
+#else
         this->text_ui.init("C:/Windows/Fonts/arial.ttf", 32);  // fallback on Windows
+#endif
     }
     
-    int width, height, nrChannels;
-    unsigned char* dataa = stbi_load("data/images/red.jpg", &width, &height, &nrChannels, 0);
-    unsigned char* dataaa = stbi_load("data/images/black.jpg", &width, &height, &nrChannels, 0);
+    int red_width, red_height, red_channels;
+    unsigned char* dataa = stbi_load("data/images/red.jpg", &red_width, &red_height, &red_channels, 0);
+    int black_width, black_height, black_channels;
+    unsigned char* dataaa = stbi_load("data/images/black.jpg", &black_width, &black_height, &black_channels, 0);
     this->image_ui.init();
-    this->health_tex_id = this->image_ui.load_texture(width, height, dataa);
-    this->black_id = this->image_ui.load_texture(width, height, dataaa);
+    this->health_tex_id = this->image_ui.load_texture(red_width, red_height, dataa);
+    this->black_id = this->image_ui.load_texture(black_width, black_height, dataaa);
     stbi_image_free(dataa);
+    stbi_image_free(dataaa);
 
     this->resize_listener = input::Window::FramebufferResized.add_listener(
         std::bind(&Renderer::resize_callback, this, std::placeholders::_1)
@@ -220,6 +228,11 @@ void vpg::gl::Renderer::render(float dt) {
                   << camera_transform->get_global_position().y << ","
                   << camera_transform->get_global_position().z << ")\n";
     }
+
+    this->image_ui.DrawImage(this->black_id, 1,
+        -1, 1, 0.5);
+    this->image_ui.DrawImage(this->health_tex_id, camera_snapshot->player_health / static_cast<float>(3),
+        -1, 1, 0.5);
 
     this->text_ui.render("Health: " + std::to_string(camera_snapshot->player_health), 10.0f, (float)this->size.y - 50.0f, .75,
         glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);

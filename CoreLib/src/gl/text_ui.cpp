@@ -9,6 +9,31 @@
 #pragma region shader
 using namespace vpg::gl;
 using namespace std;
+
+#ifdef __EMSCRIPTEN__
+static const char* text_vs = R"(#version 300 es
+precision highp float;
+layout(location = 0) in vec4 a_pos_uv;
+uniform mat4 u_proj;
+out vec2 v_uv;
+void main() {
+    gl_Position = u_proj * vec4(a_pos_uv.xy, 0.0, 1.0);
+    v_uv = a_pos_uv.zw;
+}
+)";
+
+static const char* text_fs = R"(#version 300 es
+precision highp float;
+in vec2 v_uv;
+uniform sampler2D u_tex;
+uniform vec3 u_color;
+out vec4 fragColor;
+void main() {
+    float a = texture(u_tex, v_uv).r;
+    fragColor = vec4(u_color, a);
+}
+)";
+#else
 static const char* text_vs = R"(
 #version 330 core
 layout(location = 0) in vec4 a_pos_uv;
@@ -31,6 +56,7 @@ void main() {
     fragColor = vec4(u_color, a);
 }
 )";
+#endif
 #pragma endregion
 
 TextUI::~TextUI() { shutdown(); }
@@ -54,16 +80,44 @@ bool TextUI::init(const char* font_path, int pixel_height) {
     FT_Set_Pixel_Sizes(ft_face, 0, (FT_UInt)pixel_height);
 
     // Shader
-    GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vs, 1, &text_vs, nullptr);
-    glCompileShader(vs);
-    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fs, 1, &text_fs, nullptr);
-    glCompileShader(fs);
+    auto compile_shader = [](GLenum type, const char* src) -> GLuint {
+        GLuint sh = glCreateShader(type);
+        glShaderSource(sh, 1, &src, nullptr);
+        glCompileShader(sh);
+        GLint ok = 0;
+        glGetShaderiv(sh, GL_COMPILE_STATUS, &ok);
+        if (!ok) {
+            char log[1024]{};
+            glGetShaderInfoLog(sh, 1023, nullptr, log);
+            std::cerr << "TextUI shader compile failed:\n" << log << "\n";
+            glDeleteShader(sh);
+            return 0;
+        }
+        return sh;
+    };
+
+    GLuint vs = compile_shader(GL_VERTEX_SHADER, text_vs);
+    GLuint fs = compile_shader(GL_FRAGMENT_SHADER, text_fs);
+    if (vs == 0 || fs == 0) {
+        return false;
+    }
+
     shader_prog = glCreateProgram();
     glAttachShader(shader_prog, vs);
     glAttachShader(shader_prog, fs);
     glLinkProgram(shader_prog);
+    {
+        GLint ok = 0;
+        glGetProgramiv(shader_prog, GL_LINK_STATUS, &ok);
+        if (!ok) {
+            char log[1024]{};
+            glGetProgramInfoLog(shader_prog, 1023, nullptr, log);
+            std::cerr << "TextUI shader link failed:\n" << log << "\n";
+            glDeleteShader(vs);
+            glDeleteShader(fs);
+            return false;
+        }
+    }
     glDeleteShader(vs);
     glDeleteShader(fs);
 
@@ -100,13 +154,20 @@ void TextUI::load_glyph(char c) {
     unsigned int tex = 0;
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
+    GLint prev_unpack = 4;
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &prev_unpack);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#ifdef __EMSCRIPTEN__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+#else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+#endif
+    glPixelStorei(GL_UNPACK_ALIGNMENT, prev_unpack);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glyphs[c] = { tex, w, h, (int)g->bitmap_left, (int)g->bitmap_top, (long)g->advance.x };
 }
@@ -117,7 +178,7 @@ void TextUI::use_ortho(int w, int h) {
     float proj[16] = {
         2.f/(R-L), 0, 0, 0,
         0, 2.f/(T-B), 0, 0,
-        0, 1, 0, 0,
+        0, 0, -1, 0,
         -(R+L)/(R-L), -(T+B)/(T-B), 0, 1
     };
     glUniformMatrix4fv(glGetUniformLocation(shader_prog, "u_proj"), 1, GL_FALSE, proj);
