@@ -26,11 +26,17 @@
 
 #include <filesystem>
 #include <iostream>
+#include <chrono>
+#include <thread>
+#include <memory>
+#include <cstdlib>
 
 using namespace vpg;
 namespace fs = std::filesystem;
 
 namespace {
+    bool g_require_network_connection = false;
+
     void resolve_runtime_working_directory() {
         auto has_runtime_files = [](const fs::path& p) {
             return fs::exists(p / "vpg.cfg") && fs::exists(p / "data" / "assets.cfg");
@@ -182,6 +188,12 @@ int corelib::run_client(int argc, char** argv) {
     emscripten_set_main_loop_arg([](void* user_data) {
         auto* state = static_cast<EmLoopState*>(user_data);
 
+        auto network = corelib::net::active_client();
+        if (g_require_network_connection && (network == nullptr || !network->is_connection_alive())) {
+            std::cerr << "Server connection lost. Closing client.\n";
+            glfwSetWindowShouldClose((GLFWwindow*)input::Window::get_handle(), GLFW_TRUE);
+        }
+
         auto new_time = (float)glfwGetTime();
         auto delta_time = new_time - state->last_time;
         state->last_time = new_time;
@@ -232,6 +244,13 @@ int corelib::run_client(int argc, char** argv) {
     auto update_dt = 1.0f / (float)Config::get_integer("update_fps", 60);
     auto lag = 0.0f;
     while (!input::Window::should_close()) {
+        auto network = corelib::net::active_client();
+        if (g_require_network_connection && (network == nullptr || !network->is_connection_alive())) {
+            std::cerr << "Server connection lost. Closing client.\n";
+            glfwSetWindowShouldClose((GLFWwindow*)input::Window::get_handle(), GLFW_TRUE);
+            break;
+        }
+
         auto new_time = (float)glfwGetTime();
         auto delta_time = new_time - last_time;
         last_time = new_time;
@@ -261,26 +280,163 @@ int corelib::run_client(int argc, char** argv) {
 }
 
 int corelib::run_network_client(int argc, char** argv, const char* uri, bool reset_save) {
-    corelib::net::GameClient client;
-    corelib::net::set_active_client(&client);
-    if (uri == nullptr || uri[0] == '\0') {
-        corelib::net::set_active_client(nullptr);
+    std::string resolved_uri = (uri != nullptr) ? uri : "";
+
+#ifdef __EMSCRIPTEN__
+    auto prompt_text = [](const std::string& label, const std::string& fallback) {
+        const char* raw = reinterpret_cast<const char*>(EM_ASM_PTR({
+            const label = UTF8ToString($0);
+            const fallback = UTF8ToString($1);
+            const value = window.prompt(label, fallback);
+            if (value === null) {
+                return 0;
+            }
+            return stringToNewUTF8(value);
+        }, label.c_str(), fallback.c_str()));
+
+        if (raw == nullptr) {
+            return fallback;
+        }
+
+        std::string out(raw);
+        std::free(const_cast<char*>(raw));
+        if (out.empty()) {
+            return fallback;
+        }
+
+        return out;
+    };
+
+    std::string default_host = "127.0.0.1";
+    std::string default_port = "9002";
+
+    if (!resolved_uri.empty()) {
+        const auto scheme_pos = resolved_uri.find("://");
+        const auto host_start = (scheme_pos == std::string::npos) ? 0 : (scheme_pos + 3);
+        const auto colon_pos = resolved_uri.rfind(':');
+
+        if (colon_pos != std::string::npos && colon_pos > host_start) {
+            default_host = resolved_uri.substr(host_start, colon_pos - host_start);
+            default_port = resolved_uri.substr(colon_pos + 1);
+        }
+    }
+
+    const std::string host = prompt_text("Server host [127.0.0.1]:", default_host);
+    const std::string port = prompt_text("Server port [9002]:", default_port);
+    resolved_uri = "ws://" + host + ":" + port;
+#endif
+
+    if (resolved_uri.empty()) {
         std::cerr << "Network client requires a server URI\n";
         return 1;
     }
 
-    if (!client.connect(uri)) {
+    constexpr auto retry_interval = std::chrono::seconds(2);
+    constexpr auto initial_retry_window = std::chrono::seconds(30);
+    constexpr auto reconnect_retry_window = std::chrono::seconds(30);
+
+    std::unique_ptr<corelib::net::GameClient> client;
+    g_require_network_connection = true;
+    corelib::net::set_active_client(nullptr);
+
+    bool reset_save_pending = reset_save;
+
+    auto try_connect_for = [&](std::chrono::seconds max_duration) {
+        const auto start = std::chrono::steady_clock::now();
+        int attempt = 1;
+
+        while (true) {
+            client = std::make_unique<corelib::net::GameClient>();
+            corelib::net::set_active_client(client.get());
+            std::cout << "[CLIENT] connect attempt " << attempt << " to " << resolved_uri << "\n";
+            if (client->connect(resolved_uri)) {
+#ifdef __EMSCRIPTEN__
+                if (reset_save_pending) {
+                    client->send_event("RESET_SAVE", 0);
+                    reset_save_pending = false;
+                }
+                return true;
+#else
+                const auto open_wait_start = std::chrono::steady_clock::now();
+                while (!client->connected()) {
+                    if (std::chrono::steady_clock::now() - open_wait_start >= std::chrono::seconds(5)) {
+                        break;
+                    }
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                }
+
+                const auto asset_wait_start = std::chrono::steady_clock::now();
+                while (client->connected() && !client->has_server_level_layout()) {
+                    if (std::chrono::steady_clock::now() - asset_wait_start >= std::chrono::seconds(5)) {
+                        break;
+                    }
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                }
+
+                if (!client->connected() || !client->has_server_level_layout()) {
+                    std::cerr << "[CLIENT] connected but server assets were not received in time\n";
+                    client->stop();
+                    client.reset();
+                    corelib::net::set_active_client(nullptr);
+                }
+                else {
+                if (reset_save_pending) {
+                    client->send_event("RESET_SAVE", 0);
+                    reset_save_pending = false;
+                }
+                return true;
+                }
+#endif
+            }
+
+            if (client != nullptr) {
+                client->stop();
+                client.reset();
+                corelib::net::set_active_client(nullptr);
+            }
+
+            const auto now = std::chrono::steady_clock::now();
+            if (now - start >= max_duration) {
+                return false;
+            }
+
+            std::this_thread::sleep_for(retry_interval);
+            ++attempt;
+        }
+    };
+
+    if (!try_connect_for(initial_retry_window)) {
+        g_require_network_connection = false;
         corelib::net::set_active_client(nullptr);
-        std::cerr << "Failed to connect to server: " << uri << '\n';
+        std::cerr << "Failed to connect to server within " << initial_retry_window.count()
+                  << " seconds: " << resolved_uri << '\n';
         return 1;
     }
 
-    if (reset_save) {
-        client.send_event("RESET_SAVE", 0);
-    }
+#ifdef __EMSCRIPTEN__
+    return run_client(argc, argv);
+#else
+    while (true) {
+        const int result = run_client(argc, argv);
+        const bool disconnected = (client == nullptr) || !client->is_connection_alive();
+        if (client != nullptr) {
+            client->stop();
+            client.reset();
+        }
+        corelib::net::set_active_client(nullptr);
 
-    auto result = run_client(argc, argv);
-    corelib::net::set_active_client(nullptr);
-    client.stop();
-    return result;
+        if (!disconnected) {
+            g_require_network_connection = false;
+            return result;
+        }
+
+        std::cout << "[CLIENT] server connection lost, attempting reconnect...\n";
+        if (!try_connect_for(reconnect_retry_window)) {
+            g_require_network_connection = false;
+            corelib::net::set_active_client(nullptr);
+            std::cerr << "Reconnect timed out after " << reconnect_retry_window.count() << " seconds.\n";
+            return 1;
+        }
+    }
+#endif
 }

@@ -11,6 +11,7 @@
 #include <data/json_utils.hpp>
 #include <data/manager.hpp>
 #include <data/text.hpp>
+#include <corelib/net/websocket.hpp>
 
 #include <iostream>
 
@@ -235,7 +236,28 @@ namespace {
             return !g_level_definitions.empty();
         }
 
-        g_level_definitions_loaded = true;
+        if (auto network = corelib::net::active_client(); network != nullptr) {
+            if (!network->connected()) {
+                return false;
+            }
+
+            if (!network->has_server_level_layout()) {
+                return false;
+            }
+
+            game::json_utils::JsonDocument root;
+            std::string error;
+            if (!game::json_utils::parse_document(network->server_level_layout(), root, error)
+                || !parse_level_layout(root, g_level_definitions, error)) {
+                std::cerr << "MapController failed to parse server level layout JSON:\n"
+                          << error << "\n";
+                g_level_definitions.clear();
+                return false;
+            }
+
+            g_level_definitions_loaded = true;
+            return true;
+        }
 
         auto layout_asset_id = vpg::Config::get_string("game.level_layout", "level.layouts");
         auto layout_asset = vpg::data::Manager::load<vpg::data::Text>(layout_asset_id);
@@ -255,6 +277,7 @@ namespace {
             return false;
         }
 
+        g_level_definitions_loaded = true;
         return true;
     }
 }

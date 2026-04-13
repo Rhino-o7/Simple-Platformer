@@ -142,7 +142,7 @@
     <ClCompile Include="src\web_client_runtime.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="build_emscripten.bat" />
+    <None Include="build_web.bat" />
     <None Include="data\shader\gbuffer.frag" />
     <None Include="data\shader\model.frag" />
     <None Include="data\shader\model.vert" />

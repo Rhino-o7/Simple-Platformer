@@ -76,11 +76,29 @@ vpg::gl::Renderer::Renderer(flecs::world* ecs_world) {
     unsigned char* dataa = stbi_load("data/images/red.jpg", &red_width, &red_height, &red_channels, 0);
     int black_width, black_height, black_channels;
     unsigned char* dataaa = stbi_load("data/images/black.jpg", &black_width, &black_height, &black_channels, 0);
+
+    unsigned char red_fallback[] = { 255, 0, 0 };
+    unsigned char black_fallback[] = { 0, 0, 0 };
+    if (dataa == nullptr) {
+        red_width = 1;
+        red_height = 1;
+        dataa = red_fallback;
+    }
+    if (dataaa == nullptr) {
+        black_width = 1;
+        black_height = 1;
+        dataaa = black_fallback;
+    }
+
     this->image_ui.init();
     this->health_tex_id = this->image_ui.load_texture(red_width, red_height, dataa);
     this->black_id = this->image_ui.load_texture(black_width, black_height, dataaa);
-    stbi_image_free(dataa);
-    stbi_image_free(dataaa);
+    if (dataa != red_fallback) {
+        stbi_image_free(dataa);
+    }
+    if (dataaa != black_fallback) {
+        stbi_image_free(dataaa);
+    }
 
     this->resize_listener = input::Window::FramebufferResized.add_listener(
         std::bind(&Renderer::resize_callback, this, std::placeholders::_1)

@@ -344,6 +344,7 @@ void PlayerController::update(float dt) {
     if (cam != nullptr) {
         cam->player_health = this->health;
         cam->player_wind = this->windPower.x * 400;
+        
         //auto seconds = std::chrono::seconds(1s);
         auto dur = steady_clock::now() - old;
         auto sec = duration_cast<seconds>(dur).count();

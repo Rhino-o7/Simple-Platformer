@@ -109,10 +109,16 @@ namespace corelib::net {
             }
 
             running_ = true;
+            connection_attempt_time_ = std::chrono::steady_clock::now();
             emscripten_websocket_set_onopen_callback(socket_, this, &GameClient::on_open);
             emscripten_websocket_set_onclose_callback(socket_, this, &GameClient::on_close);
             emscripten_websocket_set_onerror_callback(socket_, this, &GameClient::on_error);
             emscripten_websocket_set_onmessage_callback(socket_, this, &GameClient::on_message);
+
+            unsigned short ready_state = 0;
+            if (emscripten_websocket_get_ready_state(socket_, &ready_state) == EMSCRIPTEN_RESULT_SUCCESS && ready_state == 1) {
+                on_open(0, nullptr, this);
+            }
             return true;
         }
 
@@ -175,6 +181,24 @@ namespace corelib::net {
             return connected_;
         }
 
+        bool is_connection_alive(
+            std::chrono::milliseconds timeout = std::chrono::milliseconds(3000),
+            std::chrono::milliseconds initial_grace = std::chrono::milliseconds(20000)) const {
+            const auto now = std::chrono::steady_clock::now();
+            if (!connected_) {
+                if (running_ && connection_attempt_time_ != std::chrono::steady_clock::time_point{}) {
+                    return (now - connection_attempt_time_) <= initial_grace;
+                }
+                return false;
+            }
+
+            if (!has_seen_server_message_) {
+                return (now - connection_open_time_) <= initial_grace;
+            }
+
+            return (now - last_server_message_time_) <= timeout;
+        }
+
         bool try_get_latest_state(PlayerState& out_state) const {
             if (!has_state_) {
                 return false;
@@ -182,6 +206,14 @@ namespace corelib::net {
 
             out_state = latest_state_;
             return true;
+        }
+
+        bool has_server_level_layout() const {
+            return has_server_level_layout_;
+        }
+
+        std::string server_level_layout() const {
+            return server_level_layout_;
         }
 
         void stop() {
@@ -209,6 +241,9 @@ namespace corelib::net {
         static EM_BOOL on_open(int, const EmscriptenWebSocketOpenEvent*, void* user_data) {
             auto* self = static_cast<GameClient*>(user_data);
             self->connected_ = true;
+            self->connection_open_time_ = std::chrono::steady_clock::now();
+            self->has_seen_server_message_ = false;
+            self->last_server_message_time_ = std::chrono::steady_clock::now();
             std::cout << "[CLIENT] connected\n";
 
             std::ostringstream hello;
@@ -220,6 +255,7 @@ namespace corelib::net {
         static EM_BOOL on_close(int, const EmscriptenWebSocketCloseEvent*, void* user_data) {
             auto* self = static_cast<GameClient*>(user_data);
             self->connected_ = false;
+            self->running_ = false;
             std::cout << "[CLIENT] disconnected\n";
             return EM_TRUE;
         }
@@ -227,6 +263,7 @@ namespace corelib::net {
         static EM_BOOL on_error(int, const EmscriptenWebSocketErrorEvent*, void* user_data) {
             auto* self = static_cast<GameClient*>(user_data);
             self->connected_ = false;
+            self->running_ = false;
             std::cout << "[CLIENT] websocket error\n";
             return EM_TRUE;
         }
@@ -238,6 +275,15 @@ namespace corelib::net {
             }
 
             self->last_message_ = std::string(reinterpret_cast<const char*>(msg->data), static_cast<size_t>(msg->numBytes));
+            self->last_server_message_time_ = std::chrono::steady_clock::now();
+            self->has_seen_server_message_ = true;
+
+            const std::string asset_prefix = "ASSET LEVEL_LAYOUT ";
+            if (self->last_message_.rfind(asset_prefix, 0) == 0) {
+                self->server_level_layout_ = self->last_message_.substr(asset_prefix.size());
+                self->has_server_level_layout_ = !self->server_level_layout_.empty();
+                return EM_TRUE;
+            }
 
             std::istringstream in(self->last_message_);
             std::string type;
@@ -262,10 +308,16 @@ namespace corelib::net {
         std::string last_message_;
         PlayerState latest_state_;
         bool has_state_ = false;
+        std::string server_level_layout_;
+        bool has_server_level_layout_ = false;
         int client_id_ = -1;
         InputState last_sent_input_;
         bool has_last_sent_input_ = false;
         std::chrono::steady_clock::time_point last_send_time_{};
+        std::chrono::steady_clock::time_point connection_open_time_{};
+        std::chrono::steady_clock::time_point connection_attempt_time_{};
+        std::chrono::steady_clock::time_point last_server_message_time_{};
+        bool has_seen_server_message_ = false;
         std::string profile_id_ = "web_player";
     };
 

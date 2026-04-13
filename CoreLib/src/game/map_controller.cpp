@@ -121,8 +121,9 @@ MapController::MapController(vpg::ecs::Entity entity, const Info& info) {
     this->save_key_was_down = false;
     this->network_level = 1;
     this->network_respawn_revision = -1;
+    this->level_initialized = false;
 
-    if (auto network = corelib::net::active_client(); network == nullptr || !network->connected()) {
+    if (corelib::net::active_client() == nullptr) {
         this->level_num = std::max(0, load_local_level_save() - 1);
     }
     this->gen_level();
@@ -134,8 +135,9 @@ MapController::~MapController() {
 
 void MapController::on_kill_area_collision(const physics::Manifold& manifold) {
     (void)manifold;
-    if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
-        if (!this->pending_respawn) {
+    auto network = corelib::net::active_client();
+    if (network != nullptr) {
+        if (network->connected() && !this->pending_respawn) {
             network->send_event("RESPAWN", 0);
             this->pending_respawn = true;
         }
@@ -146,8 +148,9 @@ void MapController::on_kill_area_collision(const physics::Manifold& manifold) {
 
 void MapController::on_exit_area_collision(const physics::Manifold& manifold) {
     (void)manifold;
-    if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
-        if (!this->pending_next_level) {
+    auto network = corelib::net::active_client();
+    if (network != nullptr) {
+        if (network->connected() && !this->pending_next_level) {
             network->send_event("NEXT_LEVEL", 1);
             this->pending_next_level = true;
         }
@@ -178,13 +181,20 @@ void MapController::update(float dt) {
 
             this->network_respawn_revision = state.respawn_revision;
         }
+
+        if (!this->level_initialized && network->has_server_level_layout()) {
+            this->level_num = std::max(0, this->network_level - 1);
+            this->gen_level();
+        }
     }
 
     const bool save_key_down = Keyboard::is_key_pressed(Key::F5);
     if (save_key_down && !this->save_key_was_down) {
-        if (auto network = corelib::net::active_client(); network != nullptr && network->connected()) {
-            network->send_event("SAVE", 0);
-            std::cout << "\nProgress save requested on server.";
+        if (auto network = corelib::net::active_client(); network != nullptr) {
+            if (network->connected()) {
+                network->send_event("SAVE", 0);
+                std::cout << "\nProgress save requested on server.";
+            }
         }
         else {
             save_local_level(this->level_num + 1);
@@ -193,7 +203,7 @@ void MapController::update(float dt) {
     }
     this->save_key_was_down = save_key_down;
 
-    if (this->pending_next_level) {
+    if (this->pending_next_level && corelib::net::active_client() == nullptr) {
         this->pending_next_level = false;
         this->level_num += 1;
         this->gen_level();
@@ -240,6 +250,8 @@ ecs::Entity MapController::spawn_prefab(const std::string& key) {
 }
 
 void MapController::gen_level() {
+    this->level_initialized = false;
+
     auto world = vpg::ecs::get_world();
     if (world == nullptr) {
         return;
@@ -252,6 +264,10 @@ void MapController::gen_level() {
 
     const auto* level_definition = game::level_layout::get_level_definition(this->level_num);
     if (level_definition == nullptr) {
+        if (auto network = corelib::net::active_client(); network != nullptr) {
+            return;
+        }
+
         std::cerr << "MapController::gen_level() failed:\n"
                   << "No level definition for index " << this->level_num << "\n";
         return;
@@ -260,7 +276,7 @@ void MapController::gen_level() {
     std::cout << "\nLoading level " << (this->level_num + 1)
               << " (" << level_definition->name << ")\n";
 
-    if (auto network = corelib::net::active_client(); network == nullptr || !network->connected()) {
+    if (corelib::net::active_client() == nullptr) {
         save_local_level(this->level_num + 1);
     }
 
@@ -344,6 +360,7 @@ void MapController::gen_level() {
 
     player->controller->level = this->level_num + 1;
     this->player->controller->respawn(this->player->spawn_position);
+    this->level_initialized = true;
     std::cout << "\n End loading level \n";
 }
 

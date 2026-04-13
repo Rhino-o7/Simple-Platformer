@@ -24,6 +24,7 @@
 #include <sstream>
 #include <string>
 #include <thread>
+#include <vector>
 
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -126,6 +127,7 @@ namespace corelib::net {
             }
 
             load_saved_progress();
+            load_server_assets();
 
             endpoint_.clear_access_channels(websocketpp::log::alevel::all);
             endpoint_.clear_error_channels(websocketpp::log::elevel::all);
@@ -187,6 +189,10 @@ namespace corelib::net {
                         it->second.level = saved->second;
                         std::cout << "[SERVER] loaded save for '" << profile_id
                                   << "' at level " << it->second.level << '\n';
+                    }
+
+                    if (!level_layout_payload_.empty()) {
+                        endpoint_.send(hdl, std::string("ASSET LEVEL_LAYOUT ") + level_layout_payload_, websocketpp::frame::opcode::text);
                     }
                 }
                 else if (type == "SPAWN") {
@@ -287,6 +293,47 @@ namespace corelib::net {
         }
 
     private:
+        static bool read_text_file(const std::filesystem::path& path, std::string& out_content) {
+            std::ifstream file(path, std::ios::binary);
+            if (!file.is_open()) {
+                return false;
+            }
+
+            out_content.assign((std::istreambuf_iterator<char>(file)),
+                                std::istreambuf_iterator<char>());
+            return !out_content.empty();
+        }
+
+        void load_server_assets() {
+            level_layout_payload_.clear();
+
+            const auto exe_dir = executable_directory();
+            std::cout << "[SERVER] asset lookup base: '" << exe_dir.string() << "'\n";
+
+            auto dir = exe_dir;
+            while (!dir.empty()) {
+                const std::vector<std::filesystem::path> candidates = {
+                    dir / "Client" / "data" / "level" / "levels.json",
+                    dir / "data" / "level" / "levels.json"
+                };
+
+                for (const auto& path : candidates) {
+                    if (read_text_file(path, level_layout_payload_)) {
+                        std::cout << "[SERVER] loaded level layout asset from '" << path.string() << "'\n";
+                        return;
+                    }
+                }
+
+                if (dir == dir.root_path()) {
+                    break;
+                }
+
+                dir = dir.parent_path();
+            }
+
+            std::cerr << "[SERVER] failed to load level layout asset (levels.json)\n";
+        }
+
         void load_saved_progress() {
             std::lock_guard<std::mutex> lock(mutex_);
             saved_levels_.clear();
@@ -377,6 +424,7 @@ namespace corelib::net {
         std::map<std::string, int> saved_levels_;
         int next_id_ = 0;
         float second_accumulator_ = 0.0f;
+        std::string level_layout_payload_;
         const std::string save_file_path_ = path_in_executable_directory("server_saves.txt");
     };
 
@@ -402,6 +450,10 @@ namespace corelib::net {
                 std::lock_guard<std::mutex> lock(mutex_);
                 connection_ = hdl;
                 connected_ = true;
+                connection_open_time_ = std::chrono::steady_clock::now();
+                last_server_message_time_ = connection_open_time_;
+                has_seen_server_message_ = false;
+                has_server_level_layout_ = false;
                 std::cout << "[CLIENT] connected\n";
 
                 std::ostringstream hello;
@@ -441,6 +493,15 @@ namespace corelib::net {
             endpoint_.set_message_handler([this](websocketpp::connection_hdl, client_t::message_ptr msg) {
                 std::lock_guard<std::mutex> lock(mutex_);
                 last_message_ = msg->get_payload();
+                last_server_message_time_ = std::chrono::steady_clock::now();
+                has_seen_server_message_ = true;
+                const std::string asset_prefix = "ASSET LEVEL_LAYOUT ";
+                if (last_message_.rfind(asset_prefix, 0) == 0) {
+                    server_level_layout_ = last_message_.substr(asset_prefix.size());
+                    has_server_level_layout_ = !server_level_layout_.empty();
+                    return;
+                }
+
                 std::istringstream in(last_message_);
                 std::string type;
                 in >> type;
@@ -558,6 +619,22 @@ namespace corelib::net {
             return connected_;
         }
 
+        bool is_connection_alive(
+            std::chrono::milliseconds timeout = std::chrono::milliseconds(3000),
+            std::chrono::milliseconds initial_grace = std::chrono::milliseconds(20000)) const {
+            if (!connected_) {
+                return false;
+            }
+
+            std::lock_guard<std::mutex> lock(mutex_);
+            const auto now = std::chrono::steady_clock::now();
+            if (!has_seen_server_message_) {
+                return (now - connection_open_time_) <= initial_grace;
+            }
+
+            return (now - last_server_message_time_) <= timeout;
+        }
+
         bool try_get_latest_state(PlayerState& out_state) const {
             std::lock_guard<std::mutex> lock(mutex_);
             if (!has_state_) {
@@ -566,6 +643,16 @@ namespace corelib::net {
 
             out_state = latest_state_;
             return true;
+        }
+
+        bool has_server_level_layout() const {
+            std::lock_guard<std::mutex> lock(mutex_);
+            return has_server_level_layout_;
+        }
+
+        std::string server_level_layout() const {
+            std::lock_guard<std::mutex> lock(mutex_);
+            return server_level_layout_;
         }
 
         void stop() {
@@ -652,6 +739,8 @@ namespace corelib::net {
         std::string last_message_;
         PlayerState latest_state_;
         bool has_state_ = false;
+        std::string server_level_layout_;
+        bool has_server_level_layout_ = false;
         int client_id_ = -1;
         std::mutex connection_mutex_;
         std::condition_variable connection_cv_;
@@ -659,6 +748,9 @@ namespace corelib::net {
         InputState last_sent_input_;
         bool has_last_sent_input_ = false;
         std::chrono::steady_clock::time_point last_send_time_{};
+        std::chrono::steady_clock::time_point connection_open_time_{};
+        std::chrono::steady_clock::time_point last_server_message_time_{};
+        bool has_seen_server_message_ = false;
         std::string profile_id_ = default_profile_id();
     };
 
