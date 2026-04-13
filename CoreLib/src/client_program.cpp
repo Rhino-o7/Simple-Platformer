@@ -20,6 +20,9 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
 
 #include <filesystem>
 #include <iostream>
@@ -137,8 +140,80 @@ int corelib::run_client(int argc, char** argv) {
         return 1;
     }
 
-    game::runtime::SceneState scene;
     game::register_behaviours();
+
+#ifdef __EMSCRIPTEN__
+    struct EmLoopState {
+        game::runtime::FlecsRuntime* runtime;
+        gl::Renderer* renderer;
+        game::runtime::SceneState* scene;
+        float last_time;
+        float update_dt;
+        float lag;
+    };
+
+    auto* scene = new game::runtime::SceneState();
+    Manager::scene = scene;
+
+    auto* runtime = new game::runtime::FlecsRuntime();
+    runtime->set_scene_loader([](const std::string& scene_name) {
+        return Manager::load_scene(scene_name);
+    });
+
+    auto* renderer = new gl::Renderer(&runtime->get_world());
+
+    if (!Manager::load()) {
+        std::cerr << "Couldn't load game\n";
+        delete renderer;
+        delete runtime;
+        delete scene;
+        return 1;
+    }
+
+    auto* em_state = new EmLoopState{
+        runtime,
+        renderer,
+        scene,
+        (float)glfwGetTime(),
+        1.0f / (float)Config::get_integer("update_fps", 60),
+        0.0f
+    };
+
+    emscripten_set_main_loop_arg([](void* user_data) {
+        auto* state = static_cast<EmLoopState*>(user_data);
+
+        auto new_time = (float)glfwGetTime();
+        auto delta_time = new_time - state->last_time;
+        state->last_time = new_time;
+        state->lag += delta_time;
+
+        input::Window::poll_events();
+        state->runtime->pump();
+
+        while (state->lag >= state->update_dt) {
+            state->runtime->run_fixed_update(state->update_dt);
+            state->lag -= state->update_dt;
+        }
+
+        state->renderer->render(delta_time);
+        input::Window::swap_buffers();
+
+        if (input::Window::should_close()) {
+            delete state->renderer;
+            delete state->runtime;
+            gl::Debug::terminate();
+            state->scene->clean();
+            delete state->scene;
+            data::Manager::terminate();
+            input::Window::terminate();
+            emscripten_cancel_main_loop();
+            delete state;
+        }
+    }, em_state, 0, 1);
+
+    return 0;
+#else
+    game::runtime::SceneState scene;
     Manager::scene = &scene;
 
     game::runtime::FlecsRuntime runtime;
@@ -182,6 +257,7 @@ int corelib::run_client(int argc, char** argv) {
     input::Window::terminate();
 
     return 0;
+#endif
 }
 
 int corelib::run_network_client(int argc, char** argv, const char* uri, bool reset_save) {

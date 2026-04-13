@@ -21,9 +21,12 @@ bool VertexBuffer::create(VertexBuffer& vb, size_t size, const void* data, Usage
         std::abort(); // Unreachable code
     }
 
+    while (glGetError() != GL_NO_ERROR) {}
+
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, size, data, gl_usage);
+    const void* upload_data = size == 0 ? nullptr : data;
+    glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(size), upload_data, gl_usage);
     
     auto err = glGetError();
     if (err != 0) {

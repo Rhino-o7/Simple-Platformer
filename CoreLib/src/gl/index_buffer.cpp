@@ -20,9 +20,12 @@ bool IndexBuffer::create(IndexBuffer& ib, size_t size, const void* data, Usage u
         abort(); // Unreachable code
     }
 
+    while (glGetError() != GL_NO_ERROR) {}
+
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, gl_usage);
+    const void* upload_data = size == 0 ? nullptr : data;
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, GLsizeiptr(size), upload_data, gl_usage);
     
     auto err = glGetError();
     if (err != 0) {

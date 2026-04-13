@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <cctype>
 #include <filesystem>
 #include <vector>
 
@@ -10,6 +11,22 @@ using namespace vpg;
 
 std::mutex Config::mutex;
 std::map<std::string, std::string> Config::variables;
+
+namespace {
+	inline std::string trim_whitespace(std::string value) {
+		size_t begin = 0;
+		while (begin < value.size() && std::isspace(static_cast<unsigned char>(value[begin]))) {
+			++begin;
+		}
+
+		size_t end = value.size();
+		while (end > begin && std::isspace(static_cast<unsigned char>(value[end - 1]))) {
+			--end;
+		}
+
+		return value.substr(begin, end - begin);
+	}
+}
 
 bool Config::load(int argc, char** argv) {
 	std::string config_path = "./vpg.cfg"; // Defaut config file path
@@ -106,12 +123,7 @@ bool Config::load(int argc, char** argv) {
 		int i = 0;
 		for (; i < line.size() && line[i] != ';'; ++i);
 		line = line.substr(0, i);
-
-		// Remove whitespace
-		for (i = 0; i < line.size() && (line[i] == ' ' || line[i] == '\t'); ++i);
-		line = line.substr(i);
-		for (i = int(line.size()) - 1; i >= 0 && (line[i] == ' ' || line[i] == '\t'); --i);
-		line = line.substr(0, size_t(i) + 1);
+		line = trim_whitespace(line);
 		if (line.empty())
 			continue;
 
@@ -127,16 +139,8 @@ bool Config::load(int argc, char** argv) {
 		if (found) {
 			auto key = line.substr(0, i);
 			auto value = line.substr(size_t(i) + 1);
-
-			// Remove whitespace
-			for (i = 0; i < key.size() && (key[i] == ' ' || key[i] == '\t'); ++i);
-			key = key.substr(i);
-			for (i = int(key.size()) - 1; i >= 0 && (key[i] == ' ' || key[i] == '\t'); --i);
-			key = key.substr(0, size_t(i) + 1);
-			for (i = 0; i < value.size() && (value[i] == ' ' || value[i] == '\t'); ++i);
-			value = value.substr(i);
-			for (i = int(value.size()) - 1; i >= 0 && (value[i] == ' ' || value[i] == '\t'); --i);
-			value = value.substr(0, size_t(i) + 1);
+			key = trim_whitespace(key);
+			value = trim_whitespace(value);
 
 			if (key.empty()) {
 				std::cerr << "vpg::Config::load() failed:" << std::endl;

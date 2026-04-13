@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 
 #include <iostream>
+#include <cctype>
+#include <string>
 
 using namespace vpg;
 using namespace vpg::gl;
@@ -11,8 +13,30 @@ bool Shader::create(Shader& shader, const char* vs_src, const char* fs_src) {
     GLuint program, vs, fs;
     GLint status;
 
+    auto sanitize_shader_source = [](const char* src) {
+        std::string out = src == nullptr ? "" : std::string(src);
+
+        if (out.size() >= 3
+            && (unsigned char)out[0] == 0xEF
+            && (unsigned char)out[1] == 0xBB
+            && (unsigned char)out[2] == 0xBF) {
+            out.erase(0, 3);
+        }
+
+        while (!out.empty() && std::isspace(static_cast<unsigned char>(out.front()))) {
+            out.erase(out.begin());
+        }
+
+        return out;
+    };
+
+    const std::string vs_source = sanitize_shader_source(vs_src);
+    const std::string fs_source = sanitize_shader_source(fs_src);
+    const char* vs_ptr = vs_source.c_str();
+    const char* fs_ptr = fs_source.c_str();
+
     vs = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vs, 1, &vs_src, nullptr);
+    glShaderSource(vs, 1, &vs_ptr, nullptr);
     glCompileShader(vs);
     glGetShaderiv(vs, GL_COMPILE_STATUS, &status);
     if (!status) {
@@ -26,7 +50,7 @@ bool Shader::create(Shader& shader, const char* vs_src, const char* fs_src) {
     }
 
     fs = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fs, 1, &fs_src, nullptr);
+    glShaderSource(fs, 1, &fs_ptr, nullptr);
     glCompileShader(fs);
     glGetShaderiv(fs, GL_COMPILE_STATUS, &status);
     if (!status) {

@@ -36,7 +36,7 @@ namespace vpg::memory {
     };
 
     template<typename T>
-    inline Pool<T>::Pool(size_t initial_count) : Pool<void>(initial_count, sizeof(T), alignof(T)) {}
+    inline Pool<T>::Pool(size_t initial_count) : Pool<void>(initial_count, sizeof(T), static_cast<std::align_val_t>(alignof(T))) {}
 
     template<typename T>
     inline T* Pool<T>::operator[](size_t index) {

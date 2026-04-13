@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-int main() {
+int main(int argc, char** argv) {
     std::cout << "Enter server port [9002]: ";
 
     std::string port_text;

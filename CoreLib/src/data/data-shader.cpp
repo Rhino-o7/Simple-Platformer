@@ -2,14 +2,61 @@
 #include <config.hpp>
 
 #include <fstream>
+#include <cctype>
+
+#ifdef __EMSCRIPTEN__
+#include <algorithm>
+#endif
+
+namespace {
+    inline std::string trim_whitespace(std::string value) {
+        size_t begin = 0;
+        while (begin < value.size() && std::isspace(static_cast<unsigned char>(value[begin]))) {
+            ++begin;
+        }
+
+        size_t end = value.size();
+        while (end > begin && std::isspace(static_cast<unsigned char>(value[end - 1]))) {
+            --end;
+        }
+
+        return value.substr(begin, end - begin);
+    }
+
+#ifdef __EMSCRIPTEN__
+    inline void replace_all(std::string& source, const std::string& from, const std::string& to) {
+        if (from.empty()) {
+            return;
+        }
+
+        size_t pos = 0;
+        while ((pos = source.find(from, pos)) != std::string::npos) {
+            source.replace(pos, from.size(), to);
+            pos += to.size();
+        }
+    }
+
+    inline void normalize_shader_for_web(std::string& source) {
+        constexpr const char* gl330 = "#version 330 core";
+        const auto pos = source.find(gl330);
+        if (pos != std::string::npos) {
+            source.replace(pos, std::char_traits<char>::length(gl330), "#version 300 es\nprecision highp float;\nprecision highp int;");
+        }
+
+        replace_all(source, "occlusion / NUM_SAMPLES", "occlusion / float(NUM_SAMPLES)");
+    }
+#endif
+}
 
 using namespace vpg;
 using namespace vpg::data;
 
 void* Shader::load(Asset* asset) {
-    auto args = asset->get_args();
+    auto args = trim_whitespace(asset->get_args());
     std::string vs_path = Config::get_string("data.folder", "./data/") + args.substr(0, args.find(' '));
     std::string fs_path = Config::get_string("data.folder", "./data/") + args.substr(args.find(' ') + 1);
+    vs_path = trim_whitespace(vs_path);
+    fs_path = trim_whitespace(fs_path);
 
     // Load vertex shader
     std::string vs;
@@ -26,6 +73,10 @@ void* Shader::load(Asset* asset) {
         std::istreambuf_iterator<char>());
     vs_ifs.close();
 
+#ifdef __EMSCRIPTEN__
+    normalize_shader_for_web(vs);
+#endif
+
     // Load fragment shader
     std::string fs;
     std::ifstream fs_ifs(fs_path);
@@ -40,6 +91,10 @@ void* Shader::load(Asset* asset) {
     fs.assign((std::istreambuf_iterator<char>(fs_ifs)),
         std::istreambuf_iterator<char>());
     fs_ifs.close();
+
+#ifdef __EMSCRIPTEN__
+    normalize_shader_for_web(fs);
+#endif
 
     auto shader = new Shader();
 

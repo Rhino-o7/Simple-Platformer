@@ -2,12 +2,30 @@
 #include <config.hpp>
 
 #include <fstream>
+#include <cctype>
+#include <sstream>
 
 using namespace vpg;
 using namespace vpg::data;
 
 std::map<std::string, Manager::Loader> Manager::loaders = {};
 std::map<std::string, Asset*> Manager::assets = {};
+
+namespace {
+	inline std::string trim_whitespace(std::string value) {
+		size_t begin = 0;
+		while (begin < value.size() && std::isspace(static_cast<unsigned char>(value[begin]))) {
+			++begin;
+		}
+
+		size_t end = value.size();
+		while (end > begin && std::isspace(static_cast<unsigned char>(value[end - 1]))) {
+			--end;
+		}
+
+		return value.substr(begin, end - begin);
+	}
+}
 
 bool Manager::init() {
 	auto data_folder = Config::get_string("data.folder", "./data/");
@@ -27,12 +45,7 @@ bool Manager::init() {
 		int i = 0;
 		for (; i < line.size() && line[i] != ';'; ++i);
 		line = line.substr(0, i);
-
-		// Remove whitespace
-		for (i = 0; i < line.size() && (line[i] == ' ' || line[i] == '\t'); ++i);
-		line = line.substr(i);
-		for (i = int(line.size()) - 1; i >= 0 && (line[i] == ' ' || line[i] == '\t'); --i);
-		line = line.substr(0, size_t(i) + 1);
+		line = trim_whitespace(line);
 		if (line.empty())
 			continue;
 
@@ -48,16 +61,8 @@ bool Manager::init() {
 		if (found) {
 			auto key = line.substr(0, i);
 			auto value = line.substr(size_t(i) + 1);
-
-			// Remove whitespace
-			for (i = 0; i < key.size() && (key[i] == ' ' || key[i] == '\t'); ++i);
-			key = key.substr(i);
-			for (i = int(key.size()) - 1; i >= 0 && (key[i] == ' ' || key[i] == '\t'); --i);
-			key = key.substr(0, size_t(i) + 1);
-			for (i = 0; i < value.size() && (value[i] == ' ' || value[i] == '\t'); ++i);
-			value = value.substr(i);
-			for (i = int(value.size()) - 1; i >= 0 && (value[i] == ' ' || value[i] == '\t'); --i);
-			value = value.substr(0, size_t(i) + 1);
+			key = trim_whitespace(key);
+			value = trim_whitespace(value);
 
 			if (key.empty()) {
 				std::cerr << "vpg::data::Manager::init() failed:" << std::endl;
@@ -67,11 +72,23 @@ bool Manager::init() {
 				continue; // Skip line
 			}
 
-			// Split value into usage mode, type and arguments
-			std::string usage = value.substr(0, value.find(' '));
-			value = value.substr(value.find(' ') + 1);
-			std::string type = value.substr(0, value.find(' '));
-			std::string args = value.substr(value.find(' ') + 1);
+          // Split value into usage mode, type and arguments
+			std::string usage;
+			std::string type;
+			std::string args;
+			{
+				std::istringstream value_stream(value);
+				value_stream >> usage >> type;
+				std::getline(value_stream, args);
+				args = trim_whitespace(args);
+			}
+
+			if (usage.empty() || type.empty() || args.empty()) {
+				std::cerr << "vpg::data::Manager::init() failed:" << std::endl;
+				std::cerr << "Couldn't parse configuration file:" << std::endl;
+				std::cerr << "Invalid asset declaration on \"" << line << "\"" << std::endl;
+				continue;
+			}
 
 			bool dynamic;
 			if (usage == "static") {

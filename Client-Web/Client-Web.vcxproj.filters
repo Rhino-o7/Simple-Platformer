@@ -14,4 +14,36 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\web_client_runtime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\overrides\model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build_emscripten.bat">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="data\shader\gbuffer.frag" />
+    <None Include="data\shader\screen_quad.vert" />
+    <None Include="data\shader\model.vert" />
+    <None Include="data\shader\model.frag" />
+    <None Include="data\shader\text.vert" />
+    <None Include="data\shader\text.frag" />
+    <None Include="data\shader\ssao.frag" />
+    <None Include="data\shader\ssao_blur.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\corelib\net\websocket.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GL\glew.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

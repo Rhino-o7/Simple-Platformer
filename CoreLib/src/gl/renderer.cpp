@@ -131,8 +131,8 @@ void vpg::gl::Renderer::render(float dt) {
     //RenderText("Hello World", camera.cam_x, camera.cam_y, camera.cam_z, 2.0f, glm::vec3(1, 0, 1));
 
     // Update lights UBO
-    glBindBuffer(GL_UNIFORM_BUFFER, this->lights_ubo);
-    auto lights = (LightData*)glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+    std::vector<LightData> lights_cpu(LIGHT_COUNT);
+    LightData* lights = lights_cpu.data();
     int light_index = 0;
     auto draw_light = [&](const vpg::gl::Light& light, vpg::ecs::Transform& transform) {
 
@@ -172,10 +172,66 @@ void vpg::gl::Renderer::render(float dt) {
         lights[light_index].ambient = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
         lights[light_index].diffuse = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
     }
-    glUnmapBuffer(GL_UNIFORM_BUFFER);
+    glBindBuffer(GL_UNIFORM_BUFFER, this->lights_ubo);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightData) * LIGHT_COUNT, lights_cpu.data());
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glViewport(0, 0, this->size.x, this->size.y);
+
+#ifdef __EMSCRIPTEN__
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glPolygonMode(GL_FRONT_AND_BACK, this->wireframe ? GL_LINE : GL_FILL);
+    glDisable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glClearColor(0.60f, 0.62f, 0.78f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    auto model_loc_web = this->model_shader->get_shader().get_uniform_location("model");
+    auto view_loc_web = this->model_shader->get_shader().get_uniform_location("view");
+    auto proj_loc_web = this->model_shader->get_shader().get_uniform_location("proj");
+    this->model_shader->get_shader().bind();
+    glUniformMatrix4fv(view_loc_web, 1, GL_FALSE, &camera_view[0][0]);
+    glUniformMatrix4fv(proj_loc_web, 1, GL_FALSE, &camera_proj[0][0]);
+
+    int submitted_models = 0;
+    renderable_query.each(
+        [&](vpg::ecs::Transform& transform, const vpg::gl::Renderable& renderable) {
+            if (renderable.type != Renderable::Type::Model || renderable.model.get_asset() == nullptr) {
+                return;
+            }
+
+            submitted_models += 1;
+            auto model_matrix = transform.get_global();
+            glUniformMatrix4fv(model_loc_web, 1, GL_FALSE, &model_matrix[0][0]);
+            renderable.model->get_palette().bind(0);
+            renderable.model->get_vertex_array().bind();
+            renderable.model->get_index_buffer().bind();
+            glDrawElements(GL_TRIANGLES, renderable.model->get_index_count(), GL_UNSIGNED_INT, nullptr);
+        }
+    );
+
+    static int web_log_counter = 0;
+    if ((web_log_counter++ % 180) == 0) {
+        std::cout << "[WEB] submitted_models=" << submitted_models
+                  << " cam=(" << camera_transform->get_global_position().x << ","
+                  << camera_transform->get_global_position().y << ","
+                  << camera_transform->get_global_position().z << ")\n";
+    }
+
+    this->text_ui.render("Health: " + std::to_string(camera_snapshot->player_health), 10.0f, (float)this->size.y - 50.0f, .75,
+        glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
+    this->text_ui.render("Wind Speed: " + std::to_string(camera_snapshot->player_wind), 10.0f, (float)this->size.y - 80.0f, .75,
+        glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
+    this->text_ui.render("Time Left: " + std::to_string(camera_snapshot->seconds), 10.0f, (float)this->size.y - 110.0f, .75,
+        glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
+    this->text_ui.render("Level " + std::to_string(camera_snapshot->level), 10.0f, (float)this->size.y - 140.0f, .75,
+        glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
+
+    return;
+#endif
 
     // Opaque pass
     glBindFramebuffer(GL_FRAMEBUFFER, this->gbuffer.fbo);
@@ -308,10 +364,12 @@ void vpg::gl::Renderer::render(float dt) {
     this->text_ui.render("Level " + std::to_string(camera_snapshot->level), 10.0f, (float)this->size.y - 140.0f, .75,
         glm::vec3(1.0f, 1.0f, 0.0f), this->size.x, this->size.y);
 
-    this->image_ui.DrawImage(this->black_id, 1, 
+#ifndef __EMSCRIPTEN__
+    this->image_ui.DrawImage(this->black_id, 1,
         -1, 1, 0.5);
-    this->image_ui.DrawImage(this->health_tex_id, camera_snapshot->player_health / static_cast<float>(3), 
+    this->image_ui.DrawImage(this->health_tex_id, camera_snapshot->player_health / static_cast<float>(3),
         -1, 1, 0.5);
+#endif
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -359,7 +417,11 @@ void vpg::gl::Renderer::create_gbuffer() {
 
     glGenTextures(1, &this->gbuffer.position);
     glBindTexture(GL_TEXTURE_2D, this->gbuffer.position);
+#ifdef __EMSCRIPTEN__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, this->size.x, this->size.y, 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
+#else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, this->size.x, this->size.y, 0, GL_RGB, GL_FLOAT, nullptr);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -368,17 +430,32 @@ void vpg::gl::Renderer::create_gbuffer() {
 
     glGenTextures(1, &this->gbuffer.normal);
     glBindTexture(GL_TEXTURE_2D, this->gbuffer.normal);
+#ifdef __EMSCRIPTEN__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, this->size.x, this->size.y, 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
+#else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, this->size.x, this->size.y, 0, GL_RGB, GL_FLOAT, nullptr);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->gbuffer.normal, 0);
 
     glGenTextures(1, &this->gbuffer.depth);
     glBindTexture(GL_TEXTURE_2D, this->gbuffer.depth);
+#ifdef __EMSCRIPTEN__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, this->size.x, this->size.y, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, nullptr);
+#else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, this->size.x, this->size.y, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, nullptr);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->gbuffer.depth, 0);
+
+    const GLenum gbuffer_attachments[3] = {
+        GL_COLOR_ATTACHMENT0,
+        GL_COLOR_ATTACHMENT1,
+        GL_COLOR_ATTACHMENT2
+    };
+    glDrawBuffers(3, gbuffer_attachments);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "vpg::gl::Renderer::create_gbuffer() failed:\n"
@@ -404,7 +481,11 @@ void vpg::gl::Renderer::create_ssao() {
 
     glGenTextures(1, &this->ssao.color_buffer);
     glBindTexture(GL_TEXTURE_2D, this->ssao.color_buffer);
+#ifdef __EMSCRIPTEN__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, this->size.x, this->size.y, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, this->size.x, this->size.y, 0, GL_RED, GL_FLOAT, NULL);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->ssao.color_buffer, 0);
@@ -435,18 +516,23 @@ void vpg::gl::Renderer::create_ssao() {
     }
 
     // SSAO noise texture
-    std::vector<glm::vec3> ssao_noise;
+    std::vector<glm::vec4> ssao_noise;
     for (int i = 0; i < 16; ++i) {
         ssao_noise.push_back({
             random_floats(generator) * 2.0 - 1.0,
             random_floats(generator) * 2.0 - 1.0,
+            0.0f,
             0.0f
             });
     }
 
     glGenTextures(1, &this->ssao.noise);
     glBindTexture(GL_TEXTURE_2D, this->ssao.noise);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssao_noise[0]);
+#ifdef __EMSCRIPTEN__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 4, 4, 0, GL_RGBA, GL_HALF_FLOAT, &ssao_noise[0]);
+#else
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 4, 4, 0, GL_RGBA, GL_FLOAT, &ssao_noise[0]);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -458,7 +544,11 @@ void vpg::gl::Renderer::create_ssao() {
 
     glGenTextures(1, &this->ssao_blur.color_buffer);
     glBindTexture(GL_TEXTURE_2D, this->ssao_blur.color_buffer);
+#ifdef __EMSCRIPTEN__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, this->size.x, this->size.y, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, this->size.x, this->size.y, 0, GL_RED, GL_FLOAT, NULL);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->ssao_blur.color_buffer, 0);
